@@ -195,62 +195,82 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 				].map((id) => document.querySelector(id));
 
 				if (navLinks.length > 0 && sections.every((s) => s)) {
-					const navObserver = new IntersectionObserver(
-						(entries) => {
-							entries.forEach((entry) => {
-								if (entry.isIntersecting) {
-									const id = "#" + entry.target.id;
-									navLinks.forEach((link) => {
-										const wrapper =
-											link.querySelector(
-												".nav-icon-wrapper",
-											);
-										const icon = link.querySelector("i");
-										const label =
-											link.querySelector("span");
+					const updateActiveNav = () => {
+						const viewportHeight = window.innerHeight;
+						const triggerPoint = viewportHeight * 0.3; // 30% from top
 
-										if (link.getAttribute("href") === id) {
-											wrapper.classList.add(
-												"nav-active-circle",
-											);
-											icon.classList.add("active-icon");
-											label.classList.replace(
-												"text-white/40",
-												"text-white",
-											);
-											link.classList.add(
-												"opacity-100",
-												"scale-110",
-											);
-											link.classList.remove("opacity-50");
-										} else {
-											wrapper.classList.remove(
-												"nav-active-circle",
-											);
-											icon.classList.remove(
-												"active-icon",
-											);
-											label.classList.replace(
-												"text-white",
-												"text-white/40",
-											);
-											link.classList.remove(
-												"scale-110",
-												"opacity-100",
-											);
-											link.classList.add("opacity-50");
-										}
-									});
+						let activeSectionId = "";
+						let minDistance = Infinity;
+
+						sections.forEach((section) => {
+							const rect = section.getBoundingClientRect();
+							// Distance from trigger point to the top of the section
+							const distance = Math.abs(rect.top - triggerPoint);
+
+							// If the section is currently covering the trigger point
+							if (
+								rect.top <= triggerPoint &&
+								rect.bottom >= triggerPoint
+							) {
+								activeSectionId = "#" + section.id;
+							}
+						});
+
+						// Fallback: if no section covers the trigger point exactly (e.g. gaps),
+						// find the one closest to it
+						if (!activeSectionId) {
+							sections.forEach((section) => {
+								const rect = section.getBoundingClientRect();
+								const distance = Math.abs(
+									rect.top - triggerPoint,
+								);
+								if (distance < minDistance) {
+									minDistance = distance;
+									activeSectionId = "#" + section.id;
 								}
 							});
-						},
-						{
-							threshold: 0.2,
-							rootMargin: "-15% 0px -45% 0px",
-						},
-					);
+						}
 
-					sections.forEach((s) => navObserver.observe(s));
+						if (activeSectionId) {
+							navLinks.forEach((link) => {
+								const wrapper =
+									link.querySelector(".nav-icon-wrapper");
+								const icon = link.querySelector("i");
+								const label = link.querySelector("span");
+
+								if (
+									link.getAttribute("href") ===
+									activeSectionId
+								) {
+									wrapper.classList.add("nav-active-circle");
+									icon.classList.add("active-icon");
+									label.classList.add("text-white");
+									label.classList.remove("text-white/40");
+									link.classList.add(
+										"opacity-100",
+										"scale-110",
+									);
+									link.classList.remove("opacity-50");
+								} else {
+									wrapper.classList.remove(
+										"nav-active-circle",
+									);
+									icon.classList.remove("active-icon");
+									label.classList.add("text-white/40");
+									label.classList.remove("text-white");
+									link.classList.remove(
+										"scale-110",
+										"opacity-100",
+									);
+									link.classList.add("opacity-50");
+								}
+							});
+						}
+					};
+
+					window.addEventListener("scroll", updateActiveNav);
+					window.addEventListener("resize", updateActiveNav);
+					updateActiveNav(); // Initial call
 				}
 			});
 		</script>
