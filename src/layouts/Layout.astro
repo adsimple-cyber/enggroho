@@ -201,45 +201,38 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 								if (entry.isIntersecting) {
 									const id = "#" + entry.target.id;
 									navLinks.forEach((link) => {
+										const wrapper =
+											link.querySelector(
+												".nav-icon-wrapper",
+											);
 										const icon = link.querySelector("i");
 										const label =
 											link.querySelector("span");
-										const isFitur =
-											link.getAttribute("href") ===
-											"#fitur";
 
 										if (link.getAttribute("href") === id) {
-											if (!isFitur) {
-												icon.classList.add(
-													"text-rose-500",
-												);
-												icon.classList.remove(
-													"text-white/40",
-												);
-											}
-											label.classList.add("text-white");
-											label.classList.remove(
+											wrapper.classList.add(
+												"nav-active-circle",
+											);
+											icon.classList.add("active-icon");
+											label.classList.replace(
 												"text-white/40",
+												"text-white",
 											);
 											link.classList.add(
-												"scale-110",
 												"opacity-100",
+												"scale-110",
 											);
 											link.classList.remove("opacity-50");
 										} else {
-											if (!isFitur) {
-												icon.classList.add(
-													"text-white/40",
-												);
-												icon.classList.remove(
-													"text-rose-500",
-												);
-											}
-											label.classList.add(
-												"text-white/40",
+											wrapper.classList.remove(
+												"nav-active-circle",
 											);
-											label.classList.remove(
+											icon.classList.remove(
+												"active-icon",
+											);
+											label.classList.replace(
 												"text-white",
+												"text-white/40",
 											);
 											link.classList.remove(
 												"scale-110",
@@ -292,13 +285,15 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 
 		<!-- Mobile Bottom Navbar -->
 		<nav
-			class="md:hidden fixed bottom-6 left-6 right-6 bg-slate-900/95 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-2 px-6 z-[99] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-around"
+			class="md:hidden fixed bottom-6 left-6 right-6 bg-slate-900/95 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-2 px-6 z-[99] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-around h-16"
 		>
 			<a
 				href="#hero"
-				class="flex flex-col items-center gap-1.5 p-2 transition-all active:scale-90"
+				class="flex flex-col items-center gap-1.5 p-2 transition-all active:scale-90 opacity-50"
 			>
-				<i class="fas fa-home text-white/40 text-base"></i>
+				<div class="nav-icon-wrapper">
+					<i class="fas fa-home text-white/40 text-base"></i>
+				</div>
 				<span
 					class="text-[9px] text-white/40 font-bold uppercase tracking-tight leading-none"
 					>Home</span
@@ -306,9 +301,11 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 			</a>
 			<a
 				href="#metode"
-				class="flex flex-col items-center gap-1.5 p-2 transition-all active:scale-90"
+				class="flex flex-col items-center gap-1.5 p-2 transition-all active:scale-90 opacity-50"
 			>
-				<i class="fas fa-bullseye text-white/40 text-base"></i>
+				<div class="nav-icon-wrapper">
+					<i class="fas fa-bullseye text-white/40 text-base"></i>
+				</div>
 				<span
 					class="text-[9px] text-white/40 font-bold uppercase tracking-tight leading-none"
 					>Alur</span
@@ -316,12 +313,10 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 			</a>
 			<a
 				href="#fitur"
-				class="flex flex-col items-center gap-1.5 p-2 transition-all group active:scale-90"
+				class="flex flex-col items-center gap-1.5 p-2 transition-all active:scale-90 opacity-50"
 			>
-				<div
-					class="w-12 h-12 bg-rose-500 rounded-full flex items-center justify-center -mt-10 mb-0 shadow-[0_10px_25px_-5px_rgba(255,51,102,0.5)] border-4 border-slate-900 group-active:scale-95 transition-transform"
-				>
-					<i class="fas fa-rocket text-white text-lg"></i>
+				<div class="nav-icon-wrapper">
+					<i class="fas fa-rocket text-white/40 text-base"></i>
 				</div>
 				<span
 					class="text-[9px] text-white/40 font-bold uppercase tracking-tight leading-none"
@@ -330,14 +325,42 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 			</a>
 			<a
 				href="#testimoni"
-				class="flex flex-col items-center gap-1.5 p-2 transition-all active:scale-90"
+				class="flex flex-col items-center gap-1.5 p-2 transition-all active:scale-90 opacity-50"
 			>
-				<i class="fas fa-comment-dots text-white/40 text-base"></i>
+				<div class="nav-icon-wrapper">
+					<i class="fas fa-comment-dots text-white/40 text-base"></i>
+				</div>
 				<span
 					class="text-[9px] text-white/40 font-bold uppercase tracking-tight leading-none"
 					>Testi</span
 				>
 			</a>
 		</nav>
+
+		<style is:global>
+			.nav-icon-wrapper {
+				width: auto;
+				height: auto;
+				background: transparent;
+				border-radius: 9999px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+				margin-top: 0;
+			}
+			.nav-active-circle {
+				width: 3rem !important;
+				height: 3rem !important;
+				background-color: #f43f5e !important; /* rose-500 */
+				margin-top: -2.5rem !important;
+				box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.5) !important;
+				border: 4px solid #0f172a !important; /* slate-900 */
+			}
+			.active-icon {
+				color: white !important;
+				font-size: 1.125rem !important;
+			}
+		</style>
 	</body>
 </html>
