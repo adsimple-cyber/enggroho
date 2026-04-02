@@ -207,6 +207,7 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 										const isFitur =
 											link.getAttribute("href") ===
 											"#fitur";
+
 										if (link.getAttribute("href") === id) {
 											if (!isFitur) {
 												icon.classList.add(
@@ -250,7 +251,10 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 								}
 							});
 						},
-						{ threshold: 0.5 },
+						{
+							threshold: 0.2,
+							rootMargin: "-15% 0px -45% 0px",
+						},
 					);
 
 					sections.forEach((s) => navObserver.observe(s));
