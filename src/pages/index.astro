@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { translations } from "../utils/translations";
 ---
 
 <Layout>
@@ -18,25 +19,46 @@ import Layout from "../layouts/Layout.astro";
 
             <!-- Menu Navbar Tetap Ada -->
             <div class="hidden lg:flex space-x-10 font-semibold text-slate-600">
-                <a href="#about" class="nav-link hover:text-rose-500">Tentang</a
+                <a
+                    href="#about"
+                    class="nav-link hover:text-rose-500"
+                    data-t="nav_about">Tentang</a
                 >
-                <a href="#approach" class="nav-link hover:text-rose-500"
-                    >Metode</a
+                <a
+                    href="#approach"
+                    class="nav-link hover:text-rose-500"
+                    data-t="nav_method">Metode</a
                 >
-                <a href="#testimonials" class="nav-link hover:text-rose-500"
-                    >Testimoni</a
+                <a
+                    href="#testimonials"
+                    class="nav-link hover:text-rose-500"
+                    data-t="nav_testi">Testimoni</a
                 >
-                <a href="#mentor" class="nav-link hover:text-rose-500">Mentor</a
+                <a
+                    href="#mentor"
+                    class="nav-link hover:text-rose-500"
+                    data-t="nav_mentor">Mentor</a
                 >
             </div>
 
             <!-- Call to Action -->
-            <a
-                href="https://wa.me/6287736696629"
-                class="btn-primary text-white px-8 py-3.5 rounded-2xl font-bold text-sm shadow-xl"
-            >
-                Kelas Gratis
-            </a>
+            <div class="flex items-center space-x-6">
+                <!-- Language Toggle Desktop -->
+                <div class="hidden lg:flex" id="lang-toggle-container">
+                    <button
+                        id="lang-toggle-desktop"
+                        class="bg-slate-100 px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300 text-slate-900 border border-slate-200 hover:bg-slate-200"
+                        >EN</button
+                    >
+                </div>
+                <a
+                    href="https://wa.me/6287736696629"
+                    class="btn-primary text-white px-8 py-3.5 rounded-2xl font-bold text-sm shadow-xl"
+                    data-t="nav_cta"
+                >
+                    Kelas Gratis
+                </a>
+            </div>
         </div>
     </nav>
 
@@ -65,12 +87,13 @@ import Layout from "../layouts/Layout.astro";
                     </span>
                     <span
                         class="text-slate-700 text-[11px] font-bold uppercase tracking-widest"
-                        >Global Career Accelerator</span
+                        data-t="hero_badge">Global Career Accelerator</span
                     >
                 </div>
 
                 <h1
                     class="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] mb-8 text-slate-900 tracking-tight"
+                    data-t="hero_title"
                 >
                     Break Boundaries with <span class="gradient-text italic"
                         >Fluent</span
@@ -79,6 +102,7 @@ import Layout from "../layouts/Layout.astro";
 
                 <p
                     class="text-lg md:text-xl text-slate-500 mb-12 leading-relaxed max-w-xl font-light"
+                    data-t="hero_desc"
                 >
                     Transformasikan cara Anda berkomunikasi. Kami tidak hanya
                     mengajar bahasa, kami membantu Anda membangun <span
@@ -91,6 +115,7 @@ import Layout from "../layouts/Layout.astro";
                     <a
                         href="https://wa.me/6287736696629"
                         class="btn-primary text-white px-12 py-5 rounded-3xl font-bold text-center text-lg w-full sm:w-auto"
+                        data-t="hero_cta"
                     >
                         Mulai Perjalanan Anda
                     </a>
@@ -120,6 +145,7 @@ import Layout from "../layouts/Layout.astro";
                         </div>
                         <p
                             class="text-xs font-medium text-slate-500 leading-tight"
+                            data-t="hero_trust"
                         >
                             Dipercaya oleh para<br /><span
                                 class="text-slate-900 font-bold"
@@ -151,10 +177,14 @@ import Layout from "../layouts/Layout.astro";
                     <div>
                         <p
                             class="text-[10px] uppercase font-bold text-slate-400"
+                            data-t="hero_card_label"
                         >
                             Career Growth
                         </p>
-                        <p class="text-sm font-extrabold text-slate-800">
+                        <p
+                            class="text-sm font-extrabold text-slate-800"
+                            data-t="hero_card_value"
+                        >
                             Accelerated
                         </p>
                     </div>
@@ -184,10 +214,11 @@ import Layout from "../layouts/Layout.astro";
             >
                 <span
                     class="text-rose-500 font-bold text-xs uppercase tracking-[0.3em] mb-6 px-4 py-1.5 rounded-full bg-rose-50"
-                    >Our Creative Approach</span
+                    data-t="section_approach_badge">Our Creative Approach</span
                 >
                 <h2
                     class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight"
+                    data-t="section_approach_title"
                 >
                     Metode Belajar Tanpa Batas
                 </h2>
@@ -204,10 +235,16 @@ import Layout from "../layouts/Layout.astro";
                     >
                         <i class="fas fa-fingerprint"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-5 tracking-tight">
+                    <h3
+                        class="text-2xl font-bold mb-5 tracking-tight"
+                        data-t="approach_card1_title"
+                    >
                         Ultra Personalized
                     </h3>
-                    <p class="text-slate-500 leading-relaxed font-light">
+                    <p
+                        class="text-slate-500 leading-relaxed font-light"
+                        data-t="approach_card1_desc"
+                    >
                         Kurikulum yang berputar di sekitar dunia kerja Anda.
                         Anda belajar apa yang Anda butuhkan besok di kantor.
                     </p>
@@ -225,10 +262,14 @@ import Layout from "../layouts/Layout.astro";
                     </div>
                     <h3
                         class="text-2xl font-bold mb-5 text-white tracking-tight"
+                        data-t="approach_card2_title"
                     >
                         Cognitive Context
                     </h3>
-                    <p class="text-slate-400 leading-relaxed font-light">
+                    <p
+                        class="text-slate-400 leading-relaxed font-light"
+                        data-t="approach_card2_desc"
+                    >
                         Kami melatih otak Anda untuk berpikir langsung dalam
                         bahasa Inggris, bukan sekadar menerjemahkan kata.
                     </p>
@@ -244,10 +285,16 @@ import Layout from "../layouts/Layout.astro";
                     >
                         <i class="fas fa-infinity"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-5 tracking-tight">
+                    <h3
+                        class="text-2xl font-bold mb-5 tracking-tight"
+                        data-t="approach_card3_title"
+                    >
                         Unlimited Support
                     </h3>
-                    <p class="text-slate-500 leading-relaxed font-light">
+                    <p
+                        class="text-slate-500 leading-relaxed font-light"
+                        data-t="approach_card3_desc"
+                    >
                         Akses tanya jawab di luar sesi kelas. Kami adalah
                         partner komunikasi Anda setiap saat.
                     </p>
@@ -271,6 +318,7 @@ import Layout from "../layouts/Layout.astro";
                     </p>
                     <p
                         class="text-sm text-slate-500 font-medium uppercase tracking-wider"
+                        data-t="stats_alumni"
                     >
                         Alumni Aktif
                     </p>
@@ -283,6 +331,7 @@ import Layout from "../layouts/Layout.astro";
                     </p>
                     <p
                         class="text-sm text-slate-500 font-medium uppercase tracking-wider"
+                        data-t="stats_experience"
                     >
                         Tahun Pengalaman
                     </p>
@@ -295,6 +344,7 @@ import Layout from "../layouts/Layout.astro";
                     </p>
                     <p
                         class="text-sm text-slate-500 font-medium uppercase tracking-wider"
+                        data-t="stats_satisfaction"
                     >
                         Tingkat Kepuasan
                     </p>
@@ -307,6 +357,7 @@ import Layout from "../layouts/Layout.astro";
                     </p>
                     <p
                         class="text-sm text-slate-500 font-medium uppercase tracking-wider"
+                        data-t="stats_industries"
                     >
                         Industri Dilayani
                     </p>
@@ -324,14 +375,18 @@ import Layout from "../layouts/Layout.astro";
             >
                 <span
                     class="text-rose-500 font-bold text-xs uppercase tracking-[0.3em] mb-6 px-4 py-1.5 rounded-full bg-rose-50"
-                    >How It Works</span
+                    data-t="section_how_badge">How It Works</span
                 >
                 <h2
                     class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight"
+                    data-t="section_how_title"
                 >
                     Alur Belajar di Enggroho
                 </h2>
-                <p class="text-slate-500 mt-6 text-lg max-w-2xl font-light">
+                <p
+                    class="text-slate-500 mt-6 text-lg max-w-2xl font-light"
+                    data-t="section_how_desc"
+                >
                     Dari nol hingga mahir, kami mendampingi setiap langkah
                     perjalanan Anda menuju komunikasi profesional.
                 </p>
@@ -369,14 +424,18 @@ import Layout from "../layouts/Layout.astro";
                     <div class="ml-28 md:ml-0 md:w-[42%] md:pr-16">
                         <span
                             class="text-[10px] uppercase font-bold tracking-widest text-rose-400 mb-2 block"
-                            >Langkah Pertama</span
+                            data-t="step1_badge">Langkah Pertama</span
                         >
                         <h3
                             class="text-2xl font-bold mb-4 tracking-tight text-slate-900"
+                            data-t="step1_title"
                         >
                             Konsultasi Gratis
                         </h3>
-                        <p class="text-slate-500 font-light leading-relaxed">
+                        <p
+                            class="text-slate-500 font-light leading-relaxed"
+                            data-t="step1_desc"
+                        >
                             Kami mendengarkan kebutuhan, tantangan, dan tujuan
                             karier Anda secara menyeluruh. Sesi ini gratis tanpa
                             komitmen apapun.
@@ -404,14 +463,18 @@ import Layout from "../layouts/Layout.astro";
                     <div class="ml-28 md:ml-0 md:w-[42%] md:pl-16 md:text-left">
                         <span
                             class="text-[10px] uppercase font-bold tracking-widest text-rose-400 mb-2 block"
-                            >Langkah Kedua</span
+                            data-t="step2_badge">Langkah Kedua</span
                         >
                         <h3
                             class="text-2xl font-bold mb-4 tracking-tight text-slate-900"
+                            data-t="step2_title"
                         >
                             Kurikulum Personal
                         </h3>
-                        <p class="text-slate-500 font-light leading-relaxed">
+                        <p
+                            class="text-slate-500 font-light leading-relaxed"
+                            data-t="step2_desc"
+                        >
                             Materi disusun khusus berdasarkan industri dan
                             kebutuhan profesional Anda. Tidak ada kurikulum
                             template — semuanya tailor-made.
@@ -439,14 +502,18 @@ import Layout from "../layouts/Layout.astro";
                     <div class="ml-28 md:ml-0 md:w-[42%] md:pr-16">
                         <span
                             class="text-[10px] uppercase font-bold tracking-widest text-rose-400 mb-2 block"
-                            >Langkah Ketiga</span
+                            data-t="step3_badge">Langkah Ketiga</span
                         >
                         <h3
                             class="text-2xl font-bold mb-4 tracking-tight text-slate-900"
+                            data-t="step3_title"
                         >
                             Sesi Intensif 1-on-1
                         </h3>
-                        <p class="text-slate-500 font-light leading-relaxed">
+                        <p
+                            class="text-slate-500 font-light leading-relaxed"
+                            data-t="step3_desc"
+                        >
                             Belajar langsung dengan mentor melalui sesi privat
                             yang fokus dan interaktif. Real practice, real
                             scenario, real progress.
@@ -474,14 +541,18 @@ import Layout from "../layouts/Layout.astro";
                     <div class="ml-28 md:ml-0 md:w-[42%] md:pl-16 md:text-left">
                         <span
                             class="text-[10px] uppercase font-bold tracking-widest text-rose-400 mb-2 block"
-                            >Langkah Terakhir</span
+                            data-t="step4_badge">Langkah Terakhir</span
                         >
                         <h3
                             class="text-2xl font-bold mb-4 tracking-tight text-slate-900"
+                            data-t="step4_title"
                         >
                             Evaluasi & Follow Up
                         </h3>
-                        <p class="text-slate-500 font-light leading-relaxed">
+                        <p
+                            class="text-slate-500 font-light leading-relaxed"
+                            data-t="step4_desc"
+                        >
                             Perkembangan dipantau, dievaluasi, dan disesuaikan
                             agar progres Anda makin optimal dari waktu ke waktu.
                         </p>
@@ -498,10 +569,11 @@ import Layout from "../layouts/Layout.astro";
                 <div data-aos="fade-right">
                     <span
                         class="text-rose-500 font-bold text-xs uppercase tracking-[0.3em] mb-6 inline-block px-4 py-1.5 rounded-full bg-rose-50"
-                        >Kenapa Enggroho?</span
+                        data-t="section_why_badge">Kenapa Enggroho?</span
                     >
                     <h2
                         class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mt-4 mb-8"
+                        data-t="section_why_title"
                     >
                         Bukan Sekadar Kursus Bahasa Inggris <span
                             class="gradient-text italic">Biasa</span
@@ -509,6 +581,7 @@ import Layout from "../layouts/Layout.astro";
                     </h2>
                     <p
                         class="text-lg text-slate-500 mb-12 leading-relaxed font-light"
+                        data-t="section_why_desc"
                     >
                         Enggroho hadir dengan pendekatan yang berbeda. Kami
                         tidak hanya mengajarkan grammar dan vocabulary, tapi
@@ -526,11 +599,13 @@ import Layout from "../layouts/Layout.astro";
                             <div>
                                 <h4
                                     class="font-bold text-slate-900 text-lg mb-2"
+                                    data-t="why_feat1_title"
                                 >
                                     Fokus ke Dunia Kerja Nyata
                                 </h4>
                                 <p
                                     class="text-slate-500 font-light leading-relaxed"
+                                    data-t="why_feat1_desc"
                                 >
                                     Materi belajar dirancang langsung dari
                                     skenario pekerjaan: presentasi, negosiasi,
@@ -547,11 +622,13 @@ import Layout from "../layouts/Layout.astro";
                             <div>
                                 <h4
                                     class="font-bold text-slate-900 text-lg mb-2"
+                                    data-t="why_feat2_title"
                                 >
                                     Mentoring, Bukan Sekadar Mengajar
                                 </h4>
                                 <p
                                     class="text-slate-500 font-light leading-relaxed"
+                                    data-t="why_feat2_desc"
                                 >
                                     Anda tidak belajar sendirian. Kami menjadi
                                     partner komunikasi Anda bahkan di luar jam
@@ -568,11 +645,13 @@ import Layout from "../layouts/Layout.astro";
                             <div>
                                 <h4
                                     class="font-bold text-slate-900 text-lg mb-2"
+                                    data-t="why_feat3_title"
                                 >
                                     Progress Terukur & Transparan
                                 </h4>
                                 <p
                                     class="text-slate-500 font-light leading-relaxed"
+                                    data-t="why_feat3_desc"
                                 >
                                     Setiap sesi dinilai dan dievaluasi. Anda
                                     bisa melihat sendiri seberapa jauh kemajuan
@@ -599,10 +678,16 @@ import Layout from "../layouts/Layout.astro";
                             >
                                 <i class="fas fa-laptop"></i>
                             </div>
-                            <h4 class="font-bold text-slate-900 mb-2">
+                            <h4
+                                class="font-bold text-slate-900 mb-2"
+                                data-t="why_grid1_title"
+                            >
                                 Online & Offline
                             </h4>
-                            <p class="text-xs text-slate-500 font-light">
+                            <p
+                                class="text-xs text-slate-500 font-light"
+                                data-t="why_grid1_desc"
+                            >
                                 Fleksibel sesuai jadwal Anda
                             </p>
                         </div>
@@ -616,10 +701,16 @@ import Layout from "../layouts/Layout.astro";
                             >
                                 <i class="fas fa-clock"></i>
                             </div>
-                            <h4 class="font-bold text-slate-900 mb-2">
+                            <h4
+                                class="font-bold text-slate-900 mb-2"
+                                data-t="why_grid2_title"
+                            >
                                 Jadwal Fleksibel
                             </h4>
-                            <p class="text-xs text-slate-500 font-light">
+                            <p
+                                class="text-xs text-slate-500 font-light"
+                                data-t="why_grid2_desc"
+                            >
                                 Pagi, siang, malam — pilih sendiri
                             </p>
                         </div>
@@ -633,10 +724,16 @@ import Layout from "../layouts/Layout.astro";
                             >
                                 <i class="fas fa-headset"></i>
                             </div>
-                            <h4 class="font-bold text-slate-900 mb-2">
+                            <h4
+                                class="font-bold text-slate-900 mb-2"
+                                data-t="why_grid3_title"
+                            >
                                 Support 24/7
                             </h4>
-                            <p class="text-xs text-slate-500 font-light">
+                            <p
+                                class="text-xs text-slate-500 font-light"
+                                data-t="why_grid3_desc"
+                            >
                                 Tanya jawab kapan saja via WhatsApp
                             </p>
                         </div>
@@ -650,10 +747,16 @@ import Layout from "../layouts/Layout.astro";
                             >
                                 <i class="fas fa-certificate"></i>
                             </div>
-                            <h4 class="font-bold text-slate-900 mb-2">
+                            <h4
+                                class="font-bold text-slate-900 mb-2"
+                                data-t="why_grid4_title"
+                            >
                                 Sertifikat
                             </h4>
-                            <p class="text-xs text-slate-500 font-light">
+                            <p
+                                class="text-xs text-slate-500 font-light"
+                                data-t="why_grid4_desc"
+                            >
                                 Bukti kompetensi untuk karier Anda
                             </p>
                         </div>
@@ -672,10 +775,11 @@ import Layout from "../layouts/Layout.astro";
             >
                 <span
                     class="text-rose-500 font-bold text-xs uppercase tracking-[0.3em] mb-6 px-4 py-1.5 rounded-full bg-rose-50"
-                    >Fitur Unggulan</span
+                    data-t="section_fitur_badge">Fitur Unggulan</span
                 >
                 <h2
                     class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight"
+                    data-t="section_fitur_title"
                 >
                     Semua yang Anda Butuhkan <span class="gradient-text italic"
                         >Ada di Sini</span
@@ -699,10 +803,14 @@ import Layout from "../layouts/Layout.astro";
                     </div>
                     <h3
                         class="text-2xl md:text-3xl font-bold text-white mb-3 tracking-tight"
+                        data-t="fitur_card_large_title"
                     >
                         Siap untuk Panggung Global
                     </h3>
-                    <p class="text-slate-400 font-light leading-relaxed">
+                    <p
+                        class="text-slate-400 font-light leading-relaxed"
+                        data-t="fitur_card_large_desc"
+                    >
                         Bukan sekadar fasih, tapi mampu bersaing dan
                         bernegoisasi di arena internasional dengan percaya diri
                         penuh.
@@ -721,10 +829,16 @@ import Layout from "../layouts/Layout.astro";
                         <i class="fas fa-video"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-slate-900 text-base">
+                        <h4
+                            class="font-bold text-slate-900 text-base"
+                            data-t="fitur_live_title"
+                        >
                             Live Session
                         </h4>
-                        <p class="text-xs text-slate-500 font-light mt-1">
+                        <p
+                            class="text-xs text-slate-500 font-light mt-1"
+                            data-t="fitur_live_desc"
+                        >
                             Sesi tatap muka real-time via Zoom
                         </p>
                     </div>
@@ -742,10 +856,16 @@ import Layout from "../layouts/Layout.astro";
                         <i class="fas fa-book-open"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-slate-900 text-base">
+                        <h4
+                            class="font-bold text-slate-900 text-base"
+                            data-t="fitur_material_title"
+                        >
                             Custom Material
                         </h4>
-                        <p class="text-xs text-slate-500 font-light mt-1">
+                        <p
+                            class="text-xs text-slate-500 font-light mt-1"
+                            data-t="fitur_material_desc"
+                        >
                             Modul belajar sesuai industri Anda
                         </p>
                     </div>
@@ -763,10 +883,16 @@ import Layout from "../layouts/Layout.astro";
                         <i class="fas fa-comments"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-slate-900 text-lg mb-1">
+                        <h4
+                            class="font-bold text-slate-900 text-lg mb-1"
+                            data-t="fitur_speaking_title"
+                        >
                             Speaking Practice Intensif
                         </h4>
-                        <p class="text-sm text-slate-500 font-light">
+                        <p
+                            class="text-sm text-slate-500 font-light"
+                            data-t="fitur_speaking_desc"
+                        >
                             Latihan berbicara langsung dengan mentor — fokus
                             pronunciation, intonasi, dan confidence building
                             dalam konteks kerja nyata.
@@ -786,10 +912,16 @@ import Layout from "../layouts/Layout.astro";
                         <i class="fas fa-file-alt"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-slate-900 text-base">
+                        <h4
+                            class="font-bold text-slate-900 text-base"
+                            data-t="fitur_report_title"
+                        >
                             Progress Report
                         </h4>
-                        <p class="text-xs text-slate-500 font-light mt-1">
+                        <p
+                            class="text-xs text-slate-500 font-light mt-1"
+                            data-t="fitur_report_desc"
+                        >
                             Laporan kemajuan bulanan
                         </p>
                     </div>
@@ -807,10 +939,16 @@ import Layout from "../layouts/Layout.astro";
                         <i class="fas fa-headphones"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-slate-900 text-base">
+                        <h4
+                            class="font-bold text-slate-900 text-base"
+                            data-t="fitur_listening_title"
+                        >
                             Listening Drill
                         </h4>
-                        <p class="text-xs text-slate-500 font-light mt-1">
+                        <p
+                            class="text-xs text-slate-500 font-light mt-1"
+                            data-t="fitur_listening_desc"
+                        >
                             Materi listening native accent
                         </p>
                     </div>
@@ -828,10 +966,16 @@ import Layout from "../layouts/Layout.astro";
                         <i class="fas fa-pen-fancy"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-slate-900 text-lg mb-1">
+                        <h4
+                            class="font-bold text-slate-900 text-lg mb-1"
+                            data-t="fitur_writing_title"
+                        >
                             Business Writing Mastery
                         </h4>
-                        <p class="text-sm text-slate-500 font-light">
+                        <p
+                            class="text-sm text-slate-500 font-light"
+                            data-t="fitur_writing_desc"
+                        >
                             Kuasai teknik menulis email profesional, proposal
                             bisnis, dan laporan dalam bahasa Inggris yang tajam
                             dan berbobot.
@@ -852,6 +996,7 @@ import Layout from "../layouts/Layout.astro";
                 >
                 <h2
                     class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mt-4"
+                    data-t="section_faq_title"
                 >
                     Pertanyaan yang Sering Ditanyakan
                 </h2>
@@ -862,14 +1007,17 @@ import Layout from "../layouts/Layout.astro";
                     <summary
                         class="flex items-center justify-between font-bold text-lg text-slate-900 list-none"
                     >
-                        <span
+                        <span data-t="faq1_q"
                             >Apakah saya harus punya dasar bahasa Inggris?</span
                         >
                         <i
                             class="fas fa-chevron-down text-rose-500 text-sm transition-transform group-open:rotate-180"
                         ></i>
                     </summary>
-                    <p class="text-slate-500 mt-5 font-light leading-relaxed">
+                    <p
+                        class="text-slate-500 mt-5 font-light leading-relaxed"
+                        data-t="faq1_a"
+                    >
                         Tidak harus! Enggroho menerima semua level, dari pemula
                         hingga lanjutan. Kurikulum akan disesuaikan secara
                         personal dengan kemampuan awal Anda, sehingga prosesnya
@@ -881,14 +1029,17 @@ import Layout from "../layouts/Layout.astro";
                     <summary
                         class="flex items-center justify-between font-bold text-lg text-slate-900 list-none"
                     >
-                        <span
+                        <span data-t="faq2_q"
                             >Berapa lama waktu yang dibutuhkan untuk bisa fasih?</span
                         >
                         <i
                             class="fas fa-chevron-down text-rose-500 text-sm transition-transform group-open:rotate-180"
                         ></i>
                     </summary>
-                    <p class="text-slate-500 mt-5 font-light leading-relaxed">
+                    <p
+                        class="text-slate-500 mt-5 font-light leading-relaxed"
+                        data-t="faq2_a"
+                    >
                         Tergantung intensitas dan konsistensi belajar. Rata-rata
                         alumni kami mulai merasakan peningkatan signifikan dalam
                         3 bulan pertama dengan sesi reguler 2-3 kali seminggu.
@@ -899,14 +1050,17 @@ import Layout from "../layouts/Layout.astro";
                     <summary
                         class="flex items-center justify-between font-bold text-lg text-slate-900 list-none"
                     >
-                        <span
+                        <span data-t="faq3_q"
                             >Apakah tersedia kelas grup atau hanya privat?</span
                         >
                         <i
                             class="fas fa-chevron-down text-rose-500 text-sm transition-transform group-open:rotate-180"
                         ></i>
                     </summary>
-                    <p class="text-slate-500 mt-5 font-light leading-relaxed">
+                    <p
+                        class="text-slate-500 mt-5 font-light leading-relaxed"
+                        data-t="faq3_a"
+                    >
                         Kami menyediakan keduanya. Kelas privat 1-on-1 untuk
                         fokus maksimal, dan kelas grup kecil (maks 5 orang)
                         untuk simulasi percakapan profesional yang lebih
@@ -918,12 +1072,17 @@ import Layout from "../layouts/Layout.astro";
                     <summary
                         class="flex items-center justify-between font-bold text-lg text-slate-900 list-none"
                     >
-                        <span>Bagaimana sistem pembayarannya?</span>
+                        <span data-t="faq4_q"
+                            >Bagaimana sistem pembayarannya?</span
+                        >
                         <i
                             class="fas fa-chevron-down text-rose-500 text-sm transition-transform group-open:rotate-180"
                         ></i>
                     </summary>
-                    <p class="text-slate-500 mt-5 font-light leading-relaxed">
+                    <p
+                        class="text-slate-500 mt-5 font-light leading-relaxed"
+                        data-t="faq4_a"
+                    >
                         Kami menawarkan paket bulanan yang fleksibel. Silakan
                         hubungi kami via WhatsApp untuk konsultasi gratis dan
                         mendapatkan penawaran terbaik sesuai kebutuhan Anda.
@@ -934,14 +1093,17 @@ import Layout from "../layouts/Layout.astro";
                     <summary
                         class="flex items-center justify-between font-bold text-lg text-slate-900 list-none"
                     >
-                        <span
+                        <span data-t="faq5_q"
                             >Apakah materi belajarnya cocok untuk profesi saya?</span
                         >
                         <i
                             class="fas fa-chevron-down text-rose-500 text-sm transition-transform group-open:rotate-180"
                         ></i>
                     </summary>
-                    <p class="text-slate-500 mt-5 font-light leading-relaxed">
+                    <p
+                        class="text-slate-500 mt-5 font-light leading-relaxed"
+                        data-t="faq5_a"
+                    >
                         Sangat cocok. Kami telah menangani profesional dari
                         berbagai industri — IT, hukum, keuangan, healthcare,
                         marketing, hingga HRD. Kurikulum selalu disesuaikan
@@ -958,12 +1120,16 @@ import Layout from "../layouts/Layout.astro";
             <div class="mb-20" data-aos="fade-right">
                 <h2
                     class="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight"
+                    data-t="section_testi_title"
                 >
                     Suara Keberhasilan <span class="text-rose-500 italic"
                         >Alumni</span
                     >
                 </h2>
-                <p class="text-slate-500 text-lg font-light">
+                <p
+                    class="text-slate-500 text-lg font-light"
+                    data-t="section_testi_desc"
+                >
                     Kisah nyata dari mereka yang telah mendobrak batasan
                     komunikasi.
                 </p>
@@ -982,6 +1148,7 @@ import Layout from "../layouts/Layout.astro";
                         </div>
                         <p
                             class="text-xl text-slate-700 leading-relaxed font-light italic mb-12"
+                            data-t="testi1_text"
                         >
                             "Enggroho mengubah mindset saya. Sekarang meeting
                             dengan board member luar negeri terasa seperti
@@ -1007,7 +1174,8 @@ import Layout from "../layouts/Layout.astro";
                                 Ariawan Sanjaya
                             </h4>
                             <p
-                                class="text-[10px] text-rose-500 font-bold uppercase tracking-widest"
+                                class="text-slate-400 text-sm font-medium"
+                                data-t="section_testi_mentor"
                             >
                                 Operation Director
                             </p>
@@ -1027,6 +1195,7 @@ import Layout from "../layouts/Layout.astro";
                         </div>
                         <p
                             class="text-xl text-slate-700 leading-relaxed font-light italic mb-12"
+                            data-t="testi2_text"
                         >
                             "Metode Mas Agung sangat praktis. Fokus ke
                             penggunaan profesional bukan sekadar teori sekolah."
@@ -1051,7 +1220,8 @@ import Layout from "../layouts/Layout.astro";
                                 Dewi Larasati
                             </h4>
                             <p
-                                class="text-[10px] text-rose-500 font-bold uppercase tracking-widest"
+                                class="text-slate-400 text-sm font-medium"
+                                data-t="section_testi_mentor2"
                             >
                                 IT Consultant
                             </p>
@@ -1071,6 +1241,7 @@ import Layout from "../layouts/Layout.astro";
                         </div>
                         <p
                             class="text-xl text-slate-700 leading-relaxed font-light italic mb-12"
+                            data-t="testi3_text"
                         >
                             "Peningkatannya luar biasa cepat. Cocok banget buat
                             yang sibuk tapi butuh hasil nyata."
@@ -1095,7 +1266,8 @@ import Layout from "../layouts/Layout.astro";
                                 Farhan Malik
                             </h4>
                             <p
-                                class="text-[10px] text-rose-500 font-bold uppercase tracking-widest"
+                                class="text-slate-400 text-sm font-medium"
+                                data-t="section_testi_mentor3"
                             >
                                 HR Business Partner
                             </p>
@@ -1147,21 +1319,22 @@ import Layout from "../layouts/Layout.astro";
 
                 <div data-aos="fade-left">
                     <h2
-                        class="text-4xl md:text-5xl font-extrabold mb-10 tracking-tight"
+                        class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-8"
+                        data-t="section_mentor_title"
                     >
                         Belajar Langsung dari <span class="gradient-text"
-                            >Ahli Bahasa</span
+                            >Linguist</span
                         >
                     </h2>
                     <p
-                        class="text-lg text-slate-500 mb-10 leading-relaxed font-light"
+                        class="text-slate-500 text-lg leading-relaxed font-light mb-10"
+                        data-t="mentor_desc"
                     >
-                        Dengan latar belakang akademis yang kuat dan jam terbang
+                        Dengan latar belakang akademis kuat dan jam terbang
                         tinggi sebagai interpreter profesional, Agung membawa
-                        perspektif yang unik ke dalam setiap kelas: <span
+                        perspektif unik di setiap kelas: <span
                             class="text-slate-900 font-semibold italic"
-                            >Bahasa Inggris adalah alat kekuasaan, bukan sekadar
-                            kata-kata.</span
+                            >English is a tool of power, not just words.</span
                         >
                     </p>
 
@@ -1173,12 +1346,18 @@ import Layout from "../layouts/Layout.astro";
                                 <i class="fas fa-certificate"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-slate-900">
+                                <h4
+                                    class="font-bold text-slate-900"
+                                    data-t="mentor_feat1_title"
+                                >
                                     Certified Professional Interpreter
                                 </h4>
-                                <p class="text-sm text-slate-400">
-                                    Berpengalaman di ranah hukum dan medis
-                                    tingkat internasional.
+                                <p
+                                    class="text-sm text-slate-500 font-light"
+                                    data-t="mentor_feat1_desc"
+                                >
+                                    Berpengalaman di bidang hukum dan medis
+                                    internasional.
                                 </p>
                             </div>
                         </li>
@@ -1189,12 +1368,18 @@ import Layout from "../layouts/Layout.astro";
                                 <i class="fas fa-university"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-slate-900">
+                                <h4
+                                    class="font-bold text-slate-900"
+                                    data-t="mentor_feat2_title"
+                                >
                                     Linguist Scholar
                                 </h4>
-                                <p class="text-sm text-slate-400">
-                                    Alumni Sastra Inggris UNNES dengan
-                                    spesialisasi pola komunikasi manusia.
+                                <p
+                                    class="text-sm text-slate-500 font-light"
+                                    data-t="mentor_feat2_desc"
+                                >
+                                    Alumni Sastra Inggris UNNES spesialisasi
+                                    pola komunikasi manusia.
                                 </p>
                             </div>
                         </li>
@@ -1211,7 +1396,7 @@ import Layout from "../layouts/Layout.astro";
         >
             <h2
                 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-8 tracking-tight text-slate-900"
-                data-aos="fade-up"
+                data-t="section_cta_title"
             >
                 Ready for the Next <span class="text-rose-500 italic"
                     >Big Move?</span
@@ -1219,25 +1404,18 @@ import Layout from "../layouts/Layout.astro";
             </h2>
             <p
                 class="text-xl text-slate-500 mb-14 max-w-xl mx-auto font-light"
-                data-aos="fade-up"
-                data-aos-delay="100"
+                data-t="section_cta_desc"
             >
                 Jadwalkan konsultasi gratis 15 menit dan temukan bagaimana kami
-                bisa membantumu mencapai karier impian.
+                membantu Anda meraih karier impian.
             </p>
-            <div
-                class="flex flex-col sm:flex-row justify-center gap-6"
-                data-aos="fade-up"
-                data-aos-delay="200"
+            <a
+                href="https://wa.me/6287736696629"
+                class="btn-primary text-white px-12 py-5 rounded-3xl font-bold text-lg shadow-2xl inline-block"
+                data-t="section_cta_btn"
             >
-                <a
-                    href="https://wa.me/6287736696629"
-                    class="btn-primary text-white px-8 sm:px-12 py-5 rounded-[2rem] font-bold text-lg sm:text-xl shadow-2xl flex items-center justify-center space-x-3"
-                >
-                    <i class="fab fa-whatsapp"></i>
-                    <span>Kirim Pesan Sekarang</span>
-                </a>
-            </div>
+                Kirim Pesan Sekarang
+            </a>
         </div>
     </section>
 
@@ -1251,34 +1429,44 @@ import Layout from "../layouts/Layout.astro";
                     >
                         ENG<span class="text-rose-500">GROHO</span>
                     </div>
-                    <p class="text-slate-400 leading-relaxed font-light">
+                    <p
+                        class="text-slate-500 mt-8 leading-relaxed font-light"
+                        data-t="footer_desc"
+                    >
                         Elevating Professional Communication since 2020.
                         Berbasis di Semarang untuk dunia global.
                     </p>
                 </div>
                 <div>
                     <h4
-                        class="font-bold text-slate-900 mb-8 uppercase tracking-[0.2em] text-[10px]"
+                        class="font-bold text-slate-900 mb-6"
+                        data-t="footer_nav_title"
                     >
                         Navigasi
                     </h4>
-                    <div class="space-y-4 font-medium text-slate-500 text-sm">
-                        <a
-                            href="#hero"
-                            class="block hover:text-rose-500 transition-colors"
-                            >Tentang Kami</a
-                        >
-                        <a
-                            href="#metode"
-                            class="block hover:text-rose-500 transition-colors"
-                            >Metodologi Belajar</a
-                        >
-                        <a
-                            href="#testimoni"
-                            class="block hover:text-rose-500 transition-colors"
-                            >Kisah Sukses</a
-                        >
-                    </div>
+                    <ul class="space-y-4 text-slate-500 font-light">
+                        <li>
+                            <a
+                                href="#about"
+                                class="hover:text-rose-500 transition-colors"
+                                data-t="footer_about">Tentang Kami</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                href="#approach"
+                                class="hover:text-rose-500 transition-colors"
+                                data-t="footer_method">Metodologi Belajar</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                href="#testimonials"
+                                class="hover:text-rose-500 transition-colors"
+                                data-t="footer_success">Kisah Sukses</a
+                            >
+                        </li>
+                    </ul>
                 </div>
                 <div>
                     <h4
@@ -1307,7 +1495,8 @@ import Layout from "../layouts/Layout.astro";
             </div>
             <div class="pt-10 border-t border-slate-50 flex justify-center">
                 <p
-                    class="text-slate-300 text-[10px] font-bold uppercase tracking-[0.4em]"
+                    class="text-slate-400 text-sm font-light"
+                    data-t="footer_rights"
                 >
                     © 2025 Enggroho English Mastery. All Rights Reserved.
                 </p>
@@ -1322,4 +1511,57 @@ import Layout from "../layouts/Layout.astro";
         style="width: 0%"
     >
     </div>
+    <!-- Language Toggle Mobile Floating -->
+    <div class="md:hidden fixed top-24 right-6 z-[60]">
+        <button
+            id="lang-toggle-mobile"
+            class="w-12 h-12 rounded-full bg-white/90 backdrop-blur-md border border-slate-200 shadow-lg flex items-center justify-center text-xs font-bold text-slate-900 transition-all active:scale-95 shadow-rose-200"
+            >EN</button
+        >
+    </div>
+
+    <script is:inline define:vars={{ translations }}>
+        function updateLanguage(lang) {
+            const nextLang = lang === "id" ? "en" : "id";
+            const label = lang === "id" ? "EN" : "ID";
+
+            const t = translations[lang];
+            if (!t) return;
+
+            document.querySelectorAll("[data-t]").forEach((el) => {
+                const key = el.getAttribute("data-t");
+                if (t[key]) {
+                    el.innerHTML = t[key];
+                }
+            });
+
+            // Update toggle label
+            const btnDesktop = document.getElementById("lang-toggle-desktop");
+            const btnMobile = document.getElementById("lang-toggle-mobile");
+            if (btnDesktop) btnDesktop.innerText = label;
+            if (btnMobile) btnMobile.innerText = label;
+
+            localStorage.setItem("language", lang);
+            document.documentElement.lang = lang;
+        }
+
+        // Initialize language
+        document.addEventListener("DOMContentLoaded", () => {
+            let currentLang = localStorage.getItem("language") || "id";
+            updateLanguage(currentLang);
+
+            const toggles = [
+                document.getElementById("lang-toggle-desktop"),
+                document.getElementById("lang-toggle-mobile"),
+            ];
+
+            toggles.forEach((btn) => {
+                if (btn)
+                    btn.addEventListener("click", () => {
+                        currentLang = currentLang === "id" ? "en" : "id";
+                        updateLanguage(currentLang);
+                    });
+            });
+        });
+    </script>
 </Layout>

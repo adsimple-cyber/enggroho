@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { translations } from "../utils/translations";
 
 interface Props {
 	title?: string;
@@ -124,28 +125,6 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 					});
 				}
 				// Social Proof Notification
-				const socialProofs = [
-					"Budi dari Jakarta baru saja booking konsultasi",
-					"Santi dari Surabaya baru saja join kelas privat",
-					"Andi mendownload modul kurikulum personal",
-					"Rina dari Bandung baru saja menyelesaikan tes level",
-					"Dimas dari Medan sedang konsultasi dengan Agung",
-					"Lina baru saja mendapatkan sertifikat English Mastery",
-					"Fajar dari Semarang mendaftar kelas Speaking Intensif",
-					"Maya dari Denpasar baru saja booking slot jadwal",
-					"Hendra dari Jogja join sebagai alumni aktif",
-					"Dewi sedang diskusi materi Business Writing",
-					"Adi dari Makassar baru saja tes level gratis",
-					"Novi baru saja join di grup belajar privat",
-					"Yanto dari Solo baru saja konsultasi via WhatsApp",
-					"Eka dari Balikpapan mendownload progress report",
-					"Rully baru saja booking sesi 1-on-1 malam ini",
-					"Ika dari Malang mendaftar paket 3 bulan",
-					"Dedi dari Palembang baru saja join kelas pagi",
-					"Putri dari Manado sedang tes penempatan level",
-					"Galih baru saja booking konsultasi pertama",
-					"Wulan dari Lampung join kelas profesional",
-				];
 
 				const notification =
 					document.getElementById("social-proof-toast");
@@ -153,10 +132,13 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 
 				if (notification && proofTarget) {
 					function showRandomProof() {
+						const currentLang =
+							localStorage.getItem("language") || "id";
+						const proofs = translations[currentLang].social_proofs;
 						const randomIdx = Math.floor(
-							Math.random() * socialProofs.length,
+							Math.random() * proofs.length,
 						);
-						proofTarget.innerText = socialProofs[randomIdx];
+						proofTarget.innerText = proofs[randomIdx];
 						notification.classList.remove(
 							"translate-x-[-150%]",
 							"opacity-0",
@@ -291,7 +273,10 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 					class="text-xs font-bold text-slate-800 leading-tight"
 				>
 				</p>
-				<p class="text-[10px] text-slate-400 mt-1 font-medium italic">
+				<p
+					class="text-[10px] text-slate-400 mt-1 font-medium italic"
+					data-t="just_now"
+				>
 					Baru saja dilakukan
 				</p>
 			</div>

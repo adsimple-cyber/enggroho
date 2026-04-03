@@ -150,6 +150,11 @@ h4,
     -webkit-text-fill-color: transparent;
 }
 
+.italic {
+    padding-right: 0.15em;
+    margin-right: -0.15em;
+}
+
 /* Step Timeline Animation */
 .step-item.completed .step-circle {
     background: linear-gradient(135deg, #FF3366 0%, #FF6B3D 100%);
