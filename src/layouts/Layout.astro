@@ -260,21 +260,21 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 		<!-- Social Proof Toast -->
 		<div
 			id="social-proof-toast"
-			class="fixed bottom-32 left-6 right-6 md:left-8 md:right-auto md:w-80 bg-white/90 backdrop-blur-xl border border-slate-100 p-4 rounded-2xl shadow-xl z-[98] transition-all duration-700 translate-x-[-150%] opacity-0 flex items-center gap-4"
+			class="fixed bottom-32 left-6 right-6 md:left-8 md:right-auto md:w-80 bg-cream/95 backdrop-blur-xl border border-secondary/10 p-4 rounded-2xl shadow-xl z-[98] transition-all duration-700 translate-x-[-150%] opacity-0 flex items-center gap-4"
 		>
 			<div
-				class="w-10 h-10 bg-rose-500 rounded-full flex items-center justify-center text-white shrink-0 shadow-lg shadow-rose-200"
+				class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white shrink-0 shadow-lg shadow-primary/20"
 			>
 				<i class="fas fa-bell animate-pulse"></i>
 			</div>
 			<div>
 				<p
 					id="proof-text"
-					class="text-xs font-bold text-slate-800 leading-tight"
+					class="text-xs font-bold text-secondary leading-tight"
 				>
 				</p>
 				<p
-					class="text-[10px] text-slate-400 mt-1 font-medium italic"
+					class="text-[10px] text-secondary/60 mt-1 font-medium italic"
 					data-t="just_now"
 				>
 					Baru saja dilakukan
@@ -290,82 +290,112 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 
 		<!-- Mobile Bottom Navbar -->
 		<nav
-			class="md:hidden fixed bottom-6 left-6 right-6 bg-slate-900/95 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-2 px-6 z-[99] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-around h-16"
+			class="md:hidden fixed bottom-6 left-6 right-6 bg-secondary/95 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-2 px-6 z-[99] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-around h-16"
 		>
+			<div id="mobile-indicator" class="mobile-indicator"></div>
+			
 			<a
 				href="#hero"
-				class="flex flex-col items-center gap-1.5 p-2 transition-all active:scale-90 opacity-50"
+				class="mobile-nav-link flex flex-col items-center gap-1 p-2 transition-all relative z-10"
+				data-section="hero"
 			>
-				<div class="nav-icon-wrapper">
-					<i class="fas fa-home text-white/40 text-base"></i>
-				</div>
-				<span
-					class="text-[9px] text-white/40 font-bold uppercase tracking-tight leading-none"
-					>Home</span
-				>
+				<i class="fas fa-home text-white/40 text-sm"></i>
+				<span class="text-[9px] text-white/40 font-bold uppercase tracking-tight">Home</span>
 			</a>
 			<a
 				href="#metode"
-				class="flex flex-col items-center gap-1.5 p-2 transition-all active:scale-90 opacity-50"
+				class="mobile-nav-link flex flex-col items-center gap-1 p-2 transition-all relative z-10"
+				data-section="metode"
 			>
-				<div class="nav-icon-wrapper">
-					<i class="fas fa-bullseye text-white/40 text-base"></i>
-				</div>
-				<span
-					class="text-[9px] text-white/40 font-bold uppercase tracking-tight leading-none"
-					>Alur</span
-				>
+				<i class="fas fa-bullseye text-white/40 text-sm"></i>
+				<span class="text-[9px] text-white/40 font-bold uppercase tracking-tight">Alur</span>
 			</a>
 			<a
 				href="#fitur"
-				class="flex flex-col items-center gap-1.5 p-2 transition-all active:scale-90 opacity-50"
+				class="mobile-nav-link flex flex-col items-center gap-1 p-2 transition-all relative z-10"
+				data-section="fitur"
 			>
-				<div class="nav-icon-wrapper">
-					<i class="fas fa-rocket text-white/40 text-base"></i>
-				</div>
-				<span
-					class="text-[9px] text-white/40 font-bold uppercase tracking-tight leading-none"
-					>Fitur</span
-				>
+				<i class="fas fa-rocket text-white/40 text-sm"></i>
+				<span class="text-[9px] text-white/40 font-bold uppercase tracking-tight">Fitur</span>
 			</a>
 			<a
 				href="#testimonials"
-				class="flex flex-col items-center gap-1.5 p-2 transition-all active:scale-90 opacity-50"
+				class="mobile-nav-link flex flex-col items-center gap-1 p-2 transition-all relative z-10"
+				data-section="testimonials"
 			>
-				<div class="nav-icon-wrapper">
-					<i class="fas fa-comment-dots text-white/40 text-base"></i>
-				</div>
-				<span
-					class="text-[9px] text-white/40 font-bold uppercase tracking-tight leading-none"
-					>Testi</span
-				>
+				<i class="fas fa-comment-dots text-white/40 text-sm"></i>
+				<span class="text-[9px] text-white/40 font-bold uppercase tracking-tight">Testi</span>
 			</a>
 		</nav>
 
 		<style is:global>
-			.nav-icon-wrapper {
-				width: auto;
-				height: auto;
-				background: transparent;
-				border-radius: 9999px;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-				margin-top: 0;
+			.mobile-indicator {
+				position: absolute;
+				width: 44px;
+				height: 44px;
+				background: #FF6D1F;
+				border-radius: 50%;
+				z-index: 0;
+				transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+				box-shadow: 0 8px 20px rgba(255, 109, 31, 0.4);
+				top: 50%;
+				transform: translateY(-50%);
 			}
-			.nav-active-circle {
-				width: 3rem !important;
-				height: 3rem !important;
-				background-color: #f43f5e !important; /* rose-500 */
-				margin-top: -2.5rem !important;
-				box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.5) !important;
-				border: 4px solid #0f172a !important; /* slate-900 */
-			}
-			.active-icon {
+
+			.mobile-nav-link.active i,
+			.mobile-nav-link.active span {
 				color: white !important;
-				font-size: 1.125rem !important;
+				opacity: 1 !important;
+			}
+
+			.mobile-nav-link.active i {
+				transform: scale(1.1);
+			}
+
+			/* Script to handle mobile nav */
+			@media (max-width: 768px) {
+				.mobile-nav-link {
+					width: 50px;
+					justify-content: center;
+				}
 			}
 		</style>
+
+		<script is:inline>
+			document.addEventListener("DOMContentLoaded", () => {
+				const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+				const indicator = document.getElementById('mobile-indicator');
+				const sections = ['hero', 'metode', 'fitur', 'testimonials'];
+
+				function updateMobileNav() {
+					let currentSection = 'hero';
+					const scrollPos = window.scrollY + 200;
+
+					sections.forEach(id => {
+						const el = document.getElementById(id);
+						if (el && scrollPos >= el.offsetTop) {
+							currentSection = id;
+						}
+					});
+
+					mobileLinks.forEach(link => {
+						const sectionId = link.getAttribute('data-section');
+						if (sectionId === currentSection) {
+							link.classList.add('active');
+							// Move indicator
+							const rect = link.getBoundingClientRect();
+							const navRect = link.parentElement.getBoundingClientRect();
+							indicator.style.left = (link.offsetLeft + (link.offsetWidth / 2) - 22) + 'px';
+						} else {
+							link.classList.remove('active');
+						}
+					});
+				}
+
+				window.addEventListener('scroll', updateMobileNav);
+				window.addEventListener('resize', updateMobileNav);
+				updateMobileNav();
+			});
+		</script>
 	</body>
 </html>
