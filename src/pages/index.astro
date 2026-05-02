@@ -354,7 +354,11 @@ import { translations, testimonials } from "../utils/translations";
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" data-aos="fade-left">
                     {[1, 2, 3, 4, 5, 6, 7].map((num) => (
-                        <div class="glass-card p-6 border border-secondary/5 hover:border-primary/20 transition-all">
+                        <div 
+                            class={`glass-card p-6 border border-secondary/5 hover:border-primary/20 transition-all ${
+                                num === 7 ? "sm:col-span-2 sm:max-w-[calc(50%-12px)] sm:mx-auto w-full" : ""
+                            }`}
+                        >
                             <div class="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-primary mb-4">
                                 <i class={`fas ${num === 1 ? 'fa-video' : num === 2 ? 'fa-calendar-alt' : num === 3 ? 'fa-headset' : num === 4 ? 'fa-certificate' : num === 5 ? 'fa-briefcase' : num === 6 ? 'fa-user-tie' : 'fa-chart-line'}`}></i>
                             </div>
