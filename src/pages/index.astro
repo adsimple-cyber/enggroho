@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { translations } from "../utils/translations";
+import { translations, testimonials } from "../utils/translations";
 ---
 
 <Layout>
@@ -14,7 +14,7 @@ import { translations } from "../utils/translations";
                 href="#"
                 class="flex items-center"
             >
-                <svg width="180" height="54" viewBox="0 0 600 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="h-12 md:h-14 w-auto" viewBox="0 0 600 180" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g transform="translate(60, 20)">
                         <text x="0" y="80" fill="#222222" style="font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 85px; letter-spacing: -2.5px;">Enggr</text>
                         <g transform="translate(232, 42)">
@@ -70,7 +70,7 @@ import { translations } from "../utils/translations";
             </div>
 
             <!-- Call to Action -->
-            <div class="flex items-center space-x-6">
+            <div class="flex items-center space-x-3 md:space-x-6">
                 <!-- Language Toggle Desktop -->
                 <div class="hidden lg:flex" id="lang-toggle-container">
                     <button
@@ -81,10 +81,10 @@ import { translations } from "../utils/translations";
                 </div>
                 <a
                     href="https://wa.me/6287736696629?text=Halo%20saya%20ingin%20bertanya%20terkait%20Enggroho"
-                    class="btn-primary text-white px-8 py-3.5 rounded-2xl font-bold text-sm shadow-xl"
+                    class="btn-primary text-white px-5 md:px-8 py-3 md:py-3.5 rounded-2xl font-bold text-xs md:text-sm shadow-xl whitespace-nowrap"
                     data-t="nav_cta"
                 >
-                    Kelas Gratis
+                    Konsultasi Gratis
                 </a>
             </div>
         </div>
@@ -93,7 +93,7 @@ import { translations } from "../utils/translations";
     <!-- Hero Section -->
     <section
         id="hero"
-        class="relative min-h-[90vh] flex items-center pt-32 md:pt-20 px-6 overflow-hidden"
+        class="relative flex items-center pt-48 pb-24 px-6 overflow-hidden"
     >
         <div class="blob-bg -top-24 -right-24"></div>
         <div class="blob-bg -bottom-48 -left-24 opacity-60"></div>
@@ -103,7 +103,7 @@ import { translations } from "../utils/translations";
         >
             <div class="relative z-10" data-aos="fade-right">
                 <div
-                    class="inline-flex items-center space-x-3 mb-8 px-4 py-2 bg-cream rounded-2xl border border-accent"
+                    class="inline-flex items-center space-x-3 mb-8 px-5 py-2.5 bg-cream rounded-2xl border border-accent"
                 >
                     <span class="relative flex h-2 w-2">
                         <span
@@ -139,48 +139,55 @@ import { translations } from "../utils/translations";
                     > di kancah internasional.
                 </p>
 
-                <div class="flex flex-col sm:flex-row items-center gap-8">
+                <div class="flex flex-col sm:flex-row items-center gap-6 mb-10">
                     <a
                         href="https://wa.me/6287736696629?text=Halo%20saya%20ingin%20bertanya%20terkait%20Enggroho"
-                        class="btn-primary text-white px-12 py-5 rounded-3xl font-bold text-center text-lg w-full sm:w-auto"
+                        class="btn-primary text-white px-10 py-4.5 rounded-3xl font-bold text-center text-lg w-full sm:w-auto shadow-2xl shadow-primary/20"
                         data-t="hero_cta"
                     >
                         Mulai Perjalanan Anda
                     </a>
+                    <a
+                        href="https://calendly.com/enggroho/linkdln-session-career-talk"
+                        class="glass-card px-10 py-4.5 rounded-3xl font-bold text-center text-lg w-full sm:w-auto text-secondary hover:bg-white hover:shadow-lg transition-all border-2 border-primary/20"
+                        data-t="hero_calendly"
+                    >
+                        Jadwalkan Pertemuan
+                    </a>
+                </div>
 
-                    <div class="flex items-center space-x-4">
-                        <div class="flex -space-x-3">
-                            <img
-                                src="https://i.pravatar.cc/150?u=a1"
-                                class="w-11 h-11 rounded-full border-2 border-accent shadow-md"
-                                alt="User"
-                            />
-                            <img
-                                src="https://i.pravatar.cc/150?u=a2"
-                                class="w-11 h-11 rounded-full border-2 border-accent shadow-md"
-                                alt="User"
-                            />
-                            <img
-                                src="https://i.pravatar.cc/150?u=a3"
-                                class="w-11 h-11 rounded-full border-2 border-accent shadow-md"
-                                alt="User"
-                            />
-                            <div
-                                class="w-11 h-11 rounded-full border-2 border-accent bg-primary text-white flex items-center justify-center text-[10px] font-black shadow-md"
-                            >
-                                20+
-                            </div>
-                        </div>
-                        <p
-                            class="text-xs font-medium text-secondary leading-tight"
-                            data-t="hero_trust"
+                <div class="flex items-center space-x-4">
+                    <div class="flex -space-x-3">
+                        <img
+                            src="https://i.pravatar.cc/150?u=a1"
+                            class="w-11 h-11 rounded-full border-2 border-accent shadow-md"
+                            alt="User"
+                        />
+                        <img
+                            src="https://i.pravatar.cc/150?u=a2"
+                            class="w-11 h-11 rounded-full border-2 border-accent shadow-md"
+                            alt="User"
+                        />
+                        <img
+                            src="https://i.pravatar.cc/150?u=a3"
+                            class="w-11 h-11 rounded-full border-2 border-accent shadow-md"
+                            alt="User"
+                        />
+                        <div
+                            class="w-11 h-11 rounded-full border-2 border-accent bg-primary text-white flex items-center justify-center text-[10px] font-black shadow-md"
                         >
-                            Dipercaya oleh para<br /><span
-                                class="text-secondary font-bold"
-                                >Professionals</span
-                            >
-                        </p>
+                            50+
+                        </div>
                     </div>
+                    <p
+                        class="text-xs font-medium text-secondary leading-tight"
+                        data-t="hero_trust"
+                    >
+                        Dipercaya oleh para<br /><span
+                            class="text-secondary font-bold"
+                            >Professionals</span
+                        >
+                    </p>
                 </div>
             </div>
 
@@ -237,12 +244,13 @@ import { translations } from "../utils/translations";
     <section id="approach" class="pt-32 pb-16 px-6 bg-cream overflow-hidden">
         <div class="max-w-7xl mx-auto">
             <div
-                class="flex flex-col items-center text-center mb-24"
+                class="flex flex-col items-center text-center mb-16"
                 data-aos="fade-up"
             >
                 <span
                     class="text-secondary font-bold text-xs uppercase tracking-[0.3em] mb-6 px-4 py-1.5 rounded-full bg-accent"
-                    data-t="section_approach_badge">OUR CREATIVE APPROACH</span
+                    data-t="section_approach_badge"
+                    >OUR CREATIVE APPROACH</span
                 >
                 <h2
                     class="text-4xl md:text-5xl font-extrabold text-secondary tracking-tight"
@@ -331,8 +339,36 @@ import { translations } from "../utils/translations";
         </div>
     </section>
 
+    <!-- Why Section -->
+    <section id="why" class="py-24 px-6 bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-20 items-center mb-16">
+                <div data-aos="fade-right">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-secondary mb-8 tracking-tight" data-t="section_why_title">KENAPA ENGGROHO?</h2>
+                    <p class="text-xl font-bold text-primary mb-6" data-t="section_why_subtitle">Bukan Sekadar Kursus Bahasa Inggris Biasa</p>
+                    <div class="space-y-6 text-secondary font-light leading-relaxed">
+                        <p data-t="why_main_desc">Enggroho adalah kursus bahasa Inggris privat utama...</p>
+                        <p data-t="why_extra_desc1">Tidak seperti kursus bahasa tradisional...</p>
+                        <p data-t="why_extra_desc2">Dengan sesi online satu lawan satu...</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" data-aos="fade-left">
+                    {[1, 2, 3, 4, 5, 6, 7].map((num) => (
+                        <div class="glass-card p-6 border border-secondary/5 hover:border-primary/20 transition-all">
+                            <div class="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-primary mb-4">
+                                <i class={`fas ${num === 1 ? 'fa-video' : num === 2 ? 'fa-calendar-alt' : num === 3 ? 'fa-headset' : num === 4 ? 'fa-certificate' : num === 5 ? 'fa-briefcase' : num === 6 ? 'fa-user-tie' : 'fa-chart-line'}`}></i>
+                            </div>
+                            <h4 class="font-bold text-secondary mb-2" data-t={`why_feat${num}_title`}>Feature {num}</h4>
+                            <p class="text-xs text-secondary/70 font-light" data-t={`why_feat${num}_desc`}>Description {num}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Stats / Impact Section -->
-    <section class="pt-0 pb-32 px-6 bg-cream overflow-hidden">
+    <section class="pt-8 pb-24 px-6 bg-cream overflow-hidden">
         <div class="max-w-7xl mx-auto">
             <div
                 class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
@@ -341,6 +377,7 @@ import { translations } from "../utils/translations";
                 <div class="text-center p-8 glass-card">
                     <p
                         class="text-4xl md:text-5xl font-extrabold text-primary mb-3 font-heading"
+                        data-t="stats_alumni_val"
                     >
                         50+
                     </p>
@@ -354,6 +391,7 @@ import { translations } from "../utils/translations";
                 <div class="text-center p-8 glass-card">
                     <p
                         class="text-4xl md:text-5xl font-extrabold text-secondary mb-3 font-heading"
+                        data-t="stats_experience_val"
                     >
                         5+
                     </p>
@@ -367,6 +405,7 @@ import { translations } from "../utils/translations";
                 <div class="text-center p-8 glass-card">
                     <p
                         class="text-4xl md:text-5xl font-extrabold text-primary mb-3 font-heading"
+                        data-t="stats_satisfaction_val"
                     >
                         98%
                     </p>
@@ -380,6 +419,7 @@ import { translations } from "../utils/translations";
                 <div class="text-center p-8 glass-card">
                     <p
                         class="text-4xl md:text-5xl font-extrabold text-secondary mb-3 font-heading"
+                        data-t="stats_industries_val"
                     >
                         15+
                     </p>
@@ -395,30 +435,31 @@ import { translations } from "../utils/translations";
     </section>
 
     <!-- How It Works Section -->
-    <section class="py-32 px-6 bg-cream overflow-hidden" id="metode">
+    <section class="py-24 px-6 bg-cream overflow-hidden" id="metode">
         <div class="max-w-5xl mx-auto">
-            <div
-                class="flex flex-col items-center text-center mb-24"
-                data-aos="fade-up"
-            >
-                <span
-                    class="text-primary font-bold text-xs uppercase tracking-[0.3em] mb-6 px-4 py-1.5 rounded-full bg-accent"
-                    data-t="section_how_badge">How It Works</span
+                <div
+                    class="flex flex-col items-center text-center mb-16"
+                    data-aos="fade-up"
                 >
-                <h2
-                    class="text-4xl md:text-5xl font-extrabold text-secondary tracking-tight"
-                    data-t="section_how_title"
-                >
-                    Alur Belajar di Enggroho
-                </h2>
-                <p
-                    class="text-secondary mt-6 text-lg max-w-2xl font-light"
-                    data-t="section_how_desc"
-                >
-                    Dari nol hingga mahir, kami mendampingi setiap langkah
-                    perjalanan Anda menuju komunikasi profesional.
-                </p>
-            </div>
+                    <span
+                        class="text-primary font-bold text-xs uppercase tracking-[0.3em] mb-6 px-4 py-1.5 rounded-full bg-accent"
+                        data-t="section_how_badge">HOW IT WORKS</span
+                    >
+                    <h2
+                        class="text-4xl md:text-5xl font-extrabold text-secondary tracking-tight"
+                        data-t="section_how_title"
+                    >
+                        Alur Belajar di Enggroho
+                    </h2>
+                    <p
+                        class="text-secondary mt-6 text-lg max-w-2xl font-light leading-relaxed"
+                        data-t="section_how_desc"
+                    >
+                        Dari proficiency sekarang hingga mahir, kami mendampingi
+                        setiap langkah perjalanan Anda menuju komunikasi
+                        profesional.
+                    </p>
+                </div>
 
             <div class="relative">
                 <!-- Vertical Timeline Line -->
@@ -427,7 +468,7 @@ import { translations } from "../utils/translations";
                 >
                 </div>
                 <div
-                    class="absolute left-8 md:left-1/2 md:-translate-x-1/2 top-0 w-[3px] bg-gradient-to-b from-primary to-rose-300 z-[1] timeline-progress"
+                    class="absolute left-8 md:left-1/2 md:-translate-x-1/2 top-0 w-[3px] bg-gradient-to-b from-primary to-primary/30 z-[1] timeline-progress"
                     style="height: 0%"
                 >
                 </div>
@@ -451,7 +492,7 @@ import { translations } from "../utils/translations";
                     </div>
                     <div class="ml-28 md:ml-0 md:w-[42%] md:pr-16">
                         <span
-                            class="text-[10px] uppercase font-bold tracking-widest text-rose-400 mb-2 block"
+                            class="text-[10px] uppercase font-bold tracking-widest text-primary mb-2 block"
                             data-t="step1_badge">Langkah Pertama</span
                         >
                         <h3
@@ -465,7 +506,7 @@ import { translations } from "../utils/translations";
                             data-t="step1_desc"
                         >
                             Kami mendengarkan kebutuhan, tantangan, dan tujuan
-                            karier Anda secara menyeluruh. Sesi ini gratis tanpa
+                            karir Anda secara menyeluruh. Sesi ini gratis tanpa
                             komitmen apapun.
                         </p>
                     </div>
@@ -488,24 +529,25 @@ import { translations } from "../utils/translations";
                             ></i>
                         </div>
                     </div>
-                    <div class="ml-28 md:ml-0 md:w-[42%] md:pl-16 md:text-left">
+                    <div class="ml-28 md:ml-auto md:w-[42%] md:pl-16">
                         <span
-                            class="text-[10px] uppercase font-bold tracking-widest text-rose-400 mb-2 block"
+                            class="text-[10px] uppercase font-bold tracking-widest text-primary mb-2 block text-left"
                             data-t="step2_badge">Langkah Kedua</span
                         >
                         <h3
-                            class="text-2xl font-bold mb-4 tracking-tight text-secondary"
+                            class="text-2xl font-bold mb-4 tracking-tight text-secondary text-left"
                             data-t="step2_title"
                         >
                             Kurikulum Personal
                         </h3>
                         <p
-                            class="text-secondary font-light leading-relaxed"
+                            class="text-secondary font-light leading-relaxed text-left"
                             data-t="step2_desc"
                         >
                             Materi disusun khusus berdasarkan industri dan
                             kebutuhan profesional Anda. Tidak ada kurikulum
-                            template — semuanya tailor-made.
+                            template, semuanya tailor-made yang bertumpu pada
+                            proficiency sekarang.
                         </p>
                     </div>
                 </div>
@@ -591,7 +633,7 @@ import { translations } from "../utils/translations";
     </section>
 
     <!-- Mentor Profile -->
-    <section id="about" class="py-32 px-6 bg-[#fafbff] overflow-hidden">
+    <section id="about" class="py-24 px-6 bg-[#fafbff] overflow-hidden">
         <div class="max-w-7xl mx-auto">
             <div class="grid lg:grid-cols-2 gap-20 items-center">
                 <div data-aos="fade-right">
@@ -773,232 +815,60 @@ import { translations } from "../utils/translations";
     </section>
 
     <!-- Bento Grid Section -->
-    <section id="fitur" class="py-32 px-6 bg-cream overflow-hidden">
+    <section id="fitur" class="py-24 px-6 bg-cream overflow-hidden">
         <div class="max-w-7xl mx-auto">
-            <div
-                class="flex flex-col items-center text-center mb-20"
-                data-aos="fade-up"
-            >
-                <span
-                    class="text-primary font-bold text-xs uppercase tracking-[0.3em] mb-6 px-4 py-1.5 rounded-full bg-accent"
-                    data-t="section_fitur_badge">Fitur Unggulan</span
-                >
-                <h2
-                    class="text-4xl md:text-5xl font-extrabold text-secondary tracking-tight"
-                    data-t="section_fitur_title"
-                >
-                    Semua yang Anda Butuhkan <span class="gradient-text italic"
-                        >Ada di Sini</span
-                    >
-                </h2>
+            <div class="mb-20 text-center" data-aos="fade-up">
+                <span class="text-primary font-bold text-xs uppercase tracking-[0.3em] mb-6 px-4 py-1.5 rounded-full bg-accent">PREMIUM FEATURES</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-secondary mt-4 tracking-tight" data-t="section_fitur_title">Semua yang Anda Butuhkan Ada di Sini</h2>
             </div>
 
-            <div
-                class="grid grid-cols-2 md:grid-cols-4 gap-5 auto-rows-[180px] md:auto-rows-[200px]"
-            >
-                <!-- Large card: span 2 cols, 2 rows -->
-                <div
-                    class="glass-card p-10 col-span-2 row-span-2 flex flex-col justify-end bg-gradient-to-br from-secondary via-secondary to-secondary border-none group hover:scale-[1.01]"
-                    data-aos="fade-up"
-                    data-aos-delay="100"
-                >
-                    <div
-                        class="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform"
-                    >
-                        <i class="fas fa-globe"></i>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Large Card -->
+                <div class="md:col-span-2 glass-card p-10 bg-gradient-to-br from-white to-accent/20 relative overflow-hidden group" data-aos="fade-right">
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 bg-primary text-white rounded-2xl flex items-center justify-center text-2xl mb-8 shadow-xl shadow-primary/20">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h3 class="text-3xl font-extrabold text-secondary mb-6 tracking-tight" data-t="fitur_card_large_title">Siap untuk Panggung Global</h3>
+                        <p class="text-secondary text-lg font-light leading-relaxed max-w-xl" data-t="fitur_card_large_desc">
+                            Bukan sekedar fasih, tapi mampu bersaing dan bernegosiasi di arena internasional dengan percaya diri penuh.
+                        </p>
                     </div>
-                    <h3
-                        class="text-2xl md:text-3xl font-bold text-white mb-3 tracking-tight"
-                        data-t="fitur_card_large_title"
-                    >
-                        Siap untuk Panggung Global
-                    </h3>
-                    <p
-                        class="text-secondary font-light leading-relaxed"
-                        data-t="fitur_card_large_desc"
-                    >
-                        Bukan sekadar fasih, tapi mampu bersaing dan
-                        bernegoisasi di arena internasional dengan percaya diri
-                        penuh.
-                    </p>
+                    <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl transition-transform group-hover:scale-110"></div>
                 </div>
 
-                <!-- Medium card -->
-                <div
-                    class="glass-card p-8 col-span-1 row-span-1 flex flex-col justify-between hover:border-accent"
-                    data-aos="fade-up"
-                    data-aos-delay="200"
-                >
-                    <div
-                        class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl"
-                    >
+                <!-- Regular Cards -->
+                <div class="glass-card p-8 group hover:border-primary/20 transition-all" data-aos="fade-left">
+                    <div class="w-12 h-12 bg-accent text-primary rounded-xl flex items-center justify-center text-xl mb-6">
                         <i class="fas fa-video"></i>
                     </div>
-                    <div>
-                        <h4
-                            class="font-bold text-secondary text-base"
-                            data-t="fitur_live_title"
-                        >
-                            Live Session
-                        </h4>
-                        <p
-                            class="text-xs text-secondary font-light mt-1"
-                            data-t="fitur_live_desc"
-                        >
-                            Sesi tatap muka real-time via Zoom
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Medium card -->
-                <div
-                    class="glass-card p-8 col-span-1 row-span-1 flex flex-col justify-between hover:border-accent"
-                    data-aos="fade-up"
-                    data-aos-delay="300"
-                >
-                    <div
-                        class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl"
+                    <h4
+                        class="font-bold text-secondary text-lg mb-2"
+                        data-t="fitur_writing_title"
                     >
-                        <i class="fas fa-book-open"></i>
-                    </div>
-                    <div>
-                        <h4
-                            class="font-bold text-secondary text-base"
-                            data-t="fitur_material_title"
-                        >
-                            Custom Material
-                        </h4>
-                        <p
-                            class="text-xs text-secondary font-light mt-1"
-                            data-t="fitur_material_desc"
-                        >
-                            Modul belajar sesuai industri Anda
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Wide card: span 2 cols -->
-                <div
-                    class="glass-card p-8 col-span-2 row-span-1 flex items-center gap-6 bg-gradient-to-r from-accent to-white hover:border-accent"
-                    data-aos="fade-up"
-                    data-aos-delay="400"
-                >
-                    <div
-                        class="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-lg shadow-primary/20"
+                        Business Writing Mastery
+                    </h4>
+                    <p
+                        class="text-sm text-secondary font-light"
+                        data-t="fitur_writing_desc"
                     >
-                        <i class="fas fa-comments"></i>
-                    </div>
-                    <div>
-                        <h4
-                            class="font-bold text-secondary text-lg mb-1"
-                            data-t="fitur_speaking_title"
-                        >
-                            Speaking Practice Intensif
-                        </h4>
-                        <p
-                            class="text-sm text-secondary font-light"
-                            data-t="fitur_speaking_desc"
-                        >
-                            Latihan berbicara langsung dengan mentor — fokus
-                            pronunciation, intonasi, dan confidence building
-                            dalam konteks kerja nyata.
-                        </p>
-                    </div>
+                        Kuasai teknik menulis email profesional, proposal
+                        bisnis, dan laporan dalam bahasa Inggris yang tajam
+                        dan berbobot.
+                    </p>
                 </div>
-
-                <!-- Small card -->
-                <div
-                    class="glass-card p-8 col-span-1 row-span-1 flex flex-col justify-between hover:border-accent"
-                    data-aos="fade-up"
-                    data-aos-delay="100"
-                >
-                    <div
-                        class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl"
-                    >
-                        <i class="fas fa-file-alt"></i>
-                    </div>
-                    <div>
-                        <h4
-                            class="font-bold text-secondary text-base"
-                            data-t="fitur_report_title"
-                        >
-                            Progress Report
-                        </h4>
-                        <p
-                            class="text-xs text-secondary font-light mt-1"
-                            data-t="fitur_report_desc"
-                        >
-                            Laporan kemajuan bulanan
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Small card -->
-                <div
-                    class="glass-card p-8 col-span-1 row-span-1 flex flex-col justify-between hover:border-accent"
-                    data-aos="fade-up"
-                    data-aos-delay="200"
-                >
-                    <div
-                        class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl"
-                    >
-                        <i class="fas fa-headphones"></i>
-                    </div>
-                    <div>
-                        <h4
-                            class="font-bold text-secondary text-base"
-                            data-t="fitur_listening_title"
-                        >
-                            Listening Drill
-                        </h4>
-                        <p
-                            class="text-xs text-secondary font-light mt-1"
-                            data-t="fitur_listening_desc"
-                        >
-                            Materi listening native accent
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Wide card: span 2 cols -->
-                <div
-                    class="glass-card p-8 col-span-2 row-span-1 flex items-center gap-6 bg-gradient-to-r from-cream to-white hover:border-accent"
-                    data-aos="fade-up"
-                    data-aos-delay="300"
-                >
-                    <div
-                        class="w-14 h-14 bg-secondary text-white rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-lg shadow-secondary"
-                    >
-                        <i class="fas fa-pen-fancy"></i>
-                    </div>
-                    <div>
-                        <h4
-                            class="font-bold text-secondary text-lg mb-1"
-                            data-t="fitur_writing_title"
-                        >
-                            Business Writing Mastery
-                        </h4>
-                        <p
-                            class="text-sm text-secondary font-light"
-                            data-t="fitur_writing_desc"
-                        >
-                            Kuasai teknik menulis email profesional, proposal
-                            bisnis, dan laporan dalam bahasa Inggris yang tajam
-                            dan berbobot.
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Benefits Section -->
-    <section id="benefits" class="py-32 px-6 bg-cream overflow-hidden">
+    <section id="benefits" class="py-24 px-6 bg-cream overflow-hidden">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col items-center text-center mb-20" data-aos="fade-up">
-                <span class="text-primary font-bold text-xs uppercase tracking-[0.3em] mb-6 px-4 py-1.5 rounded-full bg-accent">Value</span>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-secondary tracking-tight">
-                    Benefits
+                <span class="text-primary font-bold text-xs uppercase tracking-[0.3em] mb-6 px-5 py-2.5 rounded-full bg-accent" data-t="section_benefits_badge">MANFAAT UTAMA</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-secondary tracking-tight" data-t="section_benefits_title">
+                    Kenapa Anda Harus Bergabung?
                 </h2>
             </div>
             
@@ -1008,8 +878,8 @@ import { translations } from "../utils/translations";
                     <div class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl mb-6">
                         <i class="fas fa-globe-americas"></i>
                     </div>
-                    <p class="text-secondary font-medium leading-relaxed">
-                        Enhanced career prospects in multinational companies and international markets
+                    <p class="text-secondary font-medium leading-relaxed" data-t="benefit1">
+                        Peluang karir yang lebih baik di perusahaan multinasional dan pasar internasional.
                     </p>
                 </div>
                 <!-- Card 2 -->
@@ -1017,8 +887,8 @@ import { translations } from "../utils/translations";
                     <div class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl mb-6">
                         <i class="fas fa-comment-dots"></i>
                     </div>
-                    <p class="text-secondary font-medium leading-relaxed">
-                        Increased confidence in professional English communication
+                    <p class="text-secondary font-medium leading-relaxed" data-t="benefit2">
+                        Kepercayaan diri yang meningkat dalam komunikasi profesional bahasa Inggris.
                     </p>
                 </div>
                 <!-- Card 3 -->
@@ -1026,8 +896,8 @@ import { translations } from "../utils/translations";
                     <div class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl mb-6">
                         <i class="fas fa-laptop-house"></i>
                     </div>
-                    <p class="text-secondary font-medium leading-relaxed">
-                        Ability to work remotely for international companies
+                    <p class="text-secondary font-medium leading-relaxed" data-t="benefit3">
+                        Kemampuan untuk bekerja secara remote untuk perusahaan internasional.
                     </p>
                 </div>
                 <!-- Card 4 -->
@@ -1035,8 +905,8 @@ import { translations } from "../utils/translations";
                     <div class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl mb-6">
                         <i class="fas fa-handshake"></i>
                     </div>
-                    <p class="text-secondary font-medium leading-relaxed">
-                        Improved presentations, negotiations, and meeting participation skills
+                    <p class="text-secondary font-medium leading-relaxed" data-t="benefit4">
+                        Peningkatan keterampilan presentasi, negosiasi, dan partisipasi rapat.
                     </p>
                 </div>
                 <!-- Card 5 -->
@@ -1044,8 +914,8 @@ import { translations } from "../utils/translations";
                     <div class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl mb-6">
                         <i class="fas fa-lightbulb"></i>
                     </div>
-                    <p class="text-secondary font-medium leading-relaxed">
-                        Better understanding of international business communication nuances
+                    <p class="text-secondary font-medium leading-relaxed" data-t="benefit5">
+                        Pemahaman yang lebih baik tentang nuansa komunikasi bisnis internasional.
                     </p>
                 </div>
                 <!-- Card 6 -->
@@ -1053,8 +923,8 @@ import { translations } from "../utils/translations";
                     <div class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl mb-6">
                         <i class="fas fa-bolt"></i>
                     </div>
-                    <p class="text-secondary font-medium leading-relaxed">
-                        Practical English skills that can be immediately applied to your work
+                    <p class="text-secondary font-medium leading-relaxed" data-t="benefit6">
+                        Keterampilan bahasa Inggris praktis yang dapat segera diterapkan dalam pekerjaan Anda.
                     </p>
                 </div>
                 <!-- Card 7 -->
@@ -1062,8 +932,8 @@ import { translations } from "../utils/translations";
                     <div class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl mb-6">
                         <i class="fas fa-user-cog"></i>
                     </div>
-                    <p class="text-secondary font-medium leading-relaxed">
-                        Personalized attention to address your specific language challenges
+                    <p class="text-secondary font-medium leading-relaxed" data-t="benefit7">
+                        Perhatian personal untuk mengatasi tantangan bahasa spesifik Anda.
                     </p>
                 </div>
                 <!-- Card 8 -->
@@ -1071,8 +941,8 @@ import { translations } from "../utils/translations";
                     <div class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl mb-6">
                         <i class="fas fa-clock"></i>
                     </div>
-                    <p class="text-secondary font-medium leading-relaxed">
-                        Time-efficient learning with focused, targeted instruction
+                    <p class="text-secondary font-medium leading-relaxed" data-t="benefit8">
+                        Pembelajaran efisien waktu dengan instruksi yang terfokus dan tertarget.
                     </p>
                 </div>
                 <!-- Card 9 -->
@@ -1080,8 +950,8 @@ import { translations } from "../utils/translations";
                     <div class="w-12 h-12 bg-accent text-secondary rounded-2xl flex items-center justify-center text-xl mb-6">
                         <i class="fas fa-key"></i>
                     </div>
-                    <p class="text-secondary font-medium leading-relaxed">
-                        Access to industry-specific vocabulary and communication strategies
+                    <p class="text-secondary font-medium leading-relaxed" data-t="benefit9">
+                        Membangun personal branding yang kuat di mata klien dan partner global.
                     </p>
                 </div>
             </div>
@@ -1089,7 +959,7 @@ import { translations } from "../utils/translations";
     </section>
 
     <!-- Guarantee Section -->
-    <section id="guarantee" class="py-32 px-6 bg-[#fafbff] overflow-hidden">
+    <section id="guarantee" class="py-24 px-6 bg-[#fafbff] overflow-hidden">
         <div class="max-w-6xl mx-auto">
             <div class="glass-card p-12 md:p-16 relative overflow-hidden bg-cream/50 backdrop-blur-xl">
                 <!-- Decorational Blob -->
@@ -1101,23 +971,23 @@ import { translations } from "../utils/translations";
                         <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-accent text-secondary mb-6 shadow-lg shadow-amber-100 border border-amber-100">
                             <i class="fas fa-shield-alt text-4xl"></i>
                         </div>
-                        <h2 class="text-3xl md:text-4xl font-extrabold text-secondary tracking-tight mb-3">
-                            Our Guarantee
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-secondary tracking-tight mb-3" data-t="section_guarantee_title">
+                            Garansi Kepuasan
                         </h2>
-                        <h3 class="text-xl font-bold text-primary">
-                            Satisfaction Guarantee
+                        <h3 class="text-xl font-bold text-primary" data-t="section_guarantee_subtitle">
+                            Jaminan Progres
                         </h3>
                     </div>
                     
                     <div class="space-y-6 text-secondary font-light leading-relaxed border-l-0 md:border-l-[3px] border-accent pl-0 md:pl-12" data-aos="fade-left">
-                        <p>
-                            At Enggroho, we are committed to your success. We guarantee noticeable improvement in your English communication skills within the first <span class="font-bold text-secondary">5 sessions</span>, or we'll provide additional sessions at no extra cost until you see progress.
+                        <p data-t="section_guarantee_desc1">
+                            Di Enggroho, kami berkomitmen pada kesuksesan Anda. Kami menjamin peningkatan nyata dalam keterampilan komunikasi bahasa Inggris Anda dalam <span class="font-bold text-secondary">5 sesi</span> pertama, atau kami akan memberikan sesi tambahan tanpa biaya ekstra hingga Anda melihat kemajuan.
                         </p>
-                        <p>
-                            Our program is designed to deliver measurable results. Throughout your <span class="font-bold text-secondary">15-session journey</span>, you'll receive consistent feedback and progress reports to ensure you're on track to achieve your language goals.
+                        <p data-t="section_guarantee_desc2">
+                            Program kami dirancang untuk memberikan hasil terukur. Sepanjang <span class="font-bold text-secondary">perjalanan 15 sesi</span> Anda, Anda akan menerima feedback konsisten dan laporan kemajuan untuk memastikan Anda berada di jalur yang tepat untuk mencapai tujuan bahasa Anda.
                         </p>
-                        <p>
-                            We stand behind our teaching methodology and personalized approach, confident that our tailored program will help you achieve your professional English language objectives.
+                        <p data-t="section_guarantee_desc3">
+                            Kami berdiri di belakang metodologi pengajaran dan pendekatan personal kami, yakin bahwa program tailor-made kami akan membantu Anda mencapai tujuan bahasa Inggris profesional Anda.
                         </p>
                     </div>
                 </div>
@@ -1141,119 +1011,23 @@ import { translations } from "../utils/translations";
             </div>
 
             <div class="space-y-5" data-aos="fade-up" data-aos-delay="100">
-                <details class="glass-card p-8 group cursor-pointer" open>
-                    <summary
-                        class="flex items-center justify-between font-bold text-lg text-secondary list-none"
-                    >
-                        <span data-t="faq1_q"
-                            >Apakah saya harus punya dasar bahasa Inggris?</span
-                        >
-                        <i
-                            class="fas fa-chevron-down text-primary text-sm transition-transform group-open:rotate-180"
-                        ></i>
-                    </summary>
-                    <p
-                        class="text-secondary mt-5 font-light leading-relaxed"
-                        data-t="faq1_a"
-                    >
-                        Tidak harus! Enggroho menerima semua level, dari pemula
-                        hingga lanjutan. Kurikulum akan disesuaikan secara
-                        personal dengan kemampuan awal Anda, sehingga prosesnya
-                        nyaman dan tidak overwhelm.
-                    </p>
-                </details>
-
-                <details class="glass-card p-8 group cursor-pointer">
-                    <summary
-                        class="flex items-center justify-between font-bold text-lg text-secondary list-none"
-                    >
-                        <span data-t="faq2_q"
-                            >Berapa lama waktu yang dibutuhkan untuk bisa fasih?</span
-                        >
-                        <i
-                            class="fas fa-chevron-down text-primary text-sm transition-transform group-open:rotate-180"
-                        ></i>
-                    </summary>
-                    <p
-                        class="text-secondary mt-5 font-light leading-relaxed"
-                        data-t="faq2_a"
-                    >
-                        Tergantung intensitas dan konsistensi belajar. Rata-rata
-                        alumni kami mulai merasakan peningkatan signifikan dalam
-                        3 bulan pertama dengan sesi reguler 2-3 kali seminggu.
-                    </p>
-                </details>
-
-                <details class="glass-card p-8 group cursor-pointer">
-                    <summary
-                        class="flex items-center justify-between font-bold text-lg text-secondary list-none"
-                    >
-                        <span data-t="faq3_q"
-                            >Apakah tersedia kelas grup atau hanya privat?</span
-                        >
-                        <i
-                            class="fas fa-chevron-down text-primary text-sm transition-transform group-open:rotate-180"
-                        ></i>
-                    </summary>
-                    <p
-                        class="text-secondary mt-5 font-light leading-relaxed"
-                        data-t="faq3_a"
-                    >
-                        Kami menyediakan keduanya. Kelas privat 1-on-1 untuk
-                        fokus maksimal, dan kelas grup kecil (maks 5 orang)
-                        untuk simulasi percakapan profesional yang lebih
-                        dinamis.
-                    </p>
-                </details>
-
-                <details class="glass-card p-8 group cursor-pointer">
-                    <summary
-                        class="flex items-center justify-between font-bold text-lg text-secondary list-none"
-                    >
-                        <span data-t="faq4_q"
-                            >Bagaimana sistem pembayarannya?</span
-                        >
-                        <i
-                            class="fas fa-chevron-down text-primary text-sm transition-transform group-open:rotate-180"
-                        ></i>
-                    </summary>
-                    <p
-                        class="text-secondary mt-5 font-light leading-relaxed"
-                        data-t="faq4_a"
-                    >
-                        Kami menawarkan paket bulanan yang fleksibel. Silakan
-                        hubungi kami via WhatsApp untuk konsultasi gratis dan
-                        mendapatkan penawaran terbaik sesuai kebutuhan Anda.
-                    </p>
-                </details>
-
-                <details class="glass-card p-8 group cursor-pointer">
-                    <summary
-                        class="flex items-center justify-between font-bold text-lg text-secondary list-none"
-                    >
-                        <span data-t="faq5_q"
-                            >Apakah materi belajarnya cocok untuk profesi saya?</span
-                        >
-                        <i
-                            class="fas fa-chevron-down text-primary text-sm transition-transform group-open:rotate-180"
-                        ></i>
-                    </summary>
-                    <p
-                        class="text-secondary mt-5 font-light leading-relaxed"
-                        data-t="faq5_a"
-                    >
-                        Sangat cocok. Kami telah menangani profesional dari
-                        berbagai industri — IT, hukum, keuangan, healthcare,
-                        marketing, hingga HRD. Kurikulum selalu disesuaikan
-                        dengan konteks pekerjaan Anda.
-                    </p>
-                </details>
+                {[1, 2, 3, 4, 5, 6].map((num) => (
+                    <details class="glass-card p-8 group cursor-pointer">
+                        <summary class="flex items-center justify-between font-bold text-lg text-secondary list-none">
+                            <span data-t={`faq_q${num}`}>Question</span>
+                            <i class="fas fa-chevron-down text-primary text-sm transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <p class="text-secondary mt-5 font-light leading-relaxed" data-t={`faq_a${num}`}>
+                            Answer
+                        </p>
+                    </details>
+                ))}
             </div>
         </div>
     </section>
 
     <!-- Testimonials Slider -->
-    <section id="testimonials" class="py-32 px-6 bg-[#fafbff]">
+    <section id="testimonials" class="py-24 px-6 bg-[#fafbff]">
         <div class="max-w-7xl mx-auto">
             <div class="mb-20" data-aos="fade-right">
                 <h2
@@ -1273,151 +1047,84 @@ import { translations } from "../utils/translations";
                 </p>
             </div>
 
-            <div class="testimonial-slider gap-8" id="slider">
-                <div
-                    class="glass-card p-10 min-w-[320px] md:min-w-[450px] scroll-snap-align-start flex flex-col justify-between"
-                >
-                    <div>
-                        <div class="flex text-amber-400 mb-8 space-x-1 text-xs">
-                            <i class="fas fa-star"></i><i class="fas fa-star"
-                            ></i><i class="fas fa-star"></i><i
-                                class="fas fa-star"></i><i class="fas fa-star"
-                            ></i>
-                        </div>
-                        <p
-                            class="text-xl text-secondary leading-relaxed font-light italic mb-12"
-                            data-t="testi1_text"
+            <div class="relative group">
+                <div class="testimonial-slider gap-8 pb-12" id="slider">
+                    {testimonials.map((testi, index) => (
+                        <div
+                            class="glass-card p-8 w-full md:w-[calc(33.333%-1.34rem)] shrink-0 scroll-snap-align-start flex flex-col justify-between hover:scale-[1.02] transition-transform"
+                            data-aos="fade-up"
+                            data-aos-delay={index * 50}
                         >
-                            "Enggroho mengubah mindset saya. Sekarang meeting
-                            dengan board member luar negeri terasa seperti
-                            ngobrol biasa."
-                        </p>
-                    </div>
-                    <div class="flex items-center space-x-5">
-                        <div class="relative">
-                            <div
-                                class="absolute inset-0 bg-primary rounded-2xl rotate-6 -z-10 opacity-20"
-                            >
+                            <div>
+                                <div class="flex text-amber-400 mb-8 space-x-1 text-xs">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-lg text-secondary leading-relaxed font-light italic mb-6">
+                                    "{testi.text}"
+                                </p>
                             </div>
-                            <img
-                                src="https://i.pravatar.cc/150?u=user1"
-                                class="w-14 h-14 rounded-2xl object-cover"
-                                alt="Alumni"
-                            />
+                            <div class="flex items-center space-x-5">
+                                <div class="relative">
+                                    <div class={`absolute inset-0 ${index % 2 === 0 ? 'bg-primary' : 'bg-secondary'} rounded-2xl rotate-6 -z-10 opacity-20`}></div>
+                                    <img
+                                        src={testi.image}
+                                        class="w-14 h-14 rounded-2xl object-cover bg-accent"
+                                        alt={testi.name}
+                                        loading="lazy"
+                                    />
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-secondary tracking-tight text-lg">
+                                        {testi.name}
+                                    </h4>
+                                    <p class="text-secondary/60 text-xs font-medium">
+                                        {testi.role}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <h4
-                                class="font-bold text-secondary tracking-tight text-lg"
-                            >
-                                Ariawan Sanjaya
-                            </h4>
-                            <p
-                                class="text-secondary text-sm font-medium"
-                                data-t="section_testi_mentor"
-                            >
-                                Operation Director
-                            </p>
-                        </div>
-                    </div>
+                    ))}
                 </div>
 
-                <div
-                    class="glass-card p-10 min-w-[320px] md:min-w-[450px] scroll-snap-align-start flex flex-col justify-between"
+                <!-- Navigation Buttons -->
+                <button 
+                    id="prev-btn"
+                    class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 w-14 h-14 rounded-full bg-white shadow-xl flex items-center justify-center text-secondary hover:bg-primary hover:text-white transition-all z-20 hidden md:flex border border-accent"
+                    aria-label="Previous"
                 >
-                    <div>
-                        <div class="flex text-amber-400 mb-8 space-x-1 text-xs">
-                            <i class="fas fa-star"></i><i class="fas fa-star"
-                            ></i><i class="fas fa-star"></i><i
-                                class="fas fa-star"></i><i class="fas fa-star"
-                            ></i>
-                        </div>
-                        <p
-                            class="text-xl text-secondary leading-relaxed font-light italic mb-12"
-                            data-t="testi2_text"
-                        >
-                            "Metode Mas Agung sangat praktis. Fokus ke
-                            penggunaan profesional bukan sekadar teori sekolah."
-                        </p>
-                    </div>
-                    <div class="flex items-center space-x-5">
-                        <div class="relative">
-                            <div
-                                class="absolute inset-0 bg-secondary rounded-2xl rotate-6 -z-10 opacity-20"
-                            >
-                            </div>
-                            <img
-                                src="https://i.pravatar.cc/150?u=user2"
-                                class="w-14 h-14 rounded-2xl object-cover"
-                                alt="Alumni"
-                            />
-                        </div>
-                        <div>
-                            <h4
-                                class="font-bold text-secondary tracking-tight text-lg"
-                            >
-                                Dewi Larasati
-                            </h4>
-                            <p
-                                class="text-secondary text-sm font-medium"
-                                data-t="section_testi_mentor2"
-                            >
-                                IT Consultant
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button 
+                    id="next-btn"
+                    class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 w-14 h-14 rounded-full bg-white shadow-xl flex items-center justify-center text-secondary hover:bg-primary hover:text-white transition-all z-20 hidden md:flex border border-accent"
+                    aria-label="Next"
+                >
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
 
-                <div
-                    class="glass-card p-10 min-w-[320px] md:min-w-[450px] scroll-snap-align-start flex flex-col justify-between"
+            <!-- Scroll Indicator -->
+            <div class="flex justify-center gap-2 mt-4 md:hidden">
+                <div class="w-2 h-2 rounded-full bg-primary"></div>
+                <div class="w-2 h-2 rounded-full bg-accent"></div>
+                <div class="w-2 h-2 rounded-full bg-accent"></div>
+            </div>
+
+            <div class="mt-16 text-center">
+                <a
+                    href="https://drive.google.com/drive/folders/13cFbkxed-BDyzyy_i2lWJS-1hwyNlgRz?usp=drive_link"
+                    class="btn-primary text-white px-10 py-4.5 rounded-2xl font-bold inline-flex items-center gap-3 shadow-xl"
+                    data-t="testi_porto_btn"
                 >
-                    <div>
-                        <div class="flex text-amber-400 mb-8 space-x-1 text-xs">
-                            <i class="fas fa-star"></i><i class="fas fa-star"
-                            ></i><i class="fas fa-star"></i><i
-                                class="fas fa-star"></i><i class="fas fa-star"
-                            ></i>
-                        </div>
-                        <p
-                            class="text-xl text-secondary leading-relaxed font-light italic mb-12"
-                            data-t="testi3_text"
-                        >
-                            "Peningkatannya luar biasa cepat. Cocok banget buat
-                            yang sibuk tapi butuh hasil nyata."
-                        </p>
-                    </div>
-                    <div class="flex items-center space-x-5">
-                        <div class="relative">
-                            <div
-                                class="absolute inset-0 bg-primary rounded-2xl rotate-6 -z-10 opacity-20"
-                            >
-                            </div>
-                            <img
-                                src="https://i.pravatar.cc/150?u=user3"
-                                class="w-14 h-14 rounded-2xl object-cover"
-                                alt="Alumni"
-                            />
-                        </div>
-                        <div>
-                            <h4
-                                class="font-bold text-secondary tracking-tight text-lg"
-                            >
-                                Farhan Malik
-                            </h4>
-                            <p
-                                class="text-secondary text-sm font-medium"
-                                data-t="section_testi_mentor3"
-                            >
-                                HR Business Partner
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                    <i class="fas fa-folder-open"></i>
+                    Lihat Portfolio Alumni
+                </a>
             </div>
         </div>
     </section>
 
     <!-- Mentor Section -->
-    <section id="mentor" class="py-32 px-6 bg-cream overflow-hidden">
+    <section id="mentor" class="py-24 px-6 bg-cream overflow-hidden">
         <div class="max-w-7xl mx-auto">
             <div class="grid lg:grid-cols-2 gap-20 items-center">
                 <div class="relative" data-aos="fade-right">
@@ -1456,13 +1163,11 @@ import { translations } from "../utils/translations";
                 </div>
 
                 <div data-aos="fade-left">
+                    <span class="text-primary font-bold text-xs uppercase tracking-[0.3em] mb-6 inline-block px-4 py-1.5 rounded-full bg-accent" data-t="mentor_badge">Belajar Langsung dari Ahli Bahasa</span>
                     <h2
-                        class="text-4xl md:text-5xl font-extrabold text-secondary tracking-tight mb-8"
-                        data-t="section_mentor_title"
+                        class="text-4xl md:text-5xl font-extrabold text-secondary tracking-tight mb-8 mt-4"
                     >
-                        Belajar Langsung dari <span class="gradient-text"
-                            >Linguist</span
-                        >
+                        <span class="gradient-text" data-t="mentor_name">Agung Setyo Nugroho</span>
                     </h2>
                     <p
                         class="text-secondary text-lg leading-relaxed font-light mb-10"
@@ -1470,10 +1175,7 @@ import { translations } from "../utils/translations";
                     >
                         Dengan latar belakang akademis kuat dan jam terbang
                         tinggi sebagai interpreter profesional, Agung membawa
-                        perspektif unik di setiap kelas: <span
-                            class="text-secondary font-semibold italic"
-                            >English is a tool of power, not just words.</span
-                        >
+                        perspektif unik di setiap kelas: English is a tool of power, not just words.
                     </p>
 
                     <ul class="space-y-6">
@@ -1494,8 +1196,7 @@ import { translations } from "../utils/translations";
                                     class="text-sm text-secondary font-light"
                                     data-t="mentor_feat1_desc"
                                 >
-                                    Berpengalaman di bidang hukum dan medis
-                                    internasional.
+                                    Berpengalaman di ranah hukum dan medis tingkat internasional.
                                 </p>
                             </div>
                         </li>
@@ -1510,14 +1211,13 @@ import { translations } from "../utils/translations";
                                     class="font-bold text-secondary"
                                     data-t="mentor_feat2_title"
                                 >
-                                    Linguist Scholar
+                                    Ahli Bahasa
                                 </h4>
                                 <p
                                     class="text-sm text-secondary font-light"
                                     data-t="mentor_feat2_desc"
                                 >
-                                    Alumni Sastra Inggris UNNES spesialisasi
-                                    pola komunikasi manusia.
+                                    Alumni Sastra Inggris UNNES dengan spesialisasi linguistik.
                                 </p>
                             </div>
                         </li>
@@ -1528,7 +1228,7 @@ import { translations } from "../utils/translations";
     </section>
 
     <!-- Final CTA -->
-    <section class="py-32 px-6 relative">
+    <section class="py-24 px-6 relative">
         <div
             class="max-w-6xl mx-auto glass-card p-8 md:p-24 text-center bg-gradient-to-br from-white via-white to-accent border-accent/50"
         >
@@ -1547,13 +1247,22 @@ import { translations } from "../utils/translations";
                 Jadwalkan konsultasi gratis 15 menit dan temukan bagaimana kami
                 membantu Anda meraih karier impian.
             </p>
-            <a
-                href="https://wa.me/6287736696629?text=Halo%20saya%20ingin%20bertanya%20terkait%20Enggroho"
-                class="btn-primary text-white px-12 py-5 rounded-3xl font-bold text-lg shadow-2xl inline-block"
-                data-t="section_cta_btn"
-            >
-                Kirim Pesan Sekarang
-            </a>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <a
+                    href="https://wa.me/6287736696629?text=Halo%20saya%20ingin%20bertanya%20terkait%20Enggroho"
+                    class="btn-primary text-white px-12 py-5 rounded-3xl font-bold text-lg shadow-2xl w-full sm:w-auto"
+                    data-t="section_cta_btn"
+                >
+                    Kirim Pesan Sekarang
+                </a>
+                <a
+                    href="https://calendly.com/enggroho/linkdln-session-career-talk"
+                    class="glass-card px-12 py-5 rounded-3xl font-bold text-lg text-secondary hover:bg-white transition-all border-2 border-primary/20 w-full sm:w-auto"
+                    data-t="hero_calendly"
+                >
+                    Jadwalkan Pertemuan
+                </a>
+            </div>
         </div>
     </section>
 
@@ -1729,5 +1438,18 @@ import { translations } from "../utils/translations";
                     });
             });
         });
+        // Testimonial Slider Navigation
+        const slider = document.getElementById('slider');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        if (slider && prevBtn && nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                slider.scrollBy({ left: 500, behavior: 'smooth' });
+            });
+            prevBtn.addEventListener('click', () => {
+                slider.scrollBy({ left: -500, behavior: 'smooth' });
+            });
+        }
     </script>
 </Layout>
