@@ -1,0 +1,598 @@
+---
+import { readFileSync } from "fs";
+import { join } from "path";
+import { isValidToken, getTokenFromCookies } from "../../utils/auth";
+import { sections, richTextKeys } from "../../utils/cms-labels";
+
+const cookieHeader = Astro.request.headers.get("cookie") || "";
+const token = getTokenFromCookies(cookieHeader);
+if (!isValidToken(token)) {
+  return Astro.redirect("/admin");
+}
+
+// Path dari project root
+const CONTENT_PATH = join(process.cwd(), "src/data/content.json");
+let content: { id: Record<string, any>; en: Record<string, any> };
+try {
+  content = JSON.parse(readFileSync(CONTENT_PATH, "utf-8"));
+} catch {
+  content = { id: {}, en: {} };
+}
+if (!content.id) content.id = {};
+if (!content.en) content.en = {};
+
+const iconMap: Record<string, string> = {
+  compass: "🧭", star: "🦸", target: "🎯", chart: "📊", refresh: "🔄",
+  help: "❓", sparkle: "✨", trophy: "🏆", shield: "🛡", megaphone: "📣",
+  chat: "💬", star2: "⭐", user: "👨‍🏫", down: "🔻",
+};
+
+// Build list of all keys yang terdaftar di sections (untuk script client)
+const allKeys: string[] = [];
+const richTextKeyList: string[] = [];
+for (const section of sections) {
+  for (const group of section.groups) {
+    for (const field of group.fields) {
+      allKeys.push(field.key);
+      if (richTextKeys.has(field.key)) richTextKeyList.push(field.key);
+    }
+  }
+}
+
+// Normalize content: pastikan setiap key ada di kedua bahasa
+const normalizedContent = {
+  id: {} as Record<string, string>,
+  en: {} as Record<string, string>,
+};
+for (const key of allKeys) {
+  normalizedContent.id[key] = typeof content.id[key] === "string" ? content.id[key] : "";
+  normalizedContent.en[key] = typeof content.en[key] === "string" ? content.en[key] : "";
+}
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enggroho CMS - Dashboard</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --primary: #FF6D1F;
+        --primary-light: #fff3ee;
+        --bg: #f7f4f0;
+        --card: #ffffff;
+        --border: #e8e3de;
+        --border-strong: #d4cfc8;
+        --text: #1f1f1f;
+        --muted: #8a8278;
+        --success: #2f855a;
+        --success-bg: #d4edda;
+        --warning: #b7791f;
+        --warning-bg: #fff3cd;
+        --error: #c53030;
+        --error-bg: #fed7d7;
+      }
+      body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+      .header { background: white; border-bottom: 1px solid var(--border); padding: 0 28px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+      .header-left { display: flex; align-items: center; gap: 12px; }
+      .header-logo { font-size: 19px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+      .header-badge { background: var(--primary-light); color: var(--primary); font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px; }
+      .header-right { display: flex; align-items: center; gap: 10px; }
+      .btn-sm { padding: 8px 14px; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border-strong); background: white; color: var(--text); text-decoration: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+      .btn-sm:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+      .btn-sm.danger:hover { border-color: var(--error); color: var(--error); background: var(--error-bg); }
+      .layout { display: flex; min-height: calc(100vh - 64px); }
+      .sidebar { width: 240px; background: white; border-right: 1px solid var(--border); padding: 20px 0; position: sticky; top: 64px; height: calc(100vh - 64px); overflow-y: auto; flex-shrink: 0; }
+      .sidebar-title { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; padding: 0 20px 12px; }
+      .sidebar-link { display: flex; align-items: center; gap: 10px; padding: 9px 20px; font-size: 13px; font-weight: 500; color: var(--text); text-decoration: none; border-left: 3px solid transparent; transition: all 0.15s; cursor: pointer; }
+      .sidebar-link:hover { background: var(--bg); color: var(--primary); }
+      .sidebar-link.active { border-left-color: var(--primary); background: var(--primary-light); color: var(--primary); font-weight: 700; }
+      .sidebar-icon { font-size: 15px; width: 20px; text-align: center; }
+      .main { flex: 1; padding: 28px 36px 140px; max-width: 920px; width: 100%; }
+      .lang-tabs { display: flex; gap: 4px; margin-bottom: 24px; background: white; padding: 4px; border-radius: 10px; border: 1px solid var(--border); width: fit-content; }
+      .lang-tab { padding: 8px 20px; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.2s; }
+      .lang-tab.active { background: var(--primary); color: white; }
+      .section-card { background: white; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; overflow: visible; }
+      .section-header { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+      .section-header.collapsed { border-bottom: none; }
+      .section-header-left { display: flex; align-items: center; gap: 10px; }
+      .section-header h2 { font-size: 15px; font-weight: 700; }
+      .section-icon { font-size: 18px; }
+      .section-toggle { font-size: 10px; color: var(--muted); transition: transform 0.2s; }
+      .section-toggle.open { transform: rotate(180deg); }
+      .section-body { padding: 8px 22px 22px; display: none; }
+      .section-body.open { display: block; }
+      .group { padding: 18px 0; border-top: 1px solid var(--border); }
+      .group:first-child { border-top: none; padding-top: 8px; }
+      .group-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; padding-bottom: 6px; }
+      .field { margin-bottom: 16px; position: relative; }
+      .field:last-child { margin-bottom: 0; }
+      .field-label-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+      .field-label { font-size: 13px; font-weight: 600; color: var(--text); }
+      .field-hint { font-size: 11px; color: var(--muted); font-weight: 400; font-style: italic; margin-top: 4px; display: block; }
+      .field-badge { font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; display: none; }
+      .field-badge.show { display: inline-block; }
+      .field-badge.modified { background: var(--warning-bg); color: var(--warning); }
+      .field-badge.saved { background: var(--success-bg); color: var(--success); }
+      input[type="text"], textarea { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border-strong); border-radius: 8px; font-size: 14px; font-family: inherit; color: var(--text); outline: none; transition: border-color 0.15s, background 0.15s; resize: vertical; background: white; }
+      input[type="text"]:focus, textarea:focus { border-color: var(--primary); }
+      input.modified, textarea.modified { border-color: #ffc107; background: #fffdf5; }
+      .quill-wrap { border: 1.5px solid var(--border-strong); border-radius: 8px; transition: border-color 0.15s, background 0.15s; position: relative; background: white; }
+      .quill-wrap.modified { border-color: #ffc107; background: #fffdf5; }
+      .quill-wrap:focus-within { border-color: var(--primary); }
+      .quill-wrap .ql-toolbar.ql-snow { border: none; border-bottom: 1px solid var(--border); background: #fafafa; border-radius: 8px 8px 0 0; position: relative; z-index: 2; }
+      .quill-wrap .ql-container.ql-snow { border: none; font-size: 14px; font-family: inherit; }
+      .quill-wrap .ql-editor { min-height: 90px; padding: 10px 13px; }
+      .quill-wrap .ql-picker.ql-expanded .ql-picker-options { z-index: 50 !important; position: absolute; }
+      .ql-snow .ql-tooltip { z-index: 60 !important; }
+      .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; z-index: 99; box-shadow: 0 -2px 12px rgba(0,0,0,0.05); }
+      .save-status { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+      .save-status.dirty { color: var(--warning); font-weight: 600; }
+      .save-status.success { color: var(--success); font-weight: 600; }
+      .save-status.error { color: var(--error); font-weight: 600; }
+      .btn-save { padding: 11px 26px; background: var(--primary); color: white; border: none; border-radius: 9px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+      .btn-save:hover { background: #e55a0a; }
+      .btn-save:disabled { background: #ccc; cursor: not-allowed; }
+      .toast { position: fixed; top: 80px; right: 24px; padding: 14px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 200; transform: translateX(130%); transition: transform 0.3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.12); min-width: 240px; }
+      .toast.show { transform: translateX(0); }
+      .toast.success { background: var(--success-bg); color: var(--success); border: 1px solid #c3e6cb; }
+      .toast.error { background: var(--error-bg); color: var(--error); border: 1px solid #f5c6cb; }
+      .toast.info { background: var(--primary-light); color: var(--primary); border: 1px solid #ffd6c0; }
+      .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px; }
+      .modal-overlay.show { display: flex; }
+      .modal { background: white; border-radius: 14px; padding: 28px; width: 100%; max-width: 440px; box-shadow: 0 24px 60px rgba(0,0,0,0.2); }
+      .modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+      .modal p { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+      .modal label { display: block; font-size: 12px; font-weight: 600; color: #444; margin-bottom: 5px; }
+      .modal input { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border-strong); border-radius: 8px; font-size: 14px; outline: none; margin-bottom: 14px; color: var(--text); }
+      .modal input:focus { border-color: var(--primary); }
+      .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+      .modal-actions button { padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: all 0.15s; }
+      .modal-actions .btn-cancel { background: var(--bg); color: var(--text); }
+      .modal-actions .btn-cancel:hover { background: var(--border); }
+      .modal-actions .btn-confirm { background: var(--primary); color: white; }
+      .modal-actions .btn-confirm:hover { background: #e55a0a; }
+      .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 6px; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; display: inline-block; }
+      @media (max-width: 900px) {
+        .sidebar { display: none; }
+        .main { padding: 20px 18px 140px; }
+        .header { padding: 0 16px; }
+        .header-right .btn-sm { padding: 7px 10px; font-size: 12px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-left">
+        <span class="header-logo">Enggroho</span>
+        <span class="header-badge">CMS</span>
+      </div>
+      <div class="header-right">
+        <a href="/" target="_blank" class="btn-sm">Lihat Site</a>
+        <button class="btn-sm" id="settings-btn">Pengaturan Akun</button>
+        <button class="btn-sm danger" id="logout-btn">Keluar</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">Section Landing Page</div>
+        {sections.map((s) => (
+          <a class="sidebar-link" data-target={s.id}>
+            <span class="sidebar-icon">{iconMap[s.icon] || "•"}</span>
+            <span>{s.label}</span>
+          </a>
+        ))}
+      </aside>
+
+      <main class="main">
+        <div class="lang-tabs">
+          <button class="lang-tab active" data-lang="id">🇮🇩 Indonesia</button>
+          <button class="lang-tab" data-lang="en">🇬🇧 English</button>
+        </div>
+
+        {sections.map((section) => (
+          <div class="section-card" id={`section-${section.id}`}>
+            <div class="section-header">
+              <div class="section-header-left">
+                <span class="section-icon">{iconMap[section.icon] || "•"}</span>
+                <h2>{section.label}</h2>
+              </div>
+              <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-body">
+              {section.groups.map((group) => (
+                <div class="group">
+                  <div class="group-title">{group.title}</div>
+                  {group.fields.map((field) => {
+                    const isRich = richTextKeys.has(field.key);
+                    return (
+                      <div class="field" data-field-key={field.key}>
+                        <div class="field-label-row">
+                          <span class="field-label">{field.label}</span>
+                          <span class="field-badge" data-badge={field.key}></span>
+                        </div>
+                        {isRich ? (
+                          <div>
+                            <div class="quill-wrap lang-id" data-quill-key={field.key} data-quill-lang="id">
+                              <div data-quill-editor></div>
+                            </div>
+                            <div class="quill-wrap lang-en" data-quill-key={field.key} data-quill-lang="en" style="display:none">
+                              <div data-quill-editor></div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div>
+                            <input type="text" class="cms-input lang-id" data-key={field.key} data-lang="id" value={normalizedContent.id[field.key]} />
+                            <input type="text" class="cms-input lang-en" data-key={field.key} data-lang="en" value={normalizedContent.en[field.key]} style="display:none" />
+                          </div>
+                        )}
+                        {field.hint && <span class="field-hint">{field.hint}</span>}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </main>
+    </div>
+
+    <div class="save-bar">
+      <span class="save-status" id="save-status"><span class="dot"></span>Siap mengedit</span>
+      <button class="btn-save" id="save-btn">Simpan Perubahan</button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="modal-overlay" id="settings-modal">
+      <div class="modal">
+        <h3>Pengaturan Akun</h3>
+        <p>Ubah username dan password login CMS.</p>
+        <label>Username Baru</label>
+        <input type="text" id="set-username" placeholder="Username baru" />
+        <label>Password Saat Ini (wajib)</label>
+        <input type="password" id="set-current-pw" placeholder="Password saat ini" />
+        <label>Password Baru (kosongkan jika tidak ingin ganti)</label>
+        <input type="password" id="set-new-pw" placeholder="Minimal 6 karakter" />
+        <div class="modal-actions">
+          <button class="btn-cancel" id="settings-cancel">Batal</button>
+          <button class="btn-confirm" id="settings-save">Simpan</button>
+        </div>
+      </div>
+    </div>
+
+    <script is:inline src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <script define:vars={{ initialContent: normalizedContent, richTextKeyList }}>
+      // State
+      let currentLang = 'id';
+      let isDirty = false;
+      const contentData = JSON.parse(JSON.stringify(initialContent));
+      const originalData = JSON.parse(JSON.stringify(initialContent));
+      const quillMap = {}; // key -> { id: Quill, en: Quill }
+
+      function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast ' + type + ' show';
+        setTimeout(() => t.classList.remove('show'), 3500);
+      }
+
+      function norm(v) { return (v == null ? '' : String(v)); }
+
+      function updateFieldState(key) {
+        const hasModified = (norm(contentData.id[key]) !== norm(originalData.id[key])) ||
+                            (norm(contentData.en[key]) !== norm(originalData.en[key]));
+        const badge = document.querySelector(`[data-badge="${key}"]`);
+        if (!badge) return;
+        if (hasModified) {
+          badge.textContent = 'diubah';
+          badge.className = 'field-badge show modified';
+        } else {
+          badge.textContent = '';
+          badge.className = 'field-badge';
+        }
+      }
+
+      function updateDirtyState() {
+        let anyDirty = false;
+        // Cek semua key di contentData (bukan hanya originalData) untuk handle key baru
+        const allCheckedKeys = new Set([
+          ...Object.keys(originalData.id),
+          ...Object.keys(contentData.id),
+          ...Object.keys(originalData.en),
+          ...Object.keys(contentData.en),
+        ]);
+        for (const key of allCheckedKeys) {
+          if (norm(contentData.id[key]) !== norm(originalData.id[key]) ||
+              norm(contentData.en[key]) !== norm(originalData.en[key])) {
+            anyDirty = true;
+            break;
+          }
+        }
+        isDirty = anyDirty;
+        const s = document.getElementById('save-status');
+        if (anyDirty) {
+          s.innerHTML = '<span class="dot"></span>Ada perubahan belum disimpan';
+          s.className = 'save-status dirty';
+        } else {
+          s.innerHTML = '<span class="dot"></span>Siap mengedit';
+          s.className = 'save-status';
+        }
+      }
+
+      // Init Quill editors untuk setiap rich text key (id & en)
+      richTextKeyList.forEach(key => {
+        quillMap[key] = {};
+        ['id', 'en'].forEach(lang => {
+          const wrap = document.querySelector(`.quill-wrap[data-quill-key="${key}"][data-quill-lang="${lang}"]`);
+          if (!wrap) return;
+          const editorEl = wrap.querySelector('[data-quill-editor]');
+          if (!editorEl) return;
+
+          const quill = new Quill(editorEl, {
+            theme: 'snow',
+            modules: {
+              toolbar: [['bold', 'italic', 'underline'], ['link'], [{ color: [] }], ['clean']],
+            },
+            placeholder: 'Tulis konten...',
+          });
+
+          // Set initial HTML SAFE: pakai clipboard.dangerouslyPasteHTML
+          const initialHtml = norm(contentData[lang][key]);
+          if (initialHtml) {
+            quill.clipboard.dangerouslyPasteHTML(0, initialHtml, 'silent');
+          }
+
+          // Flag untuk skip awal text-change saat init
+          let initialized = false;
+          setTimeout(() => { initialized = true; }, 50);
+
+          quill.on('text-change', (_delta, _old, source) => {
+            if (!initialized) return; // abaikan event saat init
+            if (source !== 'user') return; // abaikan perubahan programmatic
+            const html = quill.root.innerHTML;
+            let clean = (html === '<p><br></p>' || html === '<p></p>') ? '' : html;
+
+            // Strip wrapping <p>...</p> kalau cuma satu paragraf (tanpa nested <p>)
+            // supaya value compatible dengan landing page yang pakai inline HTML.
+            // Pakai indexOf bukan regex untuk handle konten panjang dengan newline.
+            if (clean && clean.startsWith('<p>') && clean.endsWith('</p>')) {
+              const inner = clean.slice(3, -4); // hapus <p> dan </p>
+              // Hanya strip kalau tidak ada <p> lain di dalam (multi-paragraph)
+              if (!inner.includes('<p>') && !inner.includes('</p>')) {
+                clean = inner;
+              }
+            }
+
+            contentData[lang][key] = clean;
+
+            const hasModified = (norm(contentData.id[key]) !== norm(originalData.id[key])) ||
+                                (norm(contentData.en[key]) !== norm(originalData.en[key]));
+            // Update wrap styling untuk lang yg saat ini
+            if (hasModified) wrap.classList.add('modified');
+            else wrap.classList.remove('modified');
+
+            updateFieldState(key);
+            updateDirtyState();
+          });
+
+          quillMap[key][lang] = quill;
+        });
+      });
+
+      // Lang tabs
+      document.querySelectorAll('.lang-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          currentLang = tab.dataset.lang;
+          document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          document.querySelectorAll('.lang-id').forEach(el => { el.style.display = currentLang === 'id' ? '' : 'none'; });
+          document.querySelectorAll('.lang-en').forEach(el => { el.style.display = currentLang === 'en' ? '' : 'none'; });
+        });
+      });
+
+      // Plain inputs
+      document.querySelectorAll('.cms-input').forEach(input => {
+        input.addEventListener('input', () => {
+          const key = input.dataset.key;
+          const lang = input.dataset.lang;
+          contentData[lang][key] = input.value;
+
+          const hasModified = (norm(contentData.id[key]) !== norm(originalData.id[key])) ||
+                              (norm(contentData.en[key]) !== norm(originalData.en[key]));
+          // Update styling di input yang saat ini
+          if (input.value !== norm(originalData[lang][key])) {
+            input.classList.add('modified');
+          } else {
+            input.classList.remove('modified');
+          }
+
+          updateFieldState(key);
+          updateDirtyState();
+        });
+      });
+
+      // Toggle sections
+      document.querySelectorAll('.section-header').forEach(header => {
+        header.addEventListener('click', () => {
+          const body = header.nextElementSibling;
+          const toggle = header.querySelector('.section-toggle');
+          body.classList.toggle('open');
+          toggle.classList.toggle('open');
+          header.classList.toggle('collapsed', !body.classList.contains('open'));
+        });
+      });
+
+      // Open first section
+      const firstBody = document.querySelector('.section-body');
+      const firstToggle = document.querySelector('.section-toggle');
+      if (firstBody) firstBody.classList.add('open');
+      if (firstToggle) firstToggle.classList.add('open');
+
+      // Sidebar nav
+      document.querySelectorAll('.sidebar-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const id = link.dataset.target;
+          const el = document.getElementById('section-' + id);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const body = el.querySelector('.section-body');
+            const toggle = el.querySelector('.section-toggle');
+            const header = el.querySelector('.section-header');
+            if (body && !body.classList.contains('open')) {
+              body.classList.add('open');
+              toggle.classList.add('open');
+              if (header) header.classList.remove('collapsed');
+            }
+          }
+          document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+        });
+      });
+
+      // Save
+      document.getElementById('save-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('save-btn');
+        const status = document.getElementById('save-status');
+        btn.innerHTML = '<span class="spinner"></span>Menyimpan...';
+        btn.disabled = true;
+
+        try {
+          const res = await fetch('/api/cms-content', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: contentData.id, en: contentData.en }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showToast('Konten berhasil disimpan', 'success');
+            status.innerHTML = '<span class="dot"></span>Tersimpan ' + new Date().toLocaleTimeString('id-ID');
+            status.className = 'save-status success';
+
+            // Cari semua field yang sedang dalam state modified sebelum di-reset
+            const modifiedKeys = [];
+            document.querySelectorAll('.field-badge.modified').forEach(b => modifiedKeys.push(b.dataset.badge));
+
+            // Update originalData dengan snapshot terbaru
+            for (const k in contentData.id) originalData.id[k] = contentData.id[k];
+            for (const k in contentData.en) originalData.en[k] = contentData.en[k];
+
+            // Reset visual modified state
+            document.querySelectorAll('.cms-input.modified').forEach(i => i.classList.remove('modified'));
+            document.querySelectorAll('.quill-wrap.modified').forEach(w => w.classList.remove('modified'));
+
+            // Tampilkan "tersimpan" di setiap field yang sebelumnya dimodifikasi
+            modifiedKeys.forEach(key => {
+              const badge = document.querySelector(`[data-badge="${key}"]`);
+              if (badge) {
+                badge.textContent = 'tersimpan';
+                badge.className = 'field-badge show saved';
+                setTimeout(() => {
+                  badge.textContent = '';
+                  badge.className = 'field-badge';
+                }, 2500);
+              }
+            });
+
+            isDirty = false;
+          } else {
+            const msg = data && data.error ? data.error : 'Gagal menyimpan';
+            showToast(msg, 'error');
+            status.innerHTML = '<span class="dot"></span>Gagal menyimpan';
+            status.className = 'save-status error';
+          }
+        } catch (err) {
+          showToast('Gagal menyimpan. Cek koneksi.', 'error');
+          status.innerHTML = '<span class="dot"></span>Error koneksi';
+          status.className = 'save-status error';
+        }
+        btn.innerHTML = 'Simpan Perubahan';
+        btn.disabled = false;
+      });
+
+      // Logout
+      document.getElementById('logout-btn').addEventListener('click', async () => {
+        if (isDirty && !confirm('Ada perubahan belum disimpan. Yakin keluar?')) return;
+        await fetch('/api/cms-logout', { method: 'POST', credentials: 'same-origin' });
+        window.location.href = '/admin';
+      });
+
+      // Settings modal
+      document.getElementById('settings-btn').addEventListener('click', async () => {
+        try {
+          const res = await fetch('/api/cms-account');
+          if (res.ok) {
+            const data = await res.json();
+            document.getElementById('set-username').value = data.username || '';
+          }
+        } catch {}
+        document.getElementById('settings-modal').classList.add('show');
+      });
+      document.getElementById('settings-cancel').addEventListener('click', () => {
+        document.getElementById('settings-modal').classList.remove('show');
+        document.getElementById('set-current-pw').value = '';
+        document.getElementById('set-new-pw').value = '';
+      });
+      document.getElementById('settings-save').addEventListener('click', async () => {
+        const currentPassword = document.getElementById('set-current-pw').value;
+        const newUsername = document.getElementById('set-username').value;
+        const newPassword = document.getElementById('set-new-pw').value;
+        if (!currentPassword) { showToast('Password saat ini wajib diisi', 'error'); return; }
+        if (!newUsername || newUsername.length < 3) { showToast('Username minimal 3 karakter', 'error'); return; }
+        try {
+          const res = await fetch('/api/cms-account', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currentPassword, newUsername, newPassword }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showToast('Akun berhasil diperbarui. Halaman akan dimuat ulang...', 'success');
+            document.getElementById('settings-modal').classList.remove('show');
+            document.getElementById('set-current-pw').value = '';
+            document.getElementById('set-new-pw').value = '';
+            // Reload setelah 1.5 detik agar cookie baru dari server aktif
+            // (tokenSalt di-rotate, cookie lama sudah invalid)
+            setTimeout(() => window.location.reload(), 1500);
+          } else {
+            showToast(data.error || 'Gagal update akun', 'error');
+          }
+        } catch {
+          showToast('Gagal update akun', 'error');
+        }
+      });
+
+      // Close modal when clicking overlay
+      document.getElementById('settings-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'settings-modal') {
+          document.getElementById('settings-modal').classList.remove('show');
+        }
+      });
+
+      // Warn unsaved
+      window.addEventListener('beforeunload', (e) => { if (isDirty) { e.preventDefault(); e.returnValue = ''; } });
+
+      // Active sidebar on scroll
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id.replace('section-', '');
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.toggle('active', l.dataset.target === id));
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '-100px 0px -50% 0px' });
+      document.querySelectorAll('.section-card').forEach(card => observer.observe(card));
+    </script>
+  </body>
+</html>

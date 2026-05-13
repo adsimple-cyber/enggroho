@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# CMS credentials (generated, should not be committed)
+src/data/admin.json
