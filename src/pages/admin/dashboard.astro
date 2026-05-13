@@ -3,6 +3,7 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import { isValidToken, getTokenFromCookies } from "../../utils/auth";
 import { sections, richTextKeys } from "../../utils/cms-labels";
+import { readContent } from "../../utils/storage";
 
 const cookieHeader = Astro.request.headers.get("cookie") || "";
 const token = getTokenFromCookies(cookieHeader);
@@ -10,11 +11,9 @@ if (!isValidToken(token)) {
   return Astro.redirect("/admin");
 }
 
-// Path dari project root
-const CONTENT_PATH = join(process.cwd(), "src/data/content.json");
 let content: { id: Record<string, any>; en: Record<string, any> };
 try {
-  content = JSON.parse(readFileSync(CONTENT_PATH, "utf-8"));
+  content = JSON.parse(readContent());
 } catch {
   content = { id: {}, en: {} };
 }

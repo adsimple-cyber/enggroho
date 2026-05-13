@@ -1,18 +1,19 @@
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 
-// Resolve content path dari project root agar path tetap valid saat bundled.
-const CONTENT_PATH = join(process.cwd(), "src/data/content.json");
+const IS_VERCEL = process.env.VERCEL === "1";
+const SRC_PATH = join(process.cwd(), "src/data/content.json");
+const TMP_PATH = "/tmp/enggroho-content.json";
 
 /**
  * Load translations dari disk SETIAP PEMANGGILAN.
- * Penting: di SSR, kalau kita cache hasilnya di module scope, perubahan dari CMS
- * tidak akan terlihat sampai server di-restart. Jadi kita selalu read fresh.
+ * Di Vercel: prioritaskan /tmp (data terbaru dari CMS), fallback ke bundled.
+ * Di local: baca langsung dari src/data/content.json.
  */
 function loadTranslations() {
   try {
-    const raw = readFileSync(CONTENT_PATH, "utf-8");
-    return JSON.parse(raw);
+    const path = (IS_VERCEL && existsSync(TMP_PATH)) ? TMP_PATH : SRC_PATH;
+    return JSON.parse(readFileSync(path, "utf-8"));
   } catch {
     return { id: {}, en: {} };
   }

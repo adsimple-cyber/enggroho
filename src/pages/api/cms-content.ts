@@ -1,15 +1,6 @@
 import type { APIRoute } from "astro";
-import { readFileSync, writeFileSync, existsSync, renameSync } from "fs";
-import { join } from "path";
 import { isAuthenticated } from "../../utils/auth";
-
-const CONTENT_PATH = join(process.cwd(), "src/data/content.json");
-
-function atomicWrite(path: string, data: string) {
-  const tmp = path + ".tmp";
-  writeFileSync(tmp, data, "utf-8");
-  renameSync(tmp, path);
-}
+import { readContent, writeContent, contentExists } from "../../utils/storage";
 
 export const GET: APIRoute = async ({ request }) => {
   if (!isAuthenticated(request)) {
@@ -20,13 +11,10 @@ export const GET: APIRoute = async ({ request }) => {
   }
 
   try {
-    const content = readFileSync(CONTENT_PATH, "utf-8");
+    const content = readContent();
     return new Response(content, {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-store",
-      },
+      headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
     });
   } catch {
     return new Response(JSON.stringify({ error: "Gagal membaca konten." }), {
@@ -47,47 +35,38 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
 
-    if (!body || typeof body !== "object" || !body.id || !body.en) {
-      return new Response(JSON.stringify({ error: "Format data tidak valid: butuh objek { id, en }." }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    if (typeof body.id !== "object" || Array.isArray(body.id) ||
+    if (!body || typeof body !== "object" || !body.id || !body.en ||
+        typeof body.id !== "object" || Array.isArray(body.id) ||
         typeof body.en !== "object" || Array.isArray(body.en)) {
-      return new Response(JSON.stringify({ error: "Field id dan en harus berupa objek." }), {
+      return new Response(JSON.stringify({ error: "Format data tidak valid." }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    // Baca konten yang ada → merge, bukan replace. Ini menjaga key yg tidak dikirim (social_proofs, dll)
+    // Baca existing → merge
     let existing: Record<string, any> = { id: {}, en: {} };
-    if (existsSync(CONTENT_PATH)) {
+    if (contentExists()) {
       try {
-        const parsed = JSON.parse(readFileSync(CONTENT_PATH, "utf-8"));
+        const parsed = JSON.parse(readContent());
         if (parsed && typeof parsed === "object") {
           existing = parsed;
           if (!existing.id || typeof existing.id !== "object") existing.id = {};
           if (!existing.en || typeof existing.en !== "object") existing.en = {};
         }
       } catch {
-        // Kalau file corrupt, abort dan kembalikan error
-        return new Response(JSON.stringify({ error: "File konten rusak. Hubungi admin." }), {
+        return new Response(JSON.stringify({ error: "File konten rusak." }), {
           status: 500,
           headers: { "Content-Type": "application/json" },
         });
       }
     }
 
-    // Sanitize incoming: pastikan setiap value string (bukan object/array)
+    // Sanitize: hanya terima string values
     const sanitize = (obj: Record<string, any>) => {
       const out: Record<string, string> = {};
       for (const key in obj) {
-        const val = obj[key];
-        if (typeof val === "string") out[key] = val;
-        // Kalau user kirim bukan string, skip (don't break existing data)
+        if (typeof obj[key] === "string") out[key] = obj[key];
       }
       return out;
     };
@@ -98,8 +77,7 @@ export const POST: APIRoute = async ({ request }) => {
       en: { ...existing.en, ...sanitize(body.en) },
     };
 
-    // Atomic write — hindari data corrupt kalau crash mid-write
-    atomicWrite(CONTENT_PATH, JSON.stringify(merged, null, 2));
+    writeContent(JSON.stringify(merged, null, 2));
 
     return new Response(JSON.stringify({ success: true, message: "Konten berhasil disimpan." }), {
       status: 200,

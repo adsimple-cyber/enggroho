@@ -1,15 +1,11 @@
 import { createHash, createHmac, randomBytes } from "crypto";
-import { readFileSync, writeFileSync, existsSync } from "fs";
-import { join } from "path";
-
-// Resolve dari project root, bukan dari file TS yg sudah di-bundle.
-const ADMIN_PATH = join(process.cwd(), "src/data/admin.json");
+import { readAdmin, writeAdmin, adminExists } from "./storage";
 
 interface AdminData {
   username: string;
   passwordHash: string;
   salt: string;
-  tokenSalt: string; // Di-rotate saat ganti credentials → invalidate token lama
+  tokenSalt: string;
 }
 
 const TOKEN_TTL_MS = 24 * 60 * 60 * 1000; // 24 jam
@@ -22,29 +18,26 @@ function signToken(payload: string, secret: string): string {
   return createHmac("sha256", secret).update(payload).digest("hex");
 }
 
-// Simple in-memory cache untuk admin data — di-invalidate setiap kali saveAdmin dipanggil.
-// Menghindari disk read berulang per request (isValidToken + verifyCredentials + createToken).
+// In-memory cache — di-invalidate setiap kali saveAdmin dipanggil
 let _adminCache: AdminData | null = null;
 
 export function loadAdmin(): AdminData {
   if (_adminCache) return _adminCache;
 
-  if (!existsSync(ADMIN_PATH)) {
-    // Default credentials: admin / enggroho2025
+  if (!adminExists()) {
     const salt = randomBytes(16).toString("hex");
     const passwordHash = hashPassword("enggroho2025", salt);
     const tokenSalt = randomBytes(32).toString("hex");
     const defaultAdmin: AdminData = { username: "admin", passwordHash, salt, tokenSalt };
-    writeFileSync(ADMIN_PATH, JSON.stringify(defaultAdmin, null, 2), "utf-8");
+    writeAdmin(JSON.stringify(defaultAdmin, null, 2));
     _adminCache = defaultAdmin;
     return defaultAdmin;
   }
 
-  const raw = JSON.parse(readFileSync(ADMIN_PATH, "utf-8"));
-  // Auto-upgrade format lama (tanpa tokenSalt) — invalidate session lama
+  const raw = JSON.parse(readAdmin());
   if (!raw.tokenSalt) {
     raw.tokenSalt = randomBytes(32).toString("hex");
-    writeFileSync(ADMIN_PATH, JSON.stringify(raw, null, 2), "utf-8");
+    writeAdmin(JSON.stringify(raw, null, 2));
   }
   _adminCache = raw;
   return raw;
@@ -53,28 +46,18 @@ export function loadAdmin(): AdminData {
 export function saveAdmin(username: string, password: string): void {
   const salt = randomBytes(16).toString("hex");
   const passwordHash = hashPassword(password, salt);
-  // Rotasi tokenSalt untuk invalidate semua session yang sedang aktif
   const tokenSalt = randomBytes(32).toString("hex");
   const data: AdminData = { username, passwordHash, salt, tokenSalt };
-  writeFileSync(ADMIN_PATH, JSON.stringify(data, null, 2), "utf-8");
-  // Invalidate cache agar loadAdmin() baca data terbaru
+  writeAdmin(JSON.stringify(data, null, 2));
   _adminCache = data;
 }
 
 export function verifyCredentials(username: string, password: string): boolean {
   const admin = loadAdmin();
   if (username !== admin.username) return false;
-  const hash = hashPassword(password, admin.salt);
-  return hash === admin.passwordHash;
+  return hashPassword(password, admin.salt) === admin.passwordHash;
 }
 
-/**
- * Token format: base64(`${issuedAt}:${username}:${signature}`)
- * Signature = HMAC-SHA256(`${issuedAt}:${username}`, tokenSalt)
- * - Terikat ke username (user tertentu)
- * - Punya timestamp untuk validate expiry
- * - Signed dengan tokenSalt (rotated saat ganti credentials)
- */
 export function createToken(): string {
   const admin = loadAdmin();
   const issuedAt = Date.now();
@@ -87,8 +70,6 @@ export function isValidToken(token: string | undefined): boolean {
   if (!token) return false;
   try {
     const decoded = Buffer.from(token, "base64url").toString("utf-8");
-    // Format: `${issuedAt}:${username}:${signature}`
-    // issuedAt = numeric, signature = 64-char hex, username = everything in between
     const firstColon = decoded.indexOf(":");
     const lastColon = decoded.lastIndexOf(":");
     if (firstColon === -1 || lastColon === -1 || firstColon === lastColon) return false;
@@ -99,19 +80,12 @@ export function isValidToken(token: string | undefined): boolean {
 
     const issuedAt = parseInt(issuedAtStr, 10);
     if (!issuedAt || Number.isNaN(issuedAt)) return false;
-
-    // Check expiry
     if (Date.now() - issuedAt > TOKEN_TTL_MS) return false;
-
-    // Signature harus 64 char hex (SHA-256 output)
     if (!/^[0-9a-f]{64}$/.test(sig)) return false;
 
     const admin = loadAdmin();
-
-    // Username harus match (kalau diganti, token invalid)
     if (username !== admin.username) return false;
 
-    // Verify signature dengan tokenSalt terbaru
     const expected = signToken(`${issuedAt}:${username}`, admin.tokenSalt);
     return sig === expected;
   } catch {
