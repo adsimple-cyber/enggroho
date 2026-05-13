@@ -1,0 +1,162 @@
+---
+import { isValidToken, getTokenFromCookies } from "../../utils/auth";
+
+const cookieHeader = Astro.request.headers.get("cookie") || "";
+const token = getTokenFromCookies(cookieHeader);
+if (isValidToken(token)) {
+  return Astro.redirect("/admin/dashboard");
+}
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enggroho CMS — Login</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: #f5f0eb;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .card {
+        background: white;
+        border-radius: 20px;
+        padding: 48px 40px;
+        width: 100%;
+        max-width: 420px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+      }
+      .logo { text-align: center; margin-bottom: 32px; }
+      .logo h1 { font-size: 28px; font-weight: 800; color: #222; letter-spacing: -1px; }
+      .logo p { font-size: 13px; color: #888; margin-top: 4px; }
+      .badge {
+        display: inline-block;
+        background: #fff3ee;
+        color: #FF6D1F;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+      }
+      label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
+      input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e8e3de;
+        border-radius: 12px;
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.2s;
+        margin-bottom: 20px;
+        color: #222;
+      }
+      input:focus { border-color: #FF6D1F; }
+      button {
+        width: 100%;
+        padding: 14px;
+        background: #FF6D1F;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+      }
+      button:hover { background: #e55a0a; }
+      button:active { transform: scale(0.98); }
+      .error {
+        background: #fff0f0;
+        color: #e53e3e;
+        border: 1px solid #fed7d7;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 13px;
+        margin-bottom: 20px;
+        display: none;
+      }
+      .spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        vertical-align: middle;
+        margin-right: 6px;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="logo">
+        <span class="badge">CMS ADMIN</span>
+        <h1>Enggroho</h1>
+        <p>Masuk untuk mengelola konten landing page</p>
+      </div>
+
+      <div class="error" id="error-msg"></div>
+
+      <form id="login-form">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Masukkan username" autocomplete="username" required />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Masukkan password" autocomplete="current-password" required />
+
+        <button type="submit" id="submit-btn">Masuk</button>
+      </form>
+    </div>
+
+    <script>
+      const form = document.getElementById('login-form');
+      const errorMsg = document.getElementById('error-msg');
+      const submitBtn = document.getElementById('submit-btn');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorMsg.style.display = 'none';
+        submitBtn.innerHTML = '<span class="spinner"></span>Memproses...';
+        submitBtn.disabled = true;
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        try {
+          const res = await fetch('/api/cms-login', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+          });
+          const data = await res.json();
+
+          if (data.success) {
+            window.location.href = '/admin/dashboard';
+          } else {
+            errorMsg.textContent = data.message || 'Login gagal.';
+            errorMsg.style.display = 'block';
+            submitBtn.innerHTML = 'Masuk';
+            submitBtn.disabled = false;
+          }
+        } catch {
+          errorMsg.textContent = 'Terjadi kesalahan. Coba lagi.';
+          errorMsg.style.display = 'block';
+          submitBtn.innerHTML = 'Masuk';
+          submitBtn.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

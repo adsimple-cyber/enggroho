@@ -1,299 +1,40 @@
-export const translations = {
-    id: {
-        nav_about: "Tentang",
-        nav_method: "Metode",
-        nav_testi: "Testimoni",
-        nav_mentor: "Mentor",
-        nav_cta: "Konsultasi Gratis",
-        hero_badge: "AKSELERATOR KARIR GLOBAL",
-        hero_title: "Konversi Peluang dengan Bahasa Inggris <span class=\"gradient-text italic\">Fasih</span>",
-        hero_desc: "Transformasi cara Anda berkomunikasi. Kami tidak sekadar mengajarkan bahasa, kami membantu Anda membangun <span class=\"text-secondary font-semibold\">karakter profesional</span> di kancah internasional.",
-        hero_cta: "Mulai Perjalanan Anda",
-        hero_calendly: "Jadwalkan Pertemuan",
-        hero_trust: "Dipercaya oleh para<br /><span class=\"text-secondary font-bold\">Professionals</span>",
-        hero_card_label: "Career Growth",
-        hero_card_value: "Accelerated",
+import { readFileSync } from "fs";
+import { join } from "path";
 
-        section_approach_badge: "OUR CREATIVE APPROACH",
-        section_approach_title: "Metode Belajar Tanpa Batas",
-        approach_card1_title: "Ultra Personalized",
-        approach_card1_desc: "Kurikulum disusun seputar dunia profesional Anda. Anda belajar apa yang Anda butuhkan di kantor besok.",
-        approach_card2_title: "Cognitive Context",
-        approach_card2_desc: "Kami melatih otak Anda untuk berpikir langsung dalam bahasa Inggris, bukan sekadar menerjemahkan kata.",
-        approach_card3_title: "Unlimited Support",
-        approach_card3_desc: "Akses tanya jawab di luar sesi kelas. Kami adalah partner komunikasi Anda setiap saat.",
+// Resolve content path dari project root agar path tetap valid saat bundled.
+const CONTENT_PATH = join(process.cwd(), "src/data/content.json");
 
-        stats_alumni_val: "50+",
-        stats_alumni: "Alumni Aktif",
-        stats_experience_val: "5+",
-        stats_experience: "Tahun Pengalaman",
-        stats_satisfaction_val: "98%",
-        stats_satisfaction: "Tingkat Kepuasan",
-        stats_industries_val: "15+",
-        stats_industries: "Industri Dilayani",
+/**
+ * Load translations dari disk SETIAP PEMANGGILAN.
+ * Penting: di SSR, kalau kita cache hasilnya di module scope, perubahan dari CMS
+ * tidak akan terlihat sampai server di-restart. Jadi kita selalu read fresh.
+ */
+function loadTranslations() {
+  try {
+    const raw = readFileSync(CONTENT_PATH, "utf-8");
+    return JSON.parse(raw);
+  } catch {
+    return { id: {}, en: {} };
+  }
+}
 
-        section_how_badge: "HOW IT WORKS",
-        section_how_title: "Alur Belajar di Enggroho",
-        section_how_desc: "Dari proficiency sekarang hingga mahir, kami mendampingi setiap langkah perjalanan Anda menuju komunikasi profesional.",
-        step1_badge: "Langkah Pertama",
-        step1_title: "Konsultasi Gratis",
-        step1_desc: "Kami mendengarkan kebutuhan, tantangan, dan tujuan karir Anda secara menyeluruh. Sesi ini gratis tanpa komitmen apapun.",
-        step2_badge: "Langkah Kedua",
-        step2_title: "Kurikulum Personal",
-        step2_desc: "Materi disusun khusus berdasarkan industri dan kebutuhan profesional Anda. Tidak ada kurikulum template, semuanya tailor-made yang bertumpu pada proficiency sekarang.",
-        step3_badge: "Langkah Ketiga",
-        step3_title: "Sesi Intensif 1-on-1",
-        step3_desc: "Belajar langsung dengan mentor melalui sesi privat yang fokus dan interaktif. Praktek nyata, skenario nyata, kemajuan nyata.",
-        step4_badge: "Langkah Keempat",
-        step4_title: "Evaluasi & Follow Up",
-        step4_desc: "Perkembangan dipantau, dievaluasi, dan disesuaikan untuk memastikan pertumbuhan Anda tetap optimal dari waktu ke waktu.",
-
-        section_why_badge: "KENAPA ENGGROHO?",
-        section_why_title: "Bukan Sekadar Kursus Bahasa Inggris <span class='gradient-text italic'>Biasa</span>",
-        section_why_subtitle: "Enggroho hadir dengan pendekatan yang berbeda. Kami tidak hanya mengajarkan grammar dan vocabulary, tapi membentuk cara berpikir dan berkomunikasi Anda secara menyeluruh di dunia profesional.",
-        why_main_desc: "Enggroho adalah kursus bahasa Inggris privat utama yang dirancang khusus untuk para profesional yang ingin meningkatkan kemampuan bahasa mereka untuk kemajuan karir, peluang internasional, atau sekadar meningkatkan keterampilan komunikasi mereka secara keseluruhan.",
-        why_extra_desc1: "Tidak seperti kursus bahasa tradisional, kami fokus pada bahasa Inggris praktis yang dapat segera Anda terapkan dalam kehidupan profesional Anda. Pendekatan kami memecah struktur tata bahasa yang kompleks menjadi segmen-segmen yang mudah dikelola, membuat pembelajaran lebih mudah diakses dan lebih efektif daripada metode konvensional.",
-        why_extra_desc2: "Dengan sesi online satu lawan satu yang dipersonalisasi, penjadwalan yang fleksibel, dan kurikulum yang disesuaikan, kami memastikan bahwa pengalaman belajar Anda disesuaikan secara khusus dengan kebutuhan, tujuan, dan tingkat kemahiran Anda saat ini.",
-        why_feat1_title: "Online",
-        why_feat1_desc: "Tanpa komitmen harus hadir secara fisik",
-        why_feat2_title: "Flexible Schedule",
-        why_feat2_desc: "Atur jadwal sendiri melalui form yang terkoneksi ke kalender anda",
-        why_feat3_title: "24/7 Support",
-        why_feat3_desc: "Tanya jawab kapan saja via WhatsApp",
-        why_feat4_title: "Sertifikat",
-        why_feat4_desc: "Bukti kompetensi untuk karir Anda",
-        why_feat5_title: "Fokus Dunia Kerja Nyata",
-        why_feat5_desc: "Materi belajar dirancang langsung dari skenario kerja: presentasi, negosiasi, email bisnis, hingga interview kerja.",
-        why_feat6_title: "Mentoring, Bukan Sekadar Mengajar",
-        why_feat6_desc: "Anda tidak belajar sendirian. Kami menjadi partner komunikasi Anda bahkan di luar jam kelas.",
-        why_feat7_title: "Progress Terukur & Transparan",
-        why_feat7_desc: "Setiap sesi dinilai dan dievaluasi. Anda bisa melihat sendiri sejauh mana perkembangan Anda dari waktu ke waktu.",
-
-        section_fitur_title: "Semua yang Anda Butuhkan Ada di Sini",
-        fitur_card_large_title: "Siap untuk Panggung Global",
-        fitur_card_large_desc: "Bukan sekedar fasih, tapi mampu bersaing dan bernegosiasi di arena internasional dengan percaya diri penuh.",
-        fitur_live_title: "Live Session",
-        fitur_live_desc: "Sesi tatap muka real-time",
-        fitur_custom_title: "Custom Material",
-        fitur_custom_desc: "Modul belajar yang disusun sesuai industri Anda",
-        fitur_practice_title: "Speaking Practice Intensif",
-        fitur_practice_desc: "Latihan berbicara langsung dengan mentor; fokus pronunciation, intonasi, dan confidence building dalam konteks kerja nyata.",
-        fitur_report_title: "Progress Report",
-        fitur_report_desc: "Laporan perkembangan bulanan",
-        fitur_listening_title: "Listening Drill",
-        fitur_listening_desc: "Materi listening native accent",
-        fitur_writing_title: "Business Writing Mastery",
-        fitur_writing_desc: "Kuasai teknik menulis email profesional, proposal bisnis, hingga laporan dalam bahasa Inggris yang tajam dan berdampak.",
-
-        section_benefits_badge: "MANFAAT UTAMA",
-        section_benefits_title: "Kenapa Anda Harus Bergabung?",
-        benefit1: "Peluang karir yang lebih baik di perusahaan multinasional dan pasar internasional.",
-        benefit2: "Kepercayaan diri yang meningkat dalam komunikasi profesional bahasa Inggris.",
-        benefit3: "Kemampuan untuk bekerja secara remote untuk perusahaan internasional.",
-        benefit4: "Peningkatan keterampilan presentasi, negosiasi, dan partisipasi rapat.",
-        benefit5: "Pemahaman yang lebih baik tentang nuansa komunikasi bisnis internasional.",
-        benefit6: "Keterampilan bahasa Inggris praktis yang dapat segera diterapkan dalam pekerjaan Anda.",
-        benefit7: "Perhatian personal untuk mengatasi tantangan bahasa spesifik Anda.",
-        benefit8: "Pembelajaran efisien waktu dengan instruksi yang terfokus dan tertarget.",
-        benefit9: "Membangun personal branding yang kuat di mata klien dan partner global.",
-
-        section_guarantee_badge: "JAMINAN KAMI",
-        section_guarantee_title: "Garansi Kepuasan",
-        section_guarantee_subtitle: "Jaminan Progres",
-        section_guarantee_desc1: "Di Enggroho, kami berkomitmen pada kesuksesan Anda. Kami menjamin peningkatan nyata dalam keterampilan komunikasi bahasa Inggris Anda dalam <span class='font-bold text-secondary'>5 sesi</span> pertama, atau kami akan memberikan sesi tambahan tanpa biaya ekstra hingga Anda melihat kemajuan.",
-        section_guarantee_desc2: "Program kami dirancang untuk memberikan hasil terukur. Sepanjang <span class='font-bold text-secondary'>perjalanan 15 sesi</span> Anda, Anda akan menerima feedback konsisten dan laporan kemajuan untuk memastikan Anda berada di jalur yang tepat untuk mencapai tujuan bahasa Anda.",
-        section_guarantee_desc3: "Kami berdiri di belakang metodologi pengajaran dan pendekatan personal kami, yakin bahwa program tailor-made kami akan membantu Anda mencapai tujuan bahasa Inggris profesional Anda.",
-
-        section_cta_title: "Siap untuk Langkah Besar Berikutnya?",
-        section_cta_desc: "Jangan biarkan bahasa menjadi penghalang karir Anda. Mulai transformasi komunikasi Anda hari ini bersama Enggroho.",
-        
-        section_faq_title: "Pertanyaan yang Sering Ditanyakan",
-        faq_q1: "Apakah saya harus punya dasar bahasa Inggris?",
-        faq_a1: "Tidak harus! Enggroho menerima semua level, dari pemula hingga lanjutan. Kurikulum akan disesuaikan secara personal dengan kemampuan awal Anda, sehingga prosesnya nyaman dan tidak overwhelm.",
-        faq_q2: "Berapa lama waktu yang dibutuhkan untuk bisa fasih?",
-        faq_a2: "Tergantung intensitas dan konsistensi belajar. Rata-rata alumni kami mulai merasakan peningkatan signifikan dalam 3 bulan pertama dengan sesi reguler 2-3 kali seminggu.",
-        faq_q3: "Apakah tersedia persiapan TOEFL, IELTS, BUMN, dan sejenisnya?",
-        faq_a3: "Tentu saja! Kami menyesuaikan kebutuhan Anda dengan kurikulum yang tailor-made untuk segala jenis test yang mensyaratkan Bahasa Inggris.",
-        faq_q4: "Apakah tersedia kelas grup atau hanya privat?",
-        faq_a4: "Kami menyediakan kelas privat 1-on-1 untuk fokus maksimal. Kelas lebih dari 1 orang membuat tujuan personal lebih sulit dicapai.",
-        faq_q5: "Bagaimana sistem pembayarannya?",
-        faq_a5: "Kami menawarkan paket bulanan yang fleksibel. Silakan hubungi kami via WhatsApp untuk konsultasi gratis dan mendapatkan penawaran terbaik sesuai kebutuhan Anda.",
-        faq_q6: "Apakah materi belajarnya cocok untuk profesi saya?",
-        faq_a6: "Sangat cocok. Kami telah menangani profesional dari berbagai industri seperti IT, hukum, desain kreatif, dosen, marketing, chef, atlet, hingga HRD. Kurikulum selalu disesuaikan dengan konteks pekerjaan Anda.",
-
-        section_testi_title: "Suara Keberhasilan Alumni",
-        section_testi_subtitle: "Kisah nyata dari mereka yang telah mendobrak batasan komunikasi.",
-        testi_porto_btn: "Lihat Portfolio Alumni",
-
-        mentor_badge: "Belajar Langsung dari Ahli Bahasa",
-        mentor_name: "Agung Setyo Nugroho",
-        mentor_role: "Founder & Mentor",
-        mentor_desc: "Dengan latar belakang akademis yang kuat dan jam terbang tinggi sebagai interpreter profesional, Agung membawa perspektif yang unik ke dalam setiap kelas: Bahasa Inggris adalah alat kekuasaan, bukan sekadar kata-kata.",
-        mentor_feat1_title: "Certified Professional Interpreter",
-        mentor_feat1_desc: "Berpengalaman di ranah hukum dan medis tingkat internasional.",
-        mentor_feat2_title: "Ahli Bahasa",
-        mentor_feat2_desc: "Alumni Sastra Inggris UNNES dengan spesialisasi linguistik.",
-
-        footer_desc: "Elevating Professional Communication since 2020. Berbasis di Indonesia untuk dunia.",
-        footer_rights: "© 2025 Enggroho English Mastery. All Rights Reserved.",
-        
-        just_now: "Baru saja dilakukan",
-        social_proofs: [
-            "Seorang Web Developer baru saja mendaftar Konsultasi Gratis",
-            "5 alumni baru saja mendapatkan promosi karir",
-            "Seorang HR Manager baru saja menyelesaikan sesi 1-on-1",
-            "Materi 'Business Negotiation' baru saja diperbarui",
-            "Seorang Dosen baru saja berkolaborasi dengan peneliti global"
-        ]
+// Getter yang selalu fresh — di-destructure di Astro/JS biasa tetap jalan.
+// Object terbaru akan di-return tiap kali property `translations` diakses.
+export const translations = new Proxy(
+  {},
+  {
+    get(_target, prop) {
+      const data = loadTranslations();
+      return data[prop];
     },
-    en: {
-        nav_about: "About",
-        nav_method: "Method",
-        nav_testi: "Testimonials",
-        nav_mentor: "Mentor",
-        nav_cta: "Free Consultation",
-        hero_badge: "GLOBAL CAREER ACCELERATOR",
-        hero_title: "Convert Opportunities with <span class=\"gradient-text italic\">Fluent</span> English",
-        hero_desc: "Transform the way you communicate. We don't just teach a language, we help you build your <span class=\"text-secondary font-semibold\">professional character</span> on the international stage.",
-        hero_cta: "Start Your Journey",
-        hero_calendly: "Schedule a Meeting",
-        hero_trust: "Trusted by<br /><span class=\"text-secondary font-bold\">Professionals</span>",
-        hero_card_label: "Career Growth",
-        hero_card_value: "Accelerated",
-
-        section_approach_badge: "OUR CREATIVE APPROACH",
-        section_approach_title: "Unlimited Learning Method",
-        approach_card1_title: "Ultra Personalized",
-        approach_card1_desc: "Curriculum tailored around your professional world. You learn what you need at the office tomorrow.",
-        approach_card2_title: "Cognitive Context",
-        approach_card2_desc: "We train your brain to think directly in English, not just translate words.",
-        approach_card3_title: "Unlimited Support",
-        approach_card3_desc: "Access Q&A outside class sessions. We are your communication partner at all times.",
-
-        stats_alumni_val: "50+",
-        stats_alumni: "Active Alumni",
-        stats_experience_val: "5+",
-        stats_experience: "Years Experience",
-        stats_satisfaction_val: "98%",
-        stats_satisfaction: "Satisfaction Rate",
-        stats_industries_val: "15+",
-        stats_industries: "Industries Served",
-
-        section_how_badge: "HOW IT WORKS",
-        section_how_title: "Learning Journey at Enggroho",
-        section_how_desc: "From your current proficiency to mastery, we accompany every step of your journey towards professional communication.",
-        step1_badge: "Step One",
-        step1_title: "Free Consultation",
-        step1_desc: "We listen to your needs, challenges, and career goals thoroughly. This session is free with no commitment.",
-        step2_badge: "Step Two",
-        step2_title: "Personal Curriculum",
-        step2_desc: "Materials specifically designed for your industry and professional needs. No template curriculum — everything is tailor-made based on your current proficiency.",
-        step3_badge: "Step Three",
-        step3_title: "1-on-1 Intensive Session",
-        step3_desc: "Learn directly with a mentor through private, focused, and interactive sessions. Real practice, real scenario, real progress.",
-        step4_badge: "Step Four",
-        step4_title: "Evaluation & Follow Up",
-        step4_desc: "Progress is monitored, evaluated, and adjusted to ensure your growth is optimal over time.",
-
-        section_why_badge: "WHY ENGGROHO?",
-        section_why_title: "More Than Just an Ordinary English Course",
-        section_why_subtitle: "Enggroho comes with a different approach. We don't just teach grammar and vocabulary, but shape the way you think and communicate holistically in the professional world.",
-        why_main_desc: "Enggroho is a premier private English course specifically designed for professionals who want to improve their language skills for career advancement, international opportunities, or simply to enhance their overall communication skills.",
-        why_extra_desc1: "Unlike traditional language courses, we focus on practical English that you can apply immediately in your professional life. Our approach breaks down complex grammar structures into manageable segments, making learning more accessible and more effective than conventional methods.",
-        why_extra_desc2: "With personalized one-on-one online sessions, flexible scheduling, and a customized curriculum, we ensure that your learning experience is specifically tailored to your needs, goals, and current proficiency level.",
-        why_feat1_title: "Online",
-        why_feat1_desc: "No commitment to be physically present",
-        why_feat2_title: "Flexible Schedule",
-        why_feat2_desc: "Set your own schedule via a form connected to your calendar",
-        why_feat3_title: "24/7 Support",
-        why_feat3_desc: "Q&A anytime via WhatsApp",
-        why_feat4_title: "Certificate",
-        why_feat4_desc: "Proof of competence for your career",
-        why_feat5_title: "Focus on Real Work World",
-        why_feat5_desc: "Learning materials designed directly from work scenarios: presentations, negotiations, business emails, and job interviews.",
-        why_feat6_title: "Mentoring, Not Just Teaching",
-        why_feat6_desc: "You don't learn alone. We become your communication partner even outside class hours.",
-        why_feat7_title: "Measurable & Transparent Progress",
-        why_feat7_desc: "Every session is assessed and evaluated. You can see for yourself how far you've come over time.",
-
-        section_fitur_title: "Everything You Need is Here",
-        fitur_card_large_title: "Ready for the Global Stage",
-        fitur_card_large_desc: "Not just fluent, but able to compete and negotiate in the international arena with full confidence.",
-        fitur_live_title: "Live Session",
-        fitur_live_desc: "Real-time face-to-face sessions",
-        fitur_custom_title: "Custom Material",
-        fitur_custom_desc: "Learning modules tailored to your industry",
-        fitur_practice_title: "Intensive Speaking Practice",
-        fitur_practice_desc: "Live speaking practice with mentors; focus on pronunciation, intonation, and confidence building in real work contexts.",
-        fitur_report_title: "Progress Report",
-        fitur_report_desc: "Monthly progress reports",
-        fitur_listening_title: "Listening Drill",
-        fitur_listening_desc: "Native accent listening materials",
-        fitur_writing_title: "Business Writing Mastery",
-        fitur_writing_desc: "Master the techniques of writing professional emails, business proposals, and reports in sharp and impactful English.",
-
-        section_benefits_badge: "KEY BENEFITS",
-        section_benefits_title: "Why You Should Join?",
-        benefit1: "Enhanced career prospects in multinational companies and international markets.",
-        benefit2: "Increased confidence in professional English communication.",
-        benefit3: "Ability to work remotely for international companies.",
-        benefit4: "Improved presentations, negotiations, and meeting participation skills.",
-        benefit5: "Better understanding of international business communication nuances.",
-        benefit6: "Practical English skills that can be immediately applied to your work.",
-        benefit7: "Personalized attention to address your specific language challenges.",
-        benefit8: "Time-efficient learning with focused, targeted instruction.",
-        benefit9: "Build a strong personal branding for global clients and partners.",
-
-        section_guarantee_badge: "OUR GUARANTEE",
-        section_guarantee_title: "Our Guarantee",
-        section_guarantee_subtitle: "Satisfaction Guarantee",
-        section_guarantee_desc1: "At Enggroho, we are committed to your success. We guarantee noticeable improvement in your English communication skills within the first <span class='font-bold text-secondary'>5 sessions</span>, or we'll provide additional sessions at no extra cost until you see progress.",
-        section_guarantee_desc2: "Our program is designed to deliver measurable results. Throughout your <span class='font-bold text-secondary'>15-session journey</span>, you'll receive consistent feedback and progress reports to ensure you're on track to achieve your language goals.",
-        section_guarantee_desc3: "We stand behind our teaching methodology and personalized approach, confident that our tailored program will help you achieve your professional English language objectives.",
-
-        section_cta_title: "Ready for the Next Big Move?",
-        section_cta_desc: "Don't let language be a barrier to your career. Start your communication transformation today with Enggroho.",
-
-        section_faq_title: "Frequently Asked Questions",
-        faq_q1: "Do I need to have basic English skills?",
-        faq_a1: "Not necessarily! Enggroho accepts all proficiency levels, from beginners to advanced. The curriculum will be personally tailored to your initial abilities, making the process comfortable and not overwhelming.",
-        faq_q2: "How long does it take to become fluent?",
-        faq_a2: "It depends on the intensity and consistency of learning. On average, our alumni start feeling significant improvement in the first 3 months with regular sessions 2-3 times a week.",
-        faq_q3: "Do you offer preparation for TOEFL, IELTS, BUMN, and similar tests?",
-        faq_a3: "Absolutely! We tailor your needs with a tailor-made curriculum for all types of tests that require English.",
-        faq_q4: "Are group classes available or only private?",
-        faq_a4: "We offer private 1-on-1 classes for maximum focus. Classes with more than 1 person make personal goals harder to achieve.",
-        faq_q5: "How is the payment system?",
-        faq_a5: "We offer flexible monthly packages. Please contact us via WhatsApp for a free consultation and to get the best offer for your needs.",
-        faq_q6: "Is the learning material suitable for my profession?",
-        faq_a6: "Very suitable. We have handled professionals from various industries such as IT, law, creative design, lecturers, marketing, chefs, athletes, and HR. The curriculum is always tailored to your work context.",
-
-        section_testi_title: "Alumni Success Stories",
-        section_testi_subtitle: "Real stories from those who have broken communication boundaries.",
-        testi_porto_btn: "View Alumni Portfolio",
-
-        mentor_badge: "Learn Directly from Language Experts",
-        mentor_name: "Agung Setyo Nugroho",
-        mentor_role: "Founder & Mentor",
-        mentor_desc: "With a strong academic background and extensive experience as a professional interpreter, Agung brings a unique perspective to every class: English is a tool of power, not just words.",
-        mentor_feat1_title: "Certified Professional Interpreter",
-        mentor_feat1_desc: "Experienced in international legal and medical fields.",
-        mentor_feat2_title: "Language Expert",
-        mentor_feat2_desc: "UNNES English Literature alumnus specializing in linguistics.",
-
-        footer_desc: "Elevating Professional Communication since 2020. Based in Indonesia for the world.",
-        footer_rights: "© 2025 Enggroho English Mastery. All Rights Reserved.",
-
-        just_now: "Just now",
-        social_proofs: [
-            "A Web Developer just signed up for a Free Consultation",
-            "5 alumni just got career promotions",
-            "An HR Manager just finished a 1-on-1 session",
-            "The 'Business Negotiation' material was just updated",
-            "A Lecturer just collaborated with global researchers"
-        ]
-    }
-};
+    ownKeys() {
+      return Object.keys(loadTranslations());
+    },
+    getOwnPropertyDescriptor() {
+      return { enumerable: true, configurable: true };
+    },
+  }
+);
 
 export const testimonials = [
     {
