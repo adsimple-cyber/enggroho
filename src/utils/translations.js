@@ -42,7 +42,7 @@ export const testimonials = [
         name: "Permadi Wisnu Aji Wardhani",
         role: "Head of Water Engineering, Multinational Company",
         text: "Bekerja sebagai staf senior pengolahan air, saya merasa karir saya telah stagnan. Setelah menyelesaikan program Enggroho, keterampilan komunikasi saya meningkat secara dramatis. Ini membawa saya ke lompatan karir ke posisi pemasaran di perusahaan multinasional yang lebih besar, di mana saya telah berhasil mendapatkan lebih banyak klien. Pengembalian investasi pada kursus ini luar biasa!",
-        image: "https://api.dicebear.com/7.x/avataaars/svg?seed=permadi"
+        image: "/testimoni/wisnu.jpeg"
     },
     {
         name: "Belva Amalia Destaty",
