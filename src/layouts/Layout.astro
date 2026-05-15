@@ -180,93 +180,7 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 					}, 3000);
 				}
 
-				// Navbar Active Highlight Logic
-				const navLinks = document.querySelectorAll("nav.md\\:hidden a");
-				const sections = [
-					"#hero",
-					"#metode",
-					"#fitur",
-					"#testimonials",
-				].map((id) => document.querySelector(id));
 
-				if (navLinks.length > 0 && sections.every((s) => s)) {
-					const updateActiveNav = () => {
-						const viewportHeight = window.innerHeight;
-						const triggerPoint = viewportHeight * 0.3; // 30% from top
-
-						let activeSectionId = "";
-						let minDistance = Infinity;
-
-						sections.forEach((section) => {
-							const rect = section.getBoundingClientRect();
-							// Distance from trigger point to the top of the section
-							const distance = Math.abs(rect.top - triggerPoint);
-
-							// If the section is currently covering the trigger point
-							if (
-								rect.top <= triggerPoint &&
-								rect.bottom >= triggerPoint
-							) {
-								activeSectionId = "#" + section.id;
-							}
-						});
-
-						// Fallback: if no section covers the trigger point exactly (e.g. gaps),
-						// find the one closest to it
-						if (!activeSectionId) {
-							sections.forEach((section) => {
-								const rect = section.getBoundingClientRect();
-								const distance = Math.abs(
-									rect.top - triggerPoint,
-								);
-								if (distance < minDistance) {
-									minDistance = distance;
-									activeSectionId = "#" + section.id;
-								}
-							});
-						}
-
-						if (activeSectionId) {
-							navLinks.forEach((link) => {
-								const wrapper =
-									link.querySelector(".nav-icon-wrapper");
-								const icon = link.querySelector("i");
-								const label = link.querySelector("span");
-
-								if (
-									link.getAttribute("href") ===
-									activeSectionId
-								) {
-									wrapper.classList.add("nav-active-circle");
-									icon.classList.add("active-icon");
-									label.classList.add("text-white");
-									label.classList.remove("text-white/40");
-									link.classList.add(
-										"opacity-100",
-										"scale-110",
-									);
-									link.classList.remove("opacity-50");
-								} else {
-									wrapper.classList.remove(
-										"nav-active-circle",
-									);
-									icon.classList.remove("active-icon");
-									label.classList.add("text-white/40");
-									label.classList.remove("text-white");
-									link.classList.remove(
-										"scale-110",
-										"opacity-100",
-									);
-									link.classList.add("opacity-50");
-								}
-							});
-						}
-					};
-
-					window.addEventListener("scroll", updateActiveNav);
-					window.addEventListener("resize", updateActiveNav);
-					updateActiveNav(); // Initial call
-				}
 			});
 		</script>
 
@@ -378,11 +292,12 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 			document.addEventListener("DOMContentLoaded", () => {
 				const mobileLinks = document.querySelectorAll('.mobile-nav-link');
 				const indicator = document.getElementById('mobile-indicator');
-				const sections = ['hero', 'metode', 'fitur', 'testimonials'];
+				// Sections in physical order on the page
+				const sections = ['hero', 'testimonials', 'metode', 'fitur'];
 
 				function updateMobileNav() {
 					let currentSection = 'hero';
-					const scrollPos = window.scrollY + 200;
+					const scrollPos = window.scrollY + 300; // Trigger slightly earlier for better feel
 
 					sections.forEach(id => {
 						const el = document.getElementById(id);
@@ -396,18 +311,21 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 						if (sectionId === currentSection) {
 							link.classList.add('active');
 							// Move indicator
-							const rect = link.getBoundingClientRect();
-							const navRect = link.parentElement.getBoundingClientRect();
-							indicator.style.left = (link.offsetLeft + (link.offsetWidth / 2) - 22) + 'px';
+							if (indicator) {
+								indicator.style.left = (link.offsetLeft + (link.offsetWidth / 2) - 22) + 'px';
+								indicator.style.opacity = '1';
+							}
 						} else {
 							link.classList.remove('active');
 						}
 					});
 				}
 
-				window.addEventListener('scroll', updateMobileNav);
+				window.addEventListener('scroll', updateMobileNav, { passive: true });
 				window.addEventListener('resize', updateMobileNav);
-				updateMobileNav();
+				
+				// Run after small delay to ensure layout is ready
+				setTimeout(updateMobileNav, 200);
 			});
 		</script>
 	</body>
