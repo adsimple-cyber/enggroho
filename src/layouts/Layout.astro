@@ -297,12 +297,16 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 
 				function updateMobileNav() {
 					let currentSection = 'hero';
-					const scrollPos = window.scrollY + 300; // Trigger slightly earlier for better feel
+					const scrollPos = window.scrollY + (window.innerHeight / 2.5); // Better trigger point
 
 					sections.forEach(id => {
 						const el = document.getElementById(id);
-						if (el && scrollPos >= el.offsetTop) {
-							currentSection = id;
+						if (el) {
+							const rect = el.getBoundingClientRect();
+							const absoluteTop = rect.top + window.scrollY;
+							if (scrollPos >= absoluteTop) {
+								currentSection = id;
+							}
 						}
 					});
 
@@ -310,6 +314,7 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 						const sectionId = link.getAttribute('data-section');
 						if (sectionId === currentSection) {
 							link.classList.add('active');
+							link.classList.add('scale-110');
 							// Move indicator
 							if (indicator) {
 								indicator.style.left = (link.offsetLeft + (link.offsetWidth / 2) - 22) + 'px';
@@ -317,6 +322,7 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 							}
 						} else {
 							link.classList.remove('active');
+							link.classList.remove('scale-110');
 						}
 					});
 				}
