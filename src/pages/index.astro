@@ -93,7 +93,7 @@ import { translations, testimonials } from "../utils/translations";
     <!-- Hero Section -->
     <section
         id="hero"
-        class="relative flex items-center pt-48 pb-24 px-6 overflow-hidden"
+        class="relative flex items-center pt-28 md:pt-48 pb-12 md:pb-20 px-6 overflow-hidden"
     >
         <div class="blob-bg -top-24 -right-24"></div>
         <div class="blob-bg -bottom-48 -left-24 opacity-60"></div>
@@ -239,9 +239,105 @@ import { translations, testimonials } from "../utils/translations";
             </div>
         </div>
     </section>
+    
+    <!-- Testimonials Section - Relocated & Marquee -->
+    <section id="testimonials" class="pt-0 pb-16 bg-cream overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 mb-10 flex flex-col items-center text-center" data-aos="fade-up">
+            <span class="text-secondary font-bold text-[10px] uppercase tracking-[0.3em] mb-6 px-4 py-1.5 rounded-full bg-accent" data-t="section_testi_badge">SUCCESS STORIES</span>
+            <h2 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight text-secondary" data-t="section_testi_title">
+                Suara Keberhasilan <span class="text-primary italic">Alumni</span>
+            </h2>
+            <p class="text-secondary/70 text-lg font-light max-w-2xl" data-t="section_testi_desc">
+                Kisah nyata dari mereka yang telah mendobrak batasan komunikasi.
+            </p>
+        </div>
+
+        <div class="relative w-full overflow-hidden marquee-container">
+            <div class="flex marquee-content gap-6 py-12">
+                {/* Menampilkan testimonial dua kali untuk loop yang tidak terputus */}
+                {[...testimonials, ...testimonials].map((testi, index) => (
+                        <div
+                            class="testimonial-card glass-card p-6 w-[320px] md:w-[380px] shrink-0 flex flex-col justify-between hover:scale-[1.05] hover:rotate-[1.5deg] active:scale-[0.98] active:rotate-0 transition-all duration-500 hover:z-10 cursor-pointer"
+                            data-name={testi.name}
+                            data-role={testi.role}
+                            data-text={testi.text}
+                            data-image={testi.image}
+                        >
+                            <div>
+                                <div class="flex text-amber-400 mb-4 space-x-1 text-[10px]">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-lg text-secondary leading-relaxed font-light italic mb-6 line-clamp-4 md:line-clamp-none">
+                                    "{testi.text}"
+                                </p>
+                            </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="relative">
+                                <div class={`absolute inset-0 ${index % 2 === 0 ? 'bg-primary' : 'bg-secondary'} rounded-full rotate-6 -z-10 opacity-20`}></div>
+                                <img
+                                    src={testi.image}
+                                    class="w-12 h-12 rounded-full object-cover bg-accent border border-accent/30"
+                                    alt={testi.name}
+                                    loading="lazy"
+                                />
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-secondary tracking-tight text-lg">
+                                    {testi.name}
+                                </h4>
+                                <p class="text-secondary/60 text-xs font-medium">
+                                    {testi.role}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            
+            {/* Overlay gradien untuk efek fading di pinggir */}
+            <div class="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-cream to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-cream to-transparent z-10 pointer-events-none"></div>
+        </div>
+    </section>
+
+    <style>
+        .marquee-container {
+            cursor: grab;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .marquee-container:active {
+            cursor: grabbing;
+        }
+
+        .marquee-content {
+            width: fit-content;
+            will-change: transform;
+            display: flex;
+            user-select: none;
+        }
+
+        /* Hide Scrollbar */
+        .marquee-container {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .marquee-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .modal-enter {
+            animation: modalFadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+    </style>
 
     <!-- Methodology Section -->
-    <section id="approach" class="pt-32 pb-16 px-6 bg-cream overflow-hidden">
+    <section id="approach" class="pt-16 pb-16 px-6 bg-cream overflow-hidden">
         <div class="max-w-7xl mx-auto">
             <div
                 class="flex flex-col items-center text-center mb-16"
@@ -542,17 +638,22 @@ import { translations, testimonials } from "../utils/translations";
                             class="text-2xl font-bold mb-4 tracking-tight text-secondary text-left"
                             data-t="step2_title"
                         >
-                            Kurikulum Personal
+                            Kerjakan Tes Bahasa Inggris
                         </h3>
                         <p
-                            class="text-secondary font-light leading-relaxed text-left"
+                            class="text-secondary font-light leading-relaxed text-left mb-6"
                             data-t="step2_desc"
                         >
-                            Materi disusun khusus berdasarkan industri dan
-                            kebutuhan profesional Anda. Tidak ada kurikulum
-                            template, semuanya tailor-made yang bertumpu pada
-                            proficiency sekarang.
+                            Tes ini akan menentukan kurikulum yang paling cocok dengan kemahiran Bahasa Inggris Anda
                         </p>
+                        <a 
+                            href="https://assessment.corporate.ef.com/public/test/cf6c438b-1817-42a1-a6fb-80f4f8f3e701"
+                            target="_blank"
+                            class="btn-primary text-white px-6 py-3 rounded-2xl font-bold text-sm inline-flex items-center space-x-3 shadow-xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all mt-2"
+                        >
+                            <span data-t="step2_btn">Mulai Tes Sekarang</span>
+                            <i class="fas fa-external-link-alt text-[10px]"></i>
+                        </a>
                     </div>
                 </div>
 
@@ -575,29 +676,30 @@ import { translations, testimonials } from "../utils/translations";
                     </div>
                     <div class="ml-28 md:ml-0 md:w-[42%] md:pr-16">
                         <span
-                            class="text-[10px] uppercase font-bold tracking-widest text-rose-400 mb-2 block"
+                            class="text-[10px] uppercase font-bold tracking-widest text-primary mb-2 block"
                             data-t="step3_badge">Langkah Ketiga</span
                         >
                         <h3
                             class="text-2xl font-bold mb-4 tracking-tight text-secondary"
                             data-t="step3_title"
                         >
-                            Sesi Intensif 1-on-1
+                            Kurikulum Personal
                         </h3>
                         <p
                             class="text-secondary font-light leading-relaxed"
                             data-t="step3_desc"
                         >
-                            Belajar langsung dengan mentor melalui sesi privat
-                            yang fokus dan interaktif. Real practice, real
-                            scenario, real progress.
+                            Materi disusun khusus berdasarkan industri dan
+                            kebutuhan profesional Anda. Tidak ada kurikulum
+                            template, semuanya tailor-made yang bertumpu pada
+                            proficiency sekarang.
                         </p>
                     </div>
                 </div>
 
                 <!-- Step 4 -->
                 <div
-                    class="step-item relative flex items-start justify-end"
+                    class="step-item relative flex items-start justify-end mb-20 md:mb-28"
                     data-aos="fade-up"
                 >
                     <div
@@ -615,17 +717,56 @@ import { translations, testimonials } from "../utils/translations";
                     <div class="ml-28 md:ml-0 md:w-[42%] md:pl-16 md:text-left">
                         <span
                             class="text-[10px] uppercase font-bold tracking-widest text-rose-400 mb-2 block"
-                            data-t="step4_badge">Langkah Terakhir</span
+                            data-t="step4_badge">Langkah Keempat</span
                         >
                         <h3
                             class="text-2xl font-bold mb-4 tracking-tight text-secondary"
                             data-t="step4_title"
                         >
-                            Evaluasi & Follow Up
+                            Sesi Intensif 1-on-1
                         </h3>
                         <p
                             class="text-secondary font-light leading-relaxed"
                             data-t="step4_desc"
+                        >
+                            Belajar langsung dengan mentor melalui sesi privat
+                            yang fokus dan interaktif. Praktek nyata, skenario
+                            nyata, kemajuan nyata.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div
+                    class="step-item relative flex items-start"
+                    data-aos="fade-up"
+                >
+                    <div
+                        class="absolute left-8 md:left-1/2 -translate-x-1/2 z-10"
+                    >
+                        <div
+                            class="step-circle w-16 h-16 rounded-full bg-cream border-[3px] border-accent flex items-center justify-center text-2xl font-extrabold text-secondary font-heading transition-all duration-700 shadow-lg"
+                        >
+                            <span class="step-number">5</span>
+                            <i
+                                class="fas fa-check step-check hidden text-white text-xl"
+                            ></i>
+                        </div>
+                    </div>
+                    <div class="ml-28 md:ml-0 md:w-[42%] md:pr-16">
+                        <span
+                            class="text-[10px] uppercase font-bold tracking-widest text-rose-400 mb-2 block"
+                            data-t="step5_badge">Langkah Terakhir</span
+                        >
+                        <h3
+                            class="text-2xl font-bold mb-4 tracking-tight text-secondary"
+                            data-t="step5_title"
+                        >
+                            Evaluasi & Follow Up
+                        </h3>
+                        <p
+                            class="text-secondary font-light leading-relaxed"
+                            data-t="step5_desc"
                         >
                             Perkembangan dipantau, dievaluasi, dan disesuaikan
                             agar progres Anda makin optimal dari waktu ke waktu.
@@ -1031,93 +1172,7 @@ import { translations, testimonials } from "../utils/translations";
         </div>
     </section>
 
-    <!-- Testimonials Slider -->
-    <section id="testimonials" class="py-24 px-6 bg-[#fafbff]">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-20" data-aos="fade-right">
-                <h2
-                    class="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight"
-                    data-t="section_testi_title"
-                >
-                    Suara Keberhasilan <span class="text-primary italic"
-                        >Alumni</span
-                    >
-                </h2>
-                <p
-                    class="text-secondary text-lg font-light"
-                    data-t="section_testi_desc"
-                >
-                    Kisah nyata dari mereka yang telah mendobrak batasan
-                    komunikasi.
-                </p>
-            </div>
 
-            <div class="relative group">
-                <div class="testimonial-slider gap-8 pb-12" id="slider">
-                    {testimonials.map((testi, index) => (
-                        <div
-                            class="glass-card p-8 w-full md:w-[calc(33.333%-1.34rem)] shrink-0 scroll-snap-align-start flex flex-col justify-between hover:scale-[1.02] transition-transform"
-                            data-aos="fade-up"
-                            data-aos-delay={index * 50}
-                        >
-                            <div>
-                                <div class="flex text-amber-400 mb-8 space-x-1 text-xs">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                                </div>
-                                <p class="text-lg text-secondary leading-relaxed font-light italic mb-6">
-                                    "{testi.text}"
-                                </p>
-                            </div>
-                            <div class="flex items-center space-x-5">
-                                <div class="relative">
-                                    <div class={`absolute inset-0 ${index % 2 === 0 ? 'bg-primary' : 'bg-secondary'} rounded-full rotate-6 -z-10 opacity-20`}></div>
-                                    <img
-                                        src={testi.image}
-                                        class="w-14 h-14 rounded-full object-cover bg-accent"
-                                        alt={testi.name}
-                                        loading="lazy"
-                                    />
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-secondary tracking-tight text-lg">
-                                        {testi.name}
-                                    </h4>
-                                    <p class="text-secondary/60 text-xs font-medium">
-                                        {testi.role}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                <!-- Navigation Buttons -->
-                <button 
-                    id="prev-btn"
-                    class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 w-14 h-14 rounded-full bg-white shadow-xl flex items-center justify-center text-secondary hover:bg-primary hover:text-white transition-all z-20 hidden md:flex border border-accent"
-                    aria-label="Previous"
-                >
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button 
-                    id="next-btn"
-                    class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 w-14 h-14 rounded-full bg-white shadow-xl flex items-center justify-center text-secondary hover:bg-primary hover:text-white transition-all z-20 hidden md:flex border border-accent"
-                    aria-label="Next"
-                >
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-
-            <!-- Scroll Indicator -->
-            <div class="flex justify-center gap-2 mt-4 md:hidden">
-                <div class="w-2 h-2 rounded-full bg-primary"></div>
-                <div class="w-2 h-2 rounded-full bg-accent"></div>
-                <div class="w-2 h-2 rounded-full bg-accent"></div>
-            </div>
-
-
-        </div>
-    </section>
 
     <!-- Mentor Section -->
     <section id="mentor" class="py-24 px-6 bg-cream overflow-hidden">
@@ -1383,12 +1438,31 @@ import { translations, testimonials } from "../utils/translations";
     >
     </div>
     <!-- Language Toggle Mobile Floating -->
-    <div class="md:hidden fixed top-24 right-6 z-[60]">
-        <button
-            id="lang-toggle-mobile"
-            class="w-12 h-12 rounded-full bg-cream/90 backdrop-blur-md border border-accent shadow-lg flex items-center justify-center text-xs font-bold text-secondary transition-all active:scale-95 shadow-primary/20"
-            >EN</button
-        >
+    </div>
+
+    <!-- Testimonial Modal -->
+    <div id="testi-modal" class="fixed inset-0 z-[200] hidden">
+        <div class="absolute inset-0 bg-secondary/60 backdrop-blur-md" id="modal-overlay"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-lg glass-card p-8 modal-enter">
+            <button id="close-modal" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-accent flex items-center justify-center text-secondary hover:bg-primary hover:text-white transition-all">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="flex text-amber-400 mb-6 space-x-1 text-sm" id="modal-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            
+            <p id="modal-text" class="text-xl text-secondary leading-relaxed font-light italic mb-8">
+            </p>
+            
+            <div class="flex items-center space-x-5">
+                <img id="modal-image" src="" class="w-16 h-16 rounded-full object-cover bg-accent border-2 border-primary/20" alt="" />
+                <div>
+                    <h4 id="modal-name" class="font-extrabold text-secondary tracking-tight text-xl"></h4>
+                    <p id="modal-role" class="text-primary font-bold text-xs uppercase tracking-widest"></p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script is:inline define:vars={{ translations }}>
@@ -1434,18 +1508,122 @@ import { translations, testimonials } from "../utils/translations";
                     });
             });
         });
-        // Testimonial Slider Navigation
-        const slider = document.getElementById('slider');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
 
-        if (slider && prevBtn && nextBtn) {
-            nextBtn.addEventListener('click', () => {
-                slider.scrollBy({ left: 500, behavior: 'smooth' });
-            });
-            prevBtn.addEventListener('click', () => {
-                slider.scrollBy({ left: -500, behavior: 'smooth' });
-            });
+        // Testimonial Marquee & Modal Logic
+        const marqueeContainer = document.querySelector('.marquee-container');
+        const marqueeContent = document.querySelector('.marquee-content');
+        const modal = document.getElementById('testi-modal');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const closeModal = document.getElementById('close-modal');
+        
+        let isPaused = false;
+        let speed = 0.5; // Pixels per frame
+        let scrollPos = 0;
+        let isDragging = false;
+        let startX;
+        let scrollLeft;
+
+        function animate() {
+            if (!isPaused && !isDragging) {
+                scrollPos += speed;
+                const limit = marqueeContent.scrollWidth / 2;
+                
+                if (scrollPos >= limit) {
+                    scrollPos = 0;
+                }
+                
+                marqueeContainer.scrollLeft = scrollPos;
+            }
+            requestAnimationFrame(animate);
         }
+
+        // Mouse/Touch Events for Dragging
+        marqueeContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.pageX - marqueeContainer.offsetLeft;
+            scrollLeft = marqueeContainer.scrollLeft;
+            marqueeContainer.style.cursor = 'grabbing';
+        });
+
+        marqueeContainer.addEventListener('mouseleave', () => {
+            isDragging = false;
+            isPaused = false;
+            marqueeContainer.style.cursor = 'grab';
+        });
+
+        marqueeContainer.addEventListener('mouseup', () => {
+            isDragging = false;
+            isPaused = false;
+            marqueeContainer.style.cursor = 'grab';
+            scrollPos = marqueeContainer.scrollLeft;
+        });
+
+        marqueeContainer.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - marqueeContainer.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            marqueeContainer.scrollLeft = scrollLeft - walk;
+            scrollPos = marqueeContainer.scrollLeft;
+        });
+
+        // Touch Events
+        marqueeContainer.addEventListener('touchstart', (e) => {
+            isPaused = true;
+            isDragging = true;
+            startX = e.touches[0].pageX - marqueeContainer.offsetLeft;
+            scrollLeft = marqueeContainer.scrollLeft;
+        });
+
+        marqueeContainer.addEventListener('touchend', () => {
+            isDragging = false;
+            isPaused = false;
+            scrollPos = marqueeContainer.scrollLeft;
+        });
+
+        marqueeContainer.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const x = e.touches[0].pageX - marqueeContainer.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            marqueeContainer.scrollLeft = scrollLeft - walk;
+            scrollPos = marqueeContainer.scrollLeft;
+        });
+
+        // Pause on Hover
+        marqueeContainer.addEventListener('mouseenter', () => isPaused = true);
+        marqueeContainer.addEventListener('mouseleave', () => isPaused = false);
+
+        // Modal Logic
+        document.querySelectorAll('.testimonial-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                // If it was a drag, don't open modal
+                const dragDistance = startX ? Math.abs(startX - (e.pageX || e.touches?.[0]?.pageX || 0 - marqueeContainer.offsetLeft)) : 0;
+                if (dragDistance > 10) return;
+
+                const name = card.getAttribute('data-name');
+                const role = card.getAttribute('data-role');
+                const text = card.getAttribute('data-text');
+                const image = card.getAttribute('data-image');
+
+                document.getElementById('modal-name').innerText = name;
+                document.getElementById('modal-role').innerText = role;
+                document.getElementById('modal-text').innerText = `"${text}"`;
+                document.getElementById('modal-image').src = image;
+
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        const closeFunc = () => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        };
+
+        closeModal.addEventListener('click', closeFunc);
+        modalOverlay.addEventListener('click', closeFunc);
+
+        // Start Animation
+        requestAnimationFrame(animate);
     </script>
-</Layout>
+</Layout>ut>
