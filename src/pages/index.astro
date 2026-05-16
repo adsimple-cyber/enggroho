@@ -48,7 +48,7 @@ import { translations, testimonials } from "../utils/translations";
             <!-- Menu Navbar Tetap Ada -->
             <div class="hidden lg:flex space-x-10 font-semibold text-secondary">
                 <a
-                    href="#about"
+                    href="#why"
                     class="nav-link hover:text-primary"
                     data-t="nav_about">Tentang</a
                 >
@@ -71,8 +71,8 @@ import { translations, testimonials } from "../utils/translations";
 
             <!-- Call to Action -->
             <div class="flex items-center space-x-3 md:space-x-6">
-                <!-- Language Toggle Desktop -->
-                <div class="hidden lg:flex" id="lang-toggle-container">
+                <!-- Language Toggle -->
+                <div class="flex" id="lang-toggle-container">
                     <button
                         id="lang-toggle-desktop"
                         class="bg-accent px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300 text-secondary border border-accent hover:bg-accent"
@@ -142,14 +142,14 @@ import { translations, testimonials } from "../utils/translations";
                 <div class="flex flex-col sm:flex-row items-center gap-6 mb-10">
                     <a
                         href="https://wa.me/6287736696629?text=Halo%20saya%20ingin%20bertanya%20terkait%20Enggroho"
-                        class="btn-primary text-white px-10 py-4.5 rounded-3xl font-bold text-center text-lg w-full sm:w-auto shadow-2xl shadow-primary/20"
+                        class="btn-primary text-white px-8 py-3.5 rounded-2xl font-bold text-center text-base w-full sm:w-auto shadow-2xl shadow-primary/20"
                         data-t="hero_cta"
                     >
                         Mulai Perjalanan Anda
                     </a>
                     <a
                         href="https://calendly.com/enggroho/linkdln-session-career-talk"
-                        class="glass-card px-10 py-4.5 rounded-3xl font-bold text-center text-lg w-full sm:w-auto text-secondary hover:bg-white hover:shadow-lg transition-all border-2 border-primary/20"
+                        class="glass-card px-8 py-3.5 rounded-2xl font-bold text-center text-base w-full sm:w-auto text-secondary hover:bg-white hover:shadow-lg transition-all border-2 border-primary/20"
                         data-t="hero_calendly"
                     >
                         Jadwalkan Pertemuan
@@ -240,6 +240,73 @@ import { translations, testimonials } from "../utils/translations";
         </div>
     </section>
     
+    <!-- Stats / Impact Section -->
+    <section class="pt-8 pb-24 px-6 bg-cream overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div
+                class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
+                data-aos="fade-up"
+            >
+                <div class="text-center p-8 glass-card">
+                    <p
+                        class="text-4xl md:text-5xl font-extrabold text-primary mb-3 font-heading"
+                        data-t="stats_alumni_val"
+                    >
+                        50+
+                    </p>
+                    <p
+                        class="text-sm text-secondary font-medium uppercase tracking-wider"
+                        data-t="stats_alumni"
+                    >
+                        Alumni Aktif
+                    </p>
+                </div>
+                <div class="text-center p-8 glass-card">
+                    <p
+                        class="text-4xl md:text-5xl font-extrabold text-secondary mb-3 font-heading"
+                        data-t="stats_experience_val"
+                    >
+                        5+
+                    </p>
+                    <p
+                        class="text-sm text-secondary font-medium uppercase tracking-wider"
+                        data-t="stats_experience"
+                    >
+                        Tahun Pengalaman
+                    </p>
+                </div>
+                <div class="text-center p-8 glass-card">
+                    <p
+                        class="text-4xl md:text-5xl font-extrabold text-primary mb-3 font-heading"
+                        data-t="stats_satisfaction_val"
+                    >
+                        98%
+                    </p>
+                    <p
+                        class="text-sm text-secondary font-medium uppercase tracking-wider"
+                        data-t="stats_satisfaction"
+                    >
+                        Tingkat Kepuasan
+                    </p>
+                </div>
+                <div class="text-center p-8 glass-card">
+                    <p
+                        class="text-4xl md:text-5xl font-extrabold text-secondary mb-3 font-heading"
+                        data-t="stats_industries_val"
+                    >
+                        15+
+                    </p>
+                    <p
+                        class="text-sm text-secondary font-medium uppercase tracking-wider"
+                        data-t="stats_industries"
+                    >
+                        Industri Dilayani
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Testimonials Section - Relocated & Marquee -->
     <section id="testimonials" class="pt-0 pb-16 bg-cream overflow-hidden">
         <div class="max-w-7xl mx-auto px-6 mb-10 flex flex-col items-center text-center" data-aos="fade-up">
@@ -445,14 +512,12 @@ import { translations, testimonials } from "../utils/translations";
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" data-aos="fade-left">
-                    {[1, 2, 3, 4, 5, 6, 7].map((num) => (
+                    {[5, 6, 7, 8].map((num) => (
                         <div 
-                            class={`glass-card p-6 border border-secondary/5 hover:border-primary/20 transition-all ${
-                                num === 7 ? "sm:col-span-2 sm:max-w-[calc(50%-12px)] sm:mx-auto w-full" : ""
-                            }`}
+                            class="glass-card p-6 border border-secondary/5 hover:border-primary/20 transition-all"
                         >
                             <div class="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-primary mb-4">
-                                <i class={`fas ${num === 1 ? 'fa-video' : num === 2 ? 'fa-calendar-alt' : num === 3 ? 'fa-headset' : num === 4 ? 'fa-certificate' : num === 5 ? 'fa-briefcase' : num === 6 ? 'fa-user-tie' : 'fa-chart-line'}`}></i>
+                                <i class={`fas ${num === 5 ? 'fa-briefcase' : num === 6 ? 'fa-user-tie' : num === 7 ? 'fa-chart-line' : 'fa-sync-alt'}`}></i>
                             </div>
                             <h4 class="font-bold text-secondary mb-2" data-t={`why_feat${num}_title`}>Feature {num}</h4>
                             <p class="text-xs text-secondary/70 font-light" data-t={`why_feat${num}_desc`}>Description {num}</p>
@@ -463,72 +528,7 @@ import { translations, testimonials } from "../utils/translations";
         </div>
     </section>
 
-    <!-- Stats / Impact Section -->
-    <section class="pt-8 pb-24 px-6 bg-cream overflow-hidden">
-        <div class="max-w-7xl mx-auto">
-            <div
-                class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
-                data-aos="fade-up"
-            >
-                <div class="text-center p-8 glass-card">
-                    <p
-                        class="text-4xl md:text-5xl font-extrabold text-primary mb-3 font-heading"
-                        data-t="stats_alumni_val"
-                    >
-                        50+
-                    </p>
-                    <p
-                        class="text-sm text-secondary font-medium uppercase tracking-wider"
-                        data-t="stats_alumni"
-                    >
-                        Alumni Aktif
-                    </p>
-                </div>
-                <div class="text-center p-8 glass-card">
-                    <p
-                        class="text-4xl md:text-5xl font-extrabold text-secondary mb-3 font-heading"
-                        data-t="stats_experience_val"
-                    >
-                        5+
-                    </p>
-                    <p
-                        class="text-sm text-secondary font-medium uppercase tracking-wider"
-                        data-t="stats_experience"
-                    >
-                        Tahun Pengalaman
-                    </p>
-                </div>
-                <div class="text-center p-8 glass-card">
-                    <p
-                        class="text-4xl md:text-5xl font-extrabold text-primary mb-3 font-heading"
-                        data-t="stats_satisfaction_val"
-                    >
-                        98%
-                    </p>
-                    <p
-                        class="text-sm text-secondary font-medium uppercase tracking-wider"
-                        data-t="stats_satisfaction"
-                    >
-                        Tingkat Kepuasan
-                    </p>
-                </div>
-                <div class="text-center p-8 glass-card">
-                    <p
-                        class="text-4xl md:text-5xl font-extrabold text-secondary mb-3 font-heading"
-                        data-t="stats_industries_val"
-                    >
-                        15+
-                    </p>
-                    <p
-                        class="text-sm text-secondary font-medium uppercase tracking-wider"
-                        data-t="stats_industries"
-                    >
-                        Industri Dilayani
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
+
 
     <!-- How It Works Section -->
     <section class="py-24 px-6 bg-cream overflow-hidden" id="metode">
@@ -773,187 +773,7 @@ import { translations, testimonials } from "../utils/translations";
         </div>
     </section>
 
-    <!-- Mentor Profile -->
-    <section id="about" class="py-24 px-6 bg-[#fafbff] overflow-hidden">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid lg:grid-cols-2 gap-20 items-center">
-                <div data-aos="fade-right">
-                    <span
-                        class="text-primary font-bold text-xs uppercase tracking-[0.3em] mb-6 inline-block px-4 py-1.5 rounded-full bg-accent"
-                        data-t="section_why_badge">Kenapa Enggroho?</span
-                    >
-                    <h2
-                        class="text-4xl md:text-5xl font-extrabold text-secondary tracking-tight mt-4 mb-8"
-                        data-t="section_why_title"
-                    >
-                        Bukan Sekadar Kursus Bahasa Inggris <span
-                            class="gradient-text italic">Biasa</span
-                        >
-                    </h2>
-                    <p
-                        class="text-lg text-secondary mb-12 leading-relaxed font-light"
-                        data-t="section_why_desc"
-                    >
-                        Enggroho hadir dengan pendekatan yang berbeda. Kami
-                        tidak hanya mengajarkan grammar dan vocabulary, tapi
-                        membentuk cara berpikir dan berkomunikasi Anda secara
-                        menyeluruh di dunia profesional.
-                    </p>
 
-                    <div class="space-y-8">
-                        <div class="flex items-start space-x-5">
-                            <div
-                                class="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white text-lg shrink-0 shadow-lg shadow-primary/20"
-                            >
-                                <i class="fas fa-bullseye"></i>
-                            </div>
-                            <div>
-                                <h4
-                                    class="font-bold text-secondary text-lg mb-2"
-                                    data-t="why_feat1_title"
-                                >
-                                    Fokus ke Dunia Kerja Nyata
-                                </h4>
-                                <p
-                                    class="text-secondary font-light leading-relaxed"
-                                    data-t="why_feat1_desc"
-                                >
-                                    Materi belajar dirancang langsung dari
-                                    skenario pekerjaan: presentasi, negosiasi,
-                                    email bisnis, hingga interview kerja.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-5">
-                            <div
-                                class="w-12 h-12 bg-secondary rounded-2xl flex items-center justify-center text-white text-lg shrink-0 shadow-lg shadow-secondary"
-                            >
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div>
-                                <h4
-                                    class="font-bold text-secondary text-lg mb-2"
-                                    data-t="why_feat2_title"
-                                >
-                                    Mentoring, Bukan Sekadar Mengajar
-                                </h4>
-                                <p
-                                    class="text-secondary font-light leading-relaxed"
-                                    data-t="why_feat2_desc"
-                                >
-                                    Anda tidak belajar sendirian. Kami menjadi
-                                    partner komunikasi Anda bahkan di luar jam
-                                    kelas.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-5">
-                            <div
-                                class="w-12 h-12 bg-secondary rounded-2xl flex items-center justify-center text-white text-lg shrink-0 shadow-lg shadow-secondary/20"
-                            >
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div>
-                                <h4
-                                    class="font-bold text-secondary text-lg mb-2"
-                                    data-t="why_feat3_title"
-                                >
-                                    Progress Terukur & Transparan
-                                </h4>
-                                <p
-                                    class="text-secondary font-light leading-relaxed"
-                                    data-t="why_feat3_desc"
-                                >
-                                    Setiap sesi dinilai dan dievaluasi. Anda
-                                    bisa melihat sendiri seberapa jauh kemajuan
-                                    Anda dari waktu ke waktu.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="relative" data-aos="fade-left">
-                    <div
-                        class="absolute -top-10 -right-10 w-72 h-72 bg-accent/50 rounded-full blur-3xl -z-10"
-                    >
-                    </div>
-                    <div class="grid grid-cols-2 gap-6">
-
-                        <div
-                            class="glass-card p-8 text-center hover:border-accent"
-                            data-aos="zoom-in"
-                            data-aos-delay="200"
-                        >
-                            <div
-                                class="w-14 h-14 bg-accent text-secondary rounded-2xl flex items-center justify-center mb-5 text-2xl mx-auto"
-                            >
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <h4
-                                class="font-bold text-secondary mb-2"
-                                data-t="why_grid2_title"
-                            >
-                                Jadwal Fleksibel
-                            </h4>
-                            <p
-                                class="text-xs text-secondary font-light"
-                                data-t="why_grid2_desc"
-                            >
-                                Pagi, siang, malam — pilih sendiri
-                            </p>
-                        </div>
-                        <div
-                            class="glass-card p-8 text-center hover:border-accent"
-                            data-aos="zoom-in"
-                            data-aos-delay="300"
-                        >
-                            <div
-                                class="w-14 h-14 bg-accent text-secondary rounded-2xl flex items-center justify-center mb-5 text-2xl mx-auto"
-                            >
-                                <i class="fas fa-headset"></i>
-                            </div>
-                            <h4
-                                class="font-bold text-secondary mb-2"
-                                data-t="why_grid3_title"
-                            >
-                                Support 24/7
-                            </h4>
-                            <p
-                                class="text-xs text-secondary font-light"
-                                data-t="why_grid3_desc"
-                            >
-                                Tanya jawab kapan saja via WhatsApp
-                            </p>
-                        </div>
-                        <div
-                            class="glass-card p-8 text-center hover:border-accent col-span-2 sm:max-w-[calc(50%-12px)] mx-auto w-full"
-                            data-aos="zoom-in"
-                            data-aos-delay="400"
-                        >
-                            <div
-                                class="w-14 h-14 bg-accent text-secondary rounded-2xl flex items-center justify-center mb-5 text-2xl mx-auto"
-                            >
-                                <i class="fas fa-certificate"></i>
-                            </div>
-                            <h4
-                                class="font-bold text-secondary mb-2"
-                                data-t="why_grid4_title"
-                            >
-                                Sertifikat
-                            </h4>
-                            <p
-                                class="text-xs text-secondary font-light"
-                                data-t="why_grid4_desc"
-                            >
-                                Bukti kompetensi untuk karier Anda
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Bento Grid Section -->
     <section id="fitur" class="py-24 px-6 bg-cream overflow-hidden">
@@ -981,7 +801,7 @@ import { translations, testimonials } from "../utils/translations";
                 <!-- Regular Cards -->
                 <div class="glass-card p-8 group hover:border-primary/20 transition-all" data-aos="fade-left">
                     <div class="w-12 h-12 bg-accent text-primary rounded-xl flex items-center justify-center text-xl mb-6">
-                        <i class="fas fa-video"></i>
+                        <i class="fas fa-pen-nib"></i>
                     </div>
                     <h4
                         class="font-bold text-secondary text-lg mb-2"
@@ -997,6 +817,38 @@ import { translations, testimonials } from "../utils/translations";
                         bisnis, dan laporan dalam bahasa Inggris yang tajam
                         dan berbobot.
                     </p>
+                </div>
+
+                <div class="glass-card p-8 group hover:border-primary/20 transition-all" data-aos="fade-up">
+                    <div class="w-12 h-12 bg-accent text-primary rounded-xl flex items-center justify-center text-xl mb-6">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h4
+                        class="font-bold text-secondary text-lg mb-2"
+                        data-t="fitur_live_title"
+                    >
+                        Live Session
+                    </h4>
+                    <p
+                        class="text-sm text-secondary font-light"
+                        data-t="fitur_live_desc"
+                    >
+                        Sesi tatap muka real-time dengan mentor untuk bimbingan langsung dan interaktif.
+                    </p>
+                </div>
+
+                <!-- Large Card 2 -->
+                <div class="md:col-span-2 glass-card p-10 bg-gradient-to-bl from-white to-primary/10 relative overflow-hidden group" data-aos="fade-left">
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 bg-accent text-primary rounded-2xl flex items-center justify-center text-2xl mb-8 shadow-xl shadow-primary/10">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3 class="text-3xl font-extrabold text-secondary mb-6 tracking-tight" data-t="fitur_practice_title">Speaking Practice Intensif</h3>
+                        <p class="text-secondary text-lg font-light leading-relaxed max-w-xl" data-t="fitur_practice_desc">
+                            Latihan berbicara langsung dengan mentor; fokus pronunciation, intonasi, dan confidence building dalam konteks kerja nyata.
+                        </p>
+                    </div>
+                    <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl transition-transform group-hover:scale-110"></div>
                 </div>
                 </div>
             </div>
@@ -1622,4 +1474,4 @@ import { translations, testimonials } from "../utils/translations";
         // Start Animation
         requestAnimationFrame(animate);
     </script>
-</Layout>ut>
+</Layout>
