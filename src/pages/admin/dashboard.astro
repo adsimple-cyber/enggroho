@@ -27,7 +27,6 @@ const iconMap: Record<string, string> = {
   chat: "💬", star2: "⭐", user: "👨‍🏫", down: "🔻",
 };
 
-// Build list of all keys yang terdaftar di sections (untuk script client)
 const allKeys: string[] = [];
 const richTextKeyList: string[] = [];
 for (const section of sections) {
@@ -39,7 +38,6 @@ for (const section of sections) {
   }
 }
 
-// Normalize content: pastikan setiap key ada di kedua bahasa
 const normalizedContent = {
   id: {} as Record<string, string>,
   en: {} as Record<string, string>,
@@ -48,6 +46,12 @@ for (const key of allKeys) {
   normalizedContent.id[key] = typeof content.id[key] === "string" ? content.id[key] : "";
   normalizedContent.en[key] = typeof content.en[key] === "string" ? content.en[key] : "";
 }
+
+const imageInfo = [
+  { key: "hero", label: "Hero / Foto Utama", hint: "Gambar besar di section pembuka landing page", aspect: "16/10" },
+  { key: "mentor", label: "Foto Mentor", hint: "Foto profil Agung di section Mentor", aspect: "3/4" },
+  { key: "og", label: "OG Image", hint: "Preview saat link dibagikan ke social media (1200x630)", aspect: "1200/630" },
+];
 ---
 
 <!doctype html>
@@ -55,160 +59,216 @@ for (const key of allKeys) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Enggroho CMS - Dashboard</title>
+    <title>Enggroho CMS</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
     <style>
       * { box-sizing: border-box; margin: 0; padding: 0; }
       :root {
         --primary: #FF6D1F;
+        --primary-dark: #e55a0a;
         --primary-light: #fff3ee;
-        --bg: #f7f4f0;
+        --bg: #faf7f4;
         --card: #ffffff;
-        --border: #e8e3de;
+        --border: #ebe5dd;
         --border-strong: #d4cfc8;
         --text: #1f1f1f;
+        --text-soft: #555555;
         --muted: #8a8278;
-        --success: #2f855a;
-        --success-bg: #d4edda;
-        --warning: #b7791f;
-        --warning-bg: #fff3cd;
-        --error: #c53030;
-        --error-bg: #fed7d7;
+        --success: #16a34a;
+        --success-bg: #dcfce7;
+        --warning: #ca8a04;
+        --warning-bg: #fef9c3;
+        --error: #dc2626;
+        --error-bg: #fee2e2;
+        --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+        --shadow-lg: 0 12px 32px rgba(0,0,0,0.10);
       }
-      body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
-      .header { background: white; border-bottom: 1px solid var(--border); padding: 0 28px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-      .header-left { display: flex; align-items: center; gap: 12px; }
-      .header-badge { background: var(--primary-light); color: var(--primary); font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px; align-self: center; }
-      .header-right { display: flex; align-items: center; gap: 10px; }
-      .btn-sm { padding: 8px 14px; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border-strong); background: white; color: var(--text); text-decoration: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
-      .btn-sm:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
-      .btn-sm.danger:hover { border-color: var(--error); color: var(--error); background: var(--error-bg); }
-      .layout { display: flex; min-height: calc(100vh - 64px); }
-      .sidebar { width: 240px; background: white; border-right: 1px solid var(--border); padding: 20px 0; position: sticky; top: 64px; height: calc(100vh - 64px); overflow-y: auto; flex-shrink: 0; }
-      .sidebar-title { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; padding: 0 20px 12px; }
-      .sidebar-link { display: flex; align-items: center; gap: 10px; padding: 9px 20px; font-size: 13px; font-weight: 500; color: var(--text); text-decoration: none; border-left: 3px solid transparent; transition: all 0.15s; cursor: pointer; }
-      .sidebar-link:hover { background: var(--bg); color: var(--primary); }
-      .sidebar-link.active { border-left-color: var(--primary); background: var(--primary-light); color: var(--primary); font-weight: 700; }
-      .sidebar-icon { font-size: 15px; width: 20px; text-align: center; }
-      .main { flex: 1; padding: 28px 36px 140px; max-width: 920px; width: 100%; }
-      .lang-tabs { display: flex; gap: 4px; margin-bottom: 24px; background: white; padding: 4px; border-radius: 10px; border: 1px solid var(--border); width: fit-content; }
-      .lang-tab { padding: 8px 20px; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.2s; }
-      .lang-tab.active { background: var(--primary); color: white; }
-      .section-card { background: white; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; overflow: visible; }
-      .section-header { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
-      .section-header.collapsed { border-bottom: none; }
-      .section-header-left { display: flex; align-items: center; gap: 10px; }
-      .section-header h2 { font-size: 15px; font-weight: 700; }
-      .section-icon { font-size: 18px; }
-      .section-toggle { font-size: 10px; color: var(--muted); transition: transform 0.2s; }
-      .section-toggle.open { transform: rotate(180deg); }
-      .section-body { padding: 8px 22px 22px; display: none; }
-      .section-body.open { display: block; }
-      .group { padding: 18px 0; border-top: 1px solid var(--border); }
+      html, body { height: 100%; overflow-x: hidden; }
+      body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+
+      /* ─── HEADER ──────────────────────────────────────── */
+      .header { background: white; border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-sm); }
+      .header-left { display: flex; align-items: center; gap: 14px; }
+      .header-badge { background: var(--primary-light); color: var(--primary); font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px; }
+      .header-right { display: flex; align-items: center; gap: 8px; }
+      .btn-ghost { padding: 7px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid transparent; background: transparent; color: var(--text-soft); text-decoration: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+      .btn-ghost:hover { background: var(--bg); color: var(--text); }
+      .btn-ghost.danger:hover { background: var(--error-bg); color: var(--error); }
+      .btn-icon { padding: 7px; border-radius: 8px; cursor: pointer; border: none; background: transparent; color: var(--text-soft); transition: all 0.15s; display: inline-flex; }
+      .btn-icon:hover { background: var(--bg); color: var(--text); }
+
+      /* ─── TABS NAV ─────────────────────────────────────── */
+      .tabs-nav { background: white; border-bottom: 1px solid var(--border); padding: 0 24px; position: sticky; top: 60px; z-index: 49; }
+      .tabs-inner { display: flex; gap: 4px; max-width: 100%; overflow-x: auto; scrollbar-width: thin; }
+      .tabs-inner::-webkit-scrollbar { height: 0; }
+      .tab-btn { padding: 14px 18px; border: none; background: transparent; color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; }
+      .tab-btn:hover { color: var(--text); }
+      .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+      .tab-icon { font-size: 16px; }
+
+      /* ─── MAIN CONTENT ─────────────────────────────────── */
+      .container { max-width: 1100px; margin: 0 auto; padding: 28px 24px 100px; }
+      .tab-panel { display: none; }
+      .tab-panel.active { display: block; animation: fadeIn 0.2s ease; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+      /* ─── PAGE HEADER ──────────────────────────────────── */
+      .page-header { margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+      .page-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+      .page-subtitle { font-size: 13px; color: var(--muted); }
+
+      /* ─── LANG TOGGLE ──────────────────────────────────── */
+      .lang-tabs { display: inline-flex; gap: 2px; background: white; padding: 3px; border-radius: 9px; border: 1px solid var(--border); }
+      .lang-tab { padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all 0.15s; }
+      .lang-tab.active { background: var(--primary); color: white; box-shadow: var(--shadow-sm); }
+
+      /* ─── CARD ─────────────────────────────────────────── */
+      .card { background: white; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 16px; overflow: hidden; }
+      .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+      .card-header.collapsed { border-bottom: none; }
+      .card-header-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+      .card-header h3 { font-size: 14px; font-weight: 700; color: var(--text); }
+      .card-icon { font-size: 17px; }
+      .card-meta { font-size: 11px; color: var(--muted); margin-left: auto; padding-right: 12px; }
+      .card-toggle { font-size: 11px; color: var(--muted); transition: transform 0.2s; flex-shrink: 0; }
+      .card-toggle.open { transform: rotate(180deg); }
+      .card-body { padding: 8px 20px 20px; display: none; }
+      .card-body.open { display: block; }
+
+      /* ─── GROUP ────────────────────────────────────────── */
+      .group { padding: 16px 0; border-top: 1px solid var(--border); }
       .group:first-child { border-top: none; padding-top: 8px; }
-      .group-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; padding-bottom: 6px; }
-      .field { margin-bottom: 16px; position: relative; }
+      .group-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+
+      /* ─── FIELD ────────────────────────────────────────── */
+      .field { margin-bottom: 14px; }
       .field:last-child { margin-bottom: 0; }
       .field-label-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
       .field-label { font-size: 13px; font-weight: 600; color: var(--text); }
-      .field-hint { font-size: 11px; color: var(--muted); font-weight: 400; font-style: italic; margin-top: 4px; display: block; }
-      .field-badge { font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; display: none; }
+      .field-hint { font-size: 11px; color: var(--muted); margin-top: 4px; display: block; }
+      .field-badge { font-size: 9px; padding: 2px 6px; border-radius: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: none; }
       .field-badge.show { display: inline-block; }
       .field-badge.modified { background: var(--warning-bg); color: var(--warning); }
       .field-badge.saved { background: var(--success-bg); color: var(--success); }
-      input[type="text"], textarea { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border-strong); border-radius: 8px; font-size: 14px; font-family: inherit; color: var(--text); outline: none; transition: border-color 0.15s, background 0.15s; resize: vertical; background: white; }
-      input[type="text"]:focus, textarea:focus { border-color: var(--primary); }
-      input.modified, textarea.modified { border-color: #ffc107; background: #fffdf5; }
-      .quill-wrap { border: 1.5px solid var(--border-strong); border-radius: 8px; transition: border-color 0.15s, background 0.15s; position: relative; background: white; }
-      .quill-wrap.modified { border-color: #ffc107; background: #fffdf5; }
+
+      input[type="text"], input[type="number"], input[type="password"], textarea {
+        width: 100%; padding: 9px 12px; border: 1.5px solid var(--border-strong); border-radius: 8px;
+        font-size: 14px; font-family: inherit; color: var(--text); outline: none;
+        transition: border-color 0.15s, background 0.15s; background: white;
+      }
+      input:focus, textarea:focus { border-color: var(--primary); }
+      input.modified, textarea.modified { border-color: #fbbf24; background: #fffbeb; }
+      textarea { resize: vertical; min-height: 80px; }
+
+      /* ─── QUILL ────────────────────────────────────────── */
+      .quill-wrap { border: 1.5px solid var(--border-strong); border-radius: 8px; transition: border-color 0.15s, background 0.15s; background: white; overflow: hidden; }
+      .quill-wrap.modified { border-color: #fbbf24; background: #fffbeb; }
       .quill-wrap:focus-within { border-color: var(--primary); }
-      .quill-wrap .ql-toolbar.ql-snow { border: none; border-bottom: 1px solid var(--border); background: #fafafa; border-radius: 8px 8px 0 0; position: relative; z-index: 2; }
+      .quill-wrap .ql-toolbar.ql-snow { border: none; border-bottom: 1px solid var(--border); background: #fafafa; }
       .quill-wrap .ql-container.ql-snow { border: none; font-size: 14px; font-family: inherit; }
-      .quill-wrap .ql-editor { min-height: 90px; padding: 10px 13px; }
-      .quill-wrap .ql-picker.ql-expanded .ql-picker-options { z-index: 50 !important; position: absolute; }
+      .quill-wrap .ql-editor { min-height: 80px; padding: 10px 13px; }
+      .quill-wrap .ql-picker.ql-expanded .ql-picker-options { z-index: 50 !important; }
       .ql-snow .ql-tooltip { z-index: 60 !important; }
-      .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; z-index: 99; box-shadow: 0 -2px 12px rgba(0,0,0,0.05); }
-      .save-status { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
-      .save-status.dirty { color: var(--warning); font-weight: 600; }
-      .save-status.success { color: var(--success); font-weight: 600; }
-      .save-status.error { color: var(--error); font-weight: 600; }
-      .btn-save { padding: 11px 26px; background: var(--primary); color: white; border: none; border-radius: 9px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
-      .btn-save:hover { background: #e55a0a; }
-      .btn-save:disabled { background: #ccc; cursor: not-allowed; }
-      .toast { position: fixed; top: 80px; right: 24px; padding: 14px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 200; transform: translateX(130%); transition: transform 0.3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.12); min-width: 240px; }
+
+      /* ─── SAVE BAR ─────────────────────────────────────── */
+      .save-bar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: white; border: 1px solid var(--border); border-radius: 14px; padding: 10px 14px 10px 20px; display: none; align-items: center; gap: 16px; z-index: 80; box-shadow: var(--shadow-lg); min-width: 320px; }
+      .save-bar.show { display: flex; }
+      .save-status-text { font-size: 13px; color: var(--warning); font-weight: 600; flex: 1; }
+      .btn-primary { padding: 9px 18px; background: var(--primary); color: white; border: none; border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+      .btn-primary:hover { background: var(--primary-dark); }
+      .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+      .btn-secondary { padding: 9px 16px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+      .btn-secondary:hover { background: var(--border); }
+
+      /* ─── TOAST ────────────────────────────────────────── */
+      .toast { position: fixed; top: 76px; right: 20px; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 200; transform: translateX(130%); transition: transform 0.3s ease; box-shadow: var(--shadow-lg); min-width: 240px; max-width: 360px; display: flex; align-items: flex-start; gap: 10px; }
       .toast.show { transform: translateX(0); }
-      .toast.success { background: var(--success-bg); color: var(--success); border: 1px solid #c3e6cb; }
-      .toast.error { background: var(--error-bg); color: var(--error); border: 1px solid #f5c6cb; }
+      .toast.success { background: var(--success-bg); color: var(--success); border: 1px solid #86efac; }
+      .toast.error { background: var(--error-bg); color: var(--error); border: 1px solid #fca5a5; }
       .toast.info { background: var(--primary-light); color: var(--primary); border: 1px solid #ffd6c0; }
-      .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px; }
-      .modal-overlay.show { display: flex; }
-      .modal { background: white; border-radius: 14px; padding: 28px; width: 100%; max-width: 440px; box-shadow: 0 24px 60px rgba(0,0,0,0.2); }
-      .modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
-      .modal p { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
-      .modal label { display: block; font-size: 12px; font-weight: 600; color: #444; margin-bottom: 5px; }
-      .modal input { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border-strong); border-radius: 8px; font-size: 14px; outline: none; margin-bottom: 14px; color: var(--text); }
-      .modal input:focus { border-color: var(--primary); }
-      .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
-      .modal-actions button { padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: all 0.15s; }
-      .modal-actions .btn-cancel { background: var(--bg); color: var(--text); }
-      .modal-actions .btn-cancel:hover { background: var(--border); }
-      .modal-actions .btn-confirm { background: var(--primary); color: white; }
-      .modal-actions .btn-confirm:hover { background: #e55a0a; }
-      .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 6px; }
-      @keyframes spin { to { transform: rotate(360deg); } }
-      .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; display: inline-block; }
-      .img-card { border: 1.5px solid var(--border-strong); border-radius: 10px; overflow: hidden; background: white; }
-      .img-preview { width: 100%; height: 180px; object-fit: cover; display: block; background: var(--bg); }
-      .img-info { padding: 12px 14px; }
-      .img-label { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-      .img-url { font-size: 11px; color: var(--muted); word-break: break-all; margin-bottom: 10px; }
-      .img-upload-btn { display: inline-block; padding: 7px 14px; background: var(--primary); color: white; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
-      .img-upload-btn:hover { background: #e55a0a; }
+
+      /* ─── MODAL ────────────────────────────────────────── */
+      .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; }
+      .modal-overlay.show { display: flex; animation: fadeIn 0.15s ease; }
+      .modal { background: white; border-radius: 14px; padding: 24px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+      .modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+      .modal p.subtitle { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+      .modal label { display: block; font-size: 12px; font-weight: 600; color: var(--text-soft); margin-bottom: 5px; margin-top: 12px; }
+      .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+      /* ─── IMAGES ───────────────────────────────────────── */
+      .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+      .img-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: white; transition: all 0.15s; }
+      .img-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); }
+      .img-preview-box { width: 100%; height: 200px; background: linear-gradient(135deg, #f5f1ec 0%, #ebe5dd 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+      .img-preview-box img { width: 100%; height: 100%; object-fit: cover; }
+      .img-preview-empty { color: var(--muted); font-size: 13px; }
+      .img-card-body { padding: 14px 16px; }
+      .img-label { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+      .img-hint { font-size: 11px; color: var(--muted); margin-bottom: 12px; line-height: 1.4; }
+      .img-actions { display: flex; gap: 8px; align-items: center; }
       .img-upload-input { display: none; }
-      .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
-      .testi-list { display: flex; flex-direction: column; gap: 12px; }
-      .testi-item { border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 16px; background: white; display: flex; gap: 14px; align-items: flex-start; }
-      .testi-item:hover { border-color: var(--border-strong); }
-      .testi-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--bg); }
-      .testi-body { flex: 1; min-width: 0; }
-      .testi-name { font-size: 14px; font-weight: 700; color: var(--text); }
-      .testi-role { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-      .testi-text { font-size: 13px; color: var(--text); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-      .testi-actions { display: flex; gap: 6px; margin-top: 8px; }
-      .testi-btn { padding: 5px 12px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border-strong); background: white; color: var(--text); transition: all 0.15s; }
-      .testi-btn:hover { border-color: var(--primary); color: var(--primary); }
-      .testi-btn.danger:hover { border-color: var(--error); color: var(--error); }
-      .testi-add-btn { width: 100%; padding: 12px; border: 2px dashed var(--border-strong); border-radius: 10px; background: transparent; color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
-      .testi-add-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
-      .testi-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 400; display: none; align-items: center; justify-content: center; padding: 20px; }
-      .testi-modal-overlay.show { display: flex; }
-      .testi-modal { background: white; border-radius: 14px; padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,0.2); }
-      .testi-modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 20px; }
-      .testi-modal label { display: block; font-size: 12px; font-weight: 600; color: #444; margin-bottom: 5px; margin-top: 12px; }
-      .testi-modal input, .testi-modal textarea { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border-strong); border-radius: 8px; font-size: 14px; outline: none; color: var(--text); font-family: inherit; }
-      .testi-modal input:focus, .testi-modal textarea:focus { border-color: var(--primary); }
-      .testi-modal textarea { min-height: 100px; resize: vertical; }
-      .testi-photo-preview { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-top: 8px; border: 2px solid var(--border); }
-      @media (max-width: 900px) {
-        .sidebar { display: none; }
-        .main { padding: 20px 18px 140px; }
-        .header { padding: 0 16px; }
-        .header-right .btn-sm { padding: 7px 10px; font-size: 12px; }
+      .img-status { font-size: 11px; font-weight: 600; }
+
+      /* ─── TESTIMONI ────────────────────────────────────── */
+      .testi-actions-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+      .testi-search { flex: 1; max-width: 320px; position: relative; }
+      .testi-search input { padding-left: 36px; }
+      .testi-search::before { content: "🔍"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; opacity: 0.5; }
+      .testi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+      .testi-card { border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: white; transition: all 0.15s; position: relative; }
+      .testi-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); }
+      .testi-card-header { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
+      .testi-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--bg); border: 2px solid var(--border); }
+      .testi-meta { flex: 1; min-width: 0; }
+      .testi-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+      .testi-role { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .testi-text { font-size: 13px; color: var(--text-soft); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; }
+      .testi-card-actions { display: flex; gap: 6px; padding-top: 10px; border-top: 1px solid var(--border); }
+      .testi-position { position: absolute; top: 12px; right: 12px; background: var(--bg); color: var(--muted); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; }
+      .testi-empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+      .testi-empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+      .testi-add-card { border: 2px dashed var(--border-strong); border-radius: 12px; background: transparent; color: var(--muted); padding: 32px; cursor: pointer; transition: all 0.15s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 200px; font-size: 14px; font-weight: 600; }
+      .testi-add-card:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+      .testi-add-card-plus { font-size: 32px; line-height: 1; }
+      .testi-photo-preview { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); }
+
+      /* ─── FILE UPLOAD ──────────────────────────────────── */
+      .file-btn { display: inline-block; padding: 8px 14px; background: var(--primary); color: white; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+      .file-btn:hover { background: var(--primary-dark); }
+
+      /* ─── SPINNER ──────────────────────────────────────── */
+      .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; }
+      .spinner.dark { border-color: rgba(0,0,0,0.2); border-top-color: var(--primary); }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      /* ─── MOBILE MENU ──────────────────────────────────── */
+      .menu-toggle { display: none; }
+      @media (max-width: 768px) {
+        .header { padding: 0 14px; }
+        .header-right .btn-ghost span.btn-text { display: none; }
+        .container { padding: 20px 14px 100px; }
+        .tabs-nav { padding: 0 8px; }
+        .tab-btn { padding: 12px 14px; font-size: 13px; }
+        .page-title { font-size: 18px; }
+        .img-grid { grid-template-columns: 1fr; }
+        .testi-grid { grid-template-columns: 1fr; }
+        .save-bar { left: 16px; right: 16px; transform: none; min-width: 0; }
       }
     </style>
   </head>
   <body>
+    <!-- ═══ HEADER ═══ -->
     <header class="header">
       <div class="header-left">
-        <svg width="140" height="42" viewBox="0 0 600 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="120" height="36" viewBox="0 0 600 180" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g transform="translate(60, 20)">
             <text x="0" y="80" fill="#222222" style="font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 85px; letter-spacing: -2.5px;">Enggr</text>
             <g transform="translate(232, 42)">
               <rect width="65" height="38" rx="1" fill="none" stroke="#222222" stroke-width="2.5"/>
-              <clipPath id="splitClipCms">
-                <rect width="65" height="38" rx="1"/>
-              </clipPath>
+              <clipPath id="splitClipCms"><rect width="65" height="38" rx="1"/></clipPath>
               <g clip-path="url(#splitClipCms)">
                 <path d="M0 0 L65 0 L0 38 Z" fill="#222222" fill-opacity="0.1"/>
                 <line x1="0" y1="5" x2="55" y2="5" stroke="#222222" stroke-width="2"/>
@@ -232,48 +292,46 @@ for (const key of allKeys) {
         <span class="header-badge">CMS</span>
       </div>
       <div class="header-right">
-        <a href="/" target="_blank" class="btn-sm">Lihat Site</a>
-        <button class="btn-sm" id="settings-btn">Pengaturan Akun</button>
-        <button class="btn-sm danger" id="logout-btn">Keluar</button>
+        <a href="/" target="_blank" class="btn-ghost"><span>↗</span><span class="btn-text">Lihat Site</span></a>
+        <button class="btn-ghost" id="settings-btn"><span>⚙</span><span class="btn-text">Akun</span></button>
+        <button class="btn-ghost danger" id="logout-btn"><span>⏻</span><span class="btn-text">Keluar</span></button>
       </div>
     </header>
 
-    <div class="layout">
-      <aside class="sidebar">
-        <div class="sidebar-title">Section Landing Page</div>
-        {sections.map((s) => (
-          <a class="sidebar-link" data-target={s.id}>
-            <span class="sidebar-icon">{iconMap[s.icon] || "•"}</span>
-            <span>{s.label}</span>
-          </a>
-        ))}
-        <div style="height:1px;background:var(--border);margin:8px 20px;"></div>
-        <a class="sidebar-link" data-target="images">
-          <span class="sidebar-icon">🖼️</span>
-          <span>Gambar</span>
-        </a>
-        <a class="sidebar-link" data-target="testimonials-mgr">
-          <span class="sidebar-icon">⭐</span>
-          <span>Kelola Testimoni</span>
-        </a>
-      </aside>
+    <!-- ═══ TABS NAV ═══ -->
+    <nav class="tabs-nav">
+      <div class="tabs-inner">
+        <button class="tab-btn active" data-tab="text"><span class="tab-icon">📝</span> Teks Konten</button>
+        <button class="tab-btn" data-tab="images"><span class="tab-icon">🖼️</span> Gambar</button>
+        <button class="tab-btn" data-tab="testimonials"><span class="tab-icon">⭐</span> Testimoni</button>
+      </div>
+    </nav>
 
-      <main class="main">
-        <div class="lang-tabs">
-          <button class="lang-tab active" data-lang="id">🇮🇩 Indonesia</button>
-          <button class="lang-tab" data-lang="en">🇬🇧 English</button>
+    <div class="container">
+      <!-- ═══ TAB: TEKS KONTEN ═══ -->
+      <div class="tab-panel active" id="panel-text">
+        <div class="page-header">
+          <div>
+            <h2 class="page-title">Teks Konten</h2>
+            <p class="page-subtitle">Edit semua teks yang tampil di landing page. Tersedia versi Indonesia dan English.</p>
+          </div>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="id">🇮🇩 Indonesia</button>
+            <button class="lang-tab" data-lang="en">🇬🇧 English</button>
+          </div>
         </div>
 
         {sections.map((section) => (
-          <div class="section-card" id={`section-${section.id}`}>
-            <div class="section-header">
-              <div class="section-header-left">
-                <span class="section-icon">{iconMap[section.icon] || "•"}</span>
-                <h2>{section.label}</h2>
+          <div class="card" id={`section-${section.id}`}>
+            <div class="card-header">
+              <div class="card-header-left">
+                <span class="card-icon">{iconMap[section.icon] || "•"}</span>
+                <h3>{section.label}</h3>
               </div>
-              <span class="section-toggle">▼</span>
+              <span class="card-meta">{section.groups.reduce((acc, g) => acc + g.fields.length, 0)} field</span>
+              <span class="card-toggle">▼</span>
             </div>
-            <div class="section-body">
+            <div class="card-body">
               {section.groups.map((group) => (
                 <div class="group">
                   <div class="group-title">{group.title}</div>
@@ -309,543 +367,444 @@ for (const key of allKeys) {
             </div>
           </div>
         ))}
-      </main>
-    </div>
-
-    <!-- ═══ SECTION: GAMBAR ═══ -->
-    <div id="section-images" class="section-card" style="margin: 0 36px 20px; max-width: 848px;">
-      <div class="section-header">
-        <div class="section-header-left">
-          <span class="section-icon">🖼️</span>
-          <h2>Gambar</h2>
-        </div>
-        <span class="section-toggle">▼</span>
       </div>
-      <div class="section-body">
-        <div class="group">
-          <div class="group-title">Upload & Ganti Gambar</div>
-          <div class="img-grid">
-            {[
-              { key: "hero", label: "Hero (Foto Utama)", hint: "Foto besar di section pembuka" },
-              { key: "mentor", label: "Mentor (Foto Agung)", hint: "Foto profil mentor" },
-              { key: "og", label: "OG Image (Share Preview)", hint: "Gambar saat link dibagikan di sosmed" },
-            ].map(({ key, label, hint }) => (
-              <div class="img-card" id={`img-card-${key}`}>
-                <img
-                  src={imageMap[key] || "/placeholder.png"}
-                  alt={label}
-                  class="img-preview"
-                  id={`img-preview-${key}`}
-                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                />
-                <div class="img-preview-placeholder" style="display:none">Belum ada gambar</div>
-                <div class="img-info">
-                  <div class="img-label">{label}</div>
-                  <div class="img-url" id={`img-url-${key}`}>{imageMap[key] || "-"}</div>
-                  <p style="font-size:11px;color:var(--muted);margin-bottom:8px;font-style:italic">{hint}</p>
-                  <label class="img-upload-btn" for={`img-input-${key}`}>Ganti Gambar</label>
+
+      <!-- ═══ TAB: GAMBAR ═══ -->
+      <div class="tab-panel" id="panel-images">
+        <div class="page-header">
+          <div>
+            <h2 class="page-title">Gambar</h2>
+            <p class="page-subtitle">Klik "Ganti" untuk upload gambar baru. Perubahan langsung tersimpan dan tampil di landing page.</p>
+          </div>
+        </div>
+
+        <div class="img-grid">
+          {imageInfo.map(({ key, label, hint }) => (
+            <div class="img-card" id={`img-card-${key}`}>
+              <div class="img-preview-box">
+                <img src={imageMap[key]} alt={label} id={`img-preview-${key}`} onerror="this.style.display='none';this.parentElement.querySelector('.img-preview-empty').style.display='block'" />
+                <span class="img-preview-empty" style="display:none">Belum ada gambar</span>
+              </div>
+              <div class="img-card-body">
+                <div class="img-label">{label}</div>
+                <p class="img-hint">{hint}</p>
+                <div class="img-actions">
+                  <label class="file-btn" for={`img-input-${key}`}>Ganti Gambar</label>
                   <input type="file" class="img-upload-input" id={`img-input-${key}`} data-key={key} accept="image/*" />
-                  <span class="img-status" id={`img-status-${key}`} style="font-size:11px;margin-left:8px;"></span>
+                  <span class="img-status" id={`img-status-${key}`}></span>
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- ═══ TAB: TESTIMONI ═══ -->
+      <div class="tab-panel" id="panel-testimonials">
+        <div class="page-header">
+          <div>
+            <h2 class="page-title">Testimoni</h2>
+            <p class="page-subtitle">Kelola testimoni alumni. Klik kartu untuk edit, atau klik tombol + untuk tambah baru.</p>
           </div>
+          <button class="btn-primary" id="testi-add-btn">+ Tambah Testimoni</button>
         </div>
-      </div>
-    </div>
 
-    <!-- ═══ SECTION: KELOLA TESTIMONI ═══ -->
-    <div id="section-testimonials-mgr" class="section-card" style="margin: 0 36px 140px; max-width: 848px;">
-      <div class="section-header">
-        <div class="section-header-left">
-          <span class="section-icon">⭐</span>
-          <h2>Kelola Testimoni</h2>
-        </div>
-        <span class="section-toggle">▼</span>
-      </div>
-      <div class="section-body">
-        <div class="group">
-          <div class="group-title">Daftar Testimoni</div>
-          <div class="testi-list" id="testi-list">
-            {testimonialList.map((t) => (
-              <div class="testi-item" data-id={t.id}>
-                <img
-                  src={t.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + t.name}
-                  alt={t.name}
-                  class="testi-avatar"
-                  onerror={`this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(t.name)}'`}
-                />
-                <div class="testi-body">
-                  <div class="testi-name">{t.name}</div>
-                  <div class="testi-role">{t.role}</div>
-                  <div class="testi-text">{t.text}</div>
-                  <div class="testi-actions">
-                    <button class="testi-btn" onclick={`openTestiModal(${t.id})`}>Edit</button>
-                    <button class="testi-btn danger" onclick={`deleteTesti(${t.id}, '${t.name.replace(/'/g, "\\'")}')`}>Hapus</button>
-                  </div>
-                </div>
-              </div>
-            ))}
+        <div class="testi-actions-bar">
+          <div class="testi-search">
+            <input type="text" id="testi-search-input" placeholder="Cari nama atau role..." />
           </div>
-          <button class="testi-add-btn" style="margin-top:12px" onclick="openTestiModal(null)">
-            + Tambah Testimoni Baru
-          </button>
+          <span style="font-size:13px;color:var(--muted)" id="testi-count">{testimonialList.length} testimoni</span>
         </div>
+
+        <div class="testi-grid" id="testi-grid"></div>
       </div>
     </div>
 
-    <div class="save-bar">
-      <span class="save-status" id="save-status"><span class="dot"></span>Siap mengedit</span>
-      <button class="btn-save" id="save-btn">Simpan Perubahan</button>
+    <!-- ═══ SAVE BAR (FLOATING, KONTEN ONLY) ═══ -->
+    <div class="save-bar" id="save-bar">
+      <span class="save-status-text" id="save-status">Ada perubahan belum disimpan</span>
+      <button class="btn-secondary" id="discard-btn">Batalkan</button>
+      <button class="btn-primary" id="save-btn">Simpan Perubahan</button>
     </div>
 
+    <!-- ═══ TOAST ═══ -->
     <div class="toast" id="toast"></div>
 
+    <!-- ═══ MODAL: SETTINGS ═══ -->
     <div class="modal-overlay" id="settings-modal">
       <div class="modal">
         <h3>Pengaturan Akun</h3>
-        <p>Ubah username dan password login CMS.</p>
+        <p class="subtitle">Ubah username dan password login CMS.</p>
         <label>Username Baru</label>
         <input type="text" id="set-username" placeholder="Username baru" />
-        <label>Password Saat Ini (wajib)</label>
+        <label>Password Saat Ini *</label>
         <input type="password" id="set-current-pw" placeholder="Password saat ini" />
-        <label>Password Baru (kosongkan jika tidak ingin ganti)</label>
-        <input type="password" id="set-new-pw" placeholder="Minimal 6 karakter" />
+        <label>Password Baru (opsional)</label>
+        <input type="password" id="set-new-pw" placeholder="Kosongkan jika tidak ingin ganti" />
         <div class="modal-actions">
-          <button class="btn-cancel" id="settings-cancel">Batal</button>
-          <button class="btn-confirm" id="settings-save">Simpan</button>
+          <button class="btn-secondary" id="settings-cancel">Batal</button>
+          <button class="btn-primary" id="settings-save">Simpan</button>
         </div>
       </div>
     </div>
 
-    <script is:inline src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-    <script define:vars={{ initialContent: normalizedContent, richTextKeyList }}>
-      // State
-      let currentLang = 'id';
-      let isDirty = false;
-      const contentData = JSON.parse(JSON.stringify(initialContent));
-      const originalData = JSON.parse(JSON.stringify(initialContent));
-      const quillMap = {}; // key -> { id: Quill, en: Quill }
-
-      function showToast(msg, type) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.className = 'toast ' + type + ' show';
-        setTimeout(() => t.classList.remove('show'), 3500);
-      }
-      window.showToast = showToast;
-
-      function norm(v) { return (v == null ? '' : String(v)); }
-
-      function updateFieldState(key) {
-        const hasModified = (norm(contentData.id[key]) !== norm(originalData.id[key])) ||
-                            (norm(contentData.en[key]) !== norm(originalData.en[key]));
-        const badge = document.querySelector(`[data-badge="${key}"]`);
-        if (!badge) return;
-        if (hasModified) {
-          badge.textContent = 'diubah';
-          badge.className = 'field-badge show modified';
-        } else {
-          badge.textContent = '';
-          badge.className = 'field-badge';
-        }
-      }
-
-      function updateDirtyState() {
-        let anyDirty = false;
-        // Cek semua key di contentData (bukan hanya originalData) untuk handle key baru
-        const allCheckedKeys = new Set([
-          ...Object.keys(originalData.id),
-          ...Object.keys(contentData.id),
-          ...Object.keys(originalData.en),
-          ...Object.keys(contentData.en),
-        ]);
-        for (const key of allCheckedKeys) {
-          if (norm(contentData.id[key]) !== norm(originalData.id[key]) ||
-              norm(contentData.en[key]) !== norm(originalData.en[key])) {
-            anyDirty = true;
-            break;
-          }
-        }
-        isDirty = anyDirty;
-        const s = document.getElementById('save-status');
-        if (anyDirty) {
-          s.innerHTML = '<span class="dot"></span>Ada perubahan belum disimpan';
-          s.className = 'save-status dirty';
-        } else {
-          s.innerHTML = '<span class="dot"></span>Siap mengedit';
-          s.className = 'save-status';
-        }
-      }
-
-      // Init Quill editors untuk setiap rich text key (id & en)
-      richTextKeyList.forEach(key => {
-        quillMap[key] = {};
-        ['id', 'en'].forEach(lang => {
-          const wrap = document.querySelector(`.quill-wrap[data-quill-key="${key}"][data-quill-lang="${lang}"]`);
-          if (!wrap) return;
-          const editorEl = wrap.querySelector('[data-quill-editor]');
-          if (!editorEl) return;
-
-          const quill = new Quill(editorEl, {
-            theme: 'snow',
-            modules: {
-              toolbar: [['bold', 'italic', 'underline'], ['link'], [{ color: [] }], ['clean']],
-            },
-            placeholder: 'Tulis konten...',
-          });
-
-          // Set initial HTML SAFE: pakai clipboard.dangerouslyPasteHTML
-          const initialHtml = norm(contentData[lang][key]);
-          if (initialHtml) {
-            quill.clipboard.dangerouslyPasteHTML(0, initialHtml, 'silent');
-          }
-
-          // Flag untuk skip awal text-change saat init
-          let initialized = false;
-          setTimeout(() => { initialized = true; }, 50);
-
-          quill.on('text-change', (_delta, _old, source) => {
-            if (!initialized) return; // abaikan event saat init
-            if (source !== 'user') return; // abaikan perubahan programmatic
-            const html = quill.root.innerHTML;
-            let clean = (html === '<p><br></p>' || html === '<p></p>') ? '' : html;
-
-            // Strip wrapping <p>...</p> kalau cuma satu paragraf (tanpa nested <p>)
-            // supaya value compatible dengan landing page yang pakai inline HTML.
-            // Pakai indexOf bukan regex untuk handle konten panjang dengan newline.
-            if (clean && clean.startsWith('<p>') && clean.endsWith('</p>')) {
-              const inner = clean.slice(3, -4); // hapus <p> dan </p>
-              // Hanya strip kalau tidak ada <p> lain di dalam (multi-paragraph)
-              if (!inner.includes('<p>') && !inner.includes('</p>')) {
-                clean = inner;
-              }
-            }
-
-            contentData[lang][key] = clean;
-
-            const hasModified = (norm(contentData.id[key]) !== norm(originalData.id[key])) ||
-                                (norm(contentData.en[key]) !== norm(originalData.en[key]));
-            // Update wrap styling untuk lang yg saat ini
-            if (hasModified) wrap.classList.add('modified');
-            else wrap.classList.remove('modified');
-
-            updateFieldState(key);
-            updateDirtyState();
-          });
-
-          quillMap[key][lang] = quill;
-        });
-      });
-
-      // Lang tabs
-      document.querySelectorAll('.lang-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          currentLang = tab.dataset.lang;
-          document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          document.querySelectorAll('.lang-id').forEach(el => { el.style.display = currentLang === 'id' ? '' : 'none'; });
-          document.querySelectorAll('.lang-en').forEach(el => { el.style.display = currentLang === 'en' ? '' : 'none'; });
-        });
-      });
-
-      // Plain inputs
-      document.querySelectorAll('.cms-input').forEach(input => {
-        input.addEventListener('input', () => {
-          const key = input.dataset.key;
-          const lang = input.dataset.lang;
-          contentData[lang][key] = input.value;
-
-          const hasModified = (norm(contentData.id[key]) !== norm(originalData.id[key])) ||
-                              (norm(contentData.en[key]) !== norm(originalData.en[key]));
-          // Update styling di input yang saat ini
-          if (input.value !== norm(originalData[lang][key])) {
-            input.classList.add('modified');
-          } else {
-            input.classList.remove('modified');
-          }
-
-          updateFieldState(key);
-          updateDirtyState();
-        });
-      });
-
-      // Toggle sections
-      document.querySelectorAll('.section-header').forEach(header => {
-        header.addEventListener('click', () => {
-          const body = header.nextElementSibling;
-          const toggle = header.querySelector('.section-toggle');
-          body.classList.toggle('open');
-          toggle.classList.toggle('open');
-          header.classList.toggle('collapsed', !body.classList.contains('open'));
-        });
-      });
-
-      // Open first section
-      const firstBody = document.querySelector('.section-body');
-      const firstToggle = document.querySelector('.section-toggle');
-      if (firstBody) firstBody.classList.add('open');
-      if (firstToggle) firstToggle.classList.add('open');
-
-      // Sidebar nav
-      document.querySelectorAll('.sidebar-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const id = link.dataset.target;
-          const el = document.getElementById('section-' + id);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            const body = el.querySelector('.section-body');
-            const toggle = el.querySelector('.section-toggle');
-            const header = el.querySelector('.section-header');
-            if (body && !body.classList.contains('open')) {
-              body.classList.add('open');
-              toggle.classList.add('open');
-              if (header) header.classList.remove('collapsed');
-            }
-          }
-          document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-          link.classList.add('active');
-        });
-      });
-
-      // Save
-      document.getElementById('save-btn').addEventListener('click', async () => {
-        const btn = document.getElementById('save-btn');
-        const status = document.getElementById('save-status');
-        btn.innerHTML = '<span class="spinner"></span>Menyimpan...';
-        btn.disabled = true;
-
-        try {
-          const res = await fetch('/api/cms-content', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: contentData.id, en: contentData.en }),
-          });
-          const data = await res.json();
-          if (res.ok && data.success) {
-            showToast('Konten berhasil disimpan', 'success');
-            status.innerHTML = '<span class="dot"></span>Tersimpan ' + new Date().toLocaleTimeString('id-ID');
-            status.className = 'save-status success';
-
-            // Cari semua field yang sedang dalam state modified sebelum di-reset
-            const modifiedKeys = [];
-            document.querySelectorAll('.field-badge.modified').forEach(b => modifiedKeys.push(b.dataset.badge));
-
-            // Update originalData dengan snapshot terbaru
-            for (const k in contentData.id) originalData.id[k] = contentData.id[k];
-            for (const k in contentData.en) originalData.en[k] = contentData.en[k];
-
-            // Reset visual modified state
-            document.querySelectorAll('.cms-input.modified').forEach(i => i.classList.remove('modified'));
-            document.querySelectorAll('.quill-wrap.modified').forEach(w => w.classList.remove('modified'));
-
-            // Tampilkan "tersimpan" di setiap field yang sebelumnya dimodifikasi
-            modifiedKeys.forEach(key => {
-              const badge = document.querySelector(`[data-badge="${key}"]`);
-              if (badge) {
-                badge.textContent = 'tersimpan';
-                badge.className = 'field-badge show saved';
-                setTimeout(() => {
-                  badge.textContent = '';
-                  badge.className = 'field-badge';
-                }, 2500);
-              }
-            });
-
-            isDirty = false;
-          } else {
-            const msg = data && data.error ? data.error : 'Gagal menyimpan';
-            showToast(msg, 'error');
-            status.innerHTML = '<span class="dot"></span>Gagal menyimpan';
-            status.className = 'save-status error';
-          }
-        } catch (err) {
-          showToast('Gagal menyimpan. Cek koneksi.', 'error');
-          status.innerHTML = '<span class="dot"></span>Error koneksi';
-          status.className = 'save-status error';
-        }
-        btn.innerHTML = 'Simpan Perubahan';
-        btn.disabled = false;
-      });
-
-      // Logout
-      document.getElementById('logout-btn').addEventListener('click', async () => {
-        if (isDirty && !confirm('Ada perubahan belum disimpan. Yakin keluar?')) return;
-        await fetch('/api/cms-logout', { method: 'POST', credentials: 'same-origin' });
-        window.location.href = '/admin';
-      });
-
-      // Settings modal
-      document.getElementById('settings-btn').addEventListener('click', async () => {
-        try {
-          const res = await fetch('/api/cms-account');
-          if (res.ok) {
-            const data = await res.json();
-            document.getElementById('set-username').value = data.username || '';
-          }
-        } catch {}
-        document.getElementById('settings-modal').classList.add('show');
-      });
-      document.getElementById('settings-cancel').addEventListener('click', () => {
-        document.getElementById('settings-modal').classList.remove('show');
-        document.getElementById('set-current-pw').value = '';
-        document.getElementById('set-new-pw').value = '';
-      });
-      document.getElementById('settings-save').addEventListener('click', async () => {
-        const currentPassword = document.getElementById('set-current-pw').value;
-        const newUsername = document.getElementById('set-username').value;
-        const newPassword = document.getElementById('set-new-pw').value;
-        if (!currentPassword) { showToast('Password saat ini wajib diisi', 'error'); return; }
-        if (!newUsername || newUsername.length < 3) { showToast('Username minimal 3 karakter', 'error'); return; }
-        try {
-          const res = await fetch('/api/cms-account', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ currentPassword, newUsername, newPassword }),
-          });
-          const data = await res.json();
-          if (res.ok && data.success) {
-            showToast('Akun berhasil diperbarui. Halaman akan dimuat ulang...', 'success');
-            document.getElementById('settings-modal').classList.remove('show');
-            document.getElementById('set-current-pw').value = '';
-            document.getElementById('set-new-pw').value = '';
-            // Reload setelah 1.5 detik agar cookie baru dari server aktif
-            // (tokenSalt di-rotate, cookie lama sudah invalid)
-            setTimeout(() => window.location.reload(), 1500);
-          } else {
-            showToast(data.error || 'Gagal update akun', 'error');
-          }
-        } catch {
-          showToast('Gagal update akun', 'error');
-        }
-      });
-
-      // Close modal when clicking overlay
-      document.getElementById('settings-modal').addEventListener('click', (e) => {
-        if (e.target.id === 'settings-modal') {
-          document.getElementById('settings-modal').classList.remove('show');
-        }
-      });
-
-      // Warn unsaved
-      window.addEventListener('beforeunload', (e) => { if (isDirty) { e.preventDefault(); e.returnValue = ''; } });
-
-      // Active sidebar on scroll
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const id = entry.target.id.replace('section-', '');
-            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.toggle('active', l.dataset.target === id));
-          }
-        });
-      }, { threshold: 0.15, rootMargin: '-100px 0px -50% 0px' });
-      document.querySelectorAll('.section-card').forEach(card => observer.observe(card));
-    </script>
-    <!-- Testimoni Modal -->
-    <div class="testi-modal-overlay" id="testi-modal">
-      <div class="testi-modal">
+    <!-- ═══ MODAL: TESTIMONI ═══ -->
+    <div class="modal-overlay" id="testi-modal">
+      <div class="modal">
         <h3 id="testi-modal-title">Tambah Testimoni</h3>
+        <p class="subtitle">Field bertanda * wajib diisi.</p>
         <input type="hidden" id="testi-id" />
         <label>Nama *</label>
         <input type="text" id="testi-name" placeholder="Nama lengkap" />
         <label>Role / Jabatan *</label>
         <input type="text" id="testi-role" placeholder="Contoh: Web Developer, Jakarta" />
         <label>Teks Testimoni *</label>
-        <textarea id="testi-text" placeholder="Cerita testimoni..."></textarea>
-        <label>Urutan (angka)</label>
-        <input type="number" id="testi-position" placeholder="Contoh: 1, 2, 3..." min="1" />
+        <textarea id="testi-text" placeholder="Cerita pengalaman..."></textarea>
+        <label>Urutan Tampil</label>
+        <input type="number" id="testi-position" placeholder="1, 2, 3..." min="1" />
         <label>Foto Profil</label>
-        <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+        <div style="display:flex;align-items:center;gap:14px;margin-top:6px">
           <img id="testi-photo-preview" class="testi-photo-preview" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="preview" />
           <div>
-            <label class="img-upload-btn" for="testi-photo-input" style="display:inline-block">Pilih Foto</label>
+            <label class="file-btn" for="testi-photo-input">Pilih Foto</label>
             <input type="file" id="testi-photo-input" class="img-upload-input" accept="image/*" />
-            <p style="font-size:11px;color:var(--muted);margin-top:4px">Kosongkan jika tidak ingin ganti foto</p>
+            <p style="font-size:11px;color:var(--muted);margin-top:6px">Kosongkan jika tidak ingin ganti foto</p>
           </div>
         </div>
-        <div class="modal-actions" style="margin-top:20px">
-          <button class="btn-cancel" id="testi-cancel">Batal</button>
-          <button class="btn-confirm" id="testi-save">Simpan</button>
+        <div class="modal-actions">
+          <button class="btn-secondary" id="testi-cancel">Batal</button>
+          <button class="btn-primary" id="testi-save">Simpan Testimoni</button>
         </div>
       </div>
     </div>
 
-    <script define:vars={{ initialTestimonials: testimonialList }}>
-      // ─── IMAGE UPLOAD ────────────────────────────────────────────────────
+    <script is:inline src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <script define:vars={{ initialContent: normalizedContent, richTextKeyList, initialTestimonials: testimonialList }}>
+      // ════════════════════════════════════════════════════════════════════
+      // GLOBAL UTILITIES
+      // ════════════════════════════════════════════════════════════════════
+      function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast ' + (type || 'info') + ' show';
+        clearTimeout(window._toastTimer);
+        window._toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+      }
+      window.showToast = showToast;
+
+      function norm(v) { return (v == null ? '' : String(v)); }
+
+      // ════════════════════════════════════════════════════════════════════
+      // TABS
+      // ════════════════════════════════════════════════════════════════════
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = btn.dataset.tab;
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+          document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
+          // Hide save bar saat pindah tab non-text
+          if (tab !== 'text' && !isDirty) document.getElementById('save-bar').classList.remove('show');
+          if (tab === 'text' && isDirty) document.getElementById('save-bar').classList.add('show');
+        });
+      });
+
+      // ════════════════════════════════════════════════════════════════════
+      // KONTEN TEKS — STATE
+      // ════════════════════════════════════════════════════════════════════
+      let currentLang = 'id';
+      let isDirty = false;
+      const contentData = JSON.parse(JSON.stringify(initialContent));
+      const originalData = JSON.parse(JSON.stringify(initialContent));
+      const quillMap = {};
+
+      function updateFieldState(key) {
+        const hasModified = norm(contentData.id[key]) !== norm(originalData.id[key]) ||
+                            norm(contentData.en[key]) !== norm(originalData.en[key]);
+        const badge = document.querySelector(`[data-badge="${key}"]`);
+        if (!badge) return;
+        if (hasModified) { badge.textContent = 'diubah'; badge.className = 'field-badge show modified'; }
+        else { badge.textContent = ''; badge.className = 'field-badge'; }
+      }
+
+      function updateDirtyState() {
+        let any = false;
+        const keys = new Set([...Object.keys(originalData.id), ...Object.keys(contentData.id)]);
+        for (const k of keys) {
+          if (norm(contentData.id[k]) !== norm(originalData.id[k]) ||
+              norm(contentData.en[k]) !== norm(originalData.en[k])) {
+            any = true; break;
+          }
+        }
+        isDirty = any;
+        const bar = document.getElementById('save-bar');
+        const isTextTab = document.getElementById('panel-text').classList.contains('active');
+        if (any && isTextTab) bar.classList.add('show');
+        else bar.classList.remove('show');
+      }
+
+      // Init Quill
+      richTextKeyList.forEach(key => {
+        quillMap[key] = {};
+        ['id', 'en'].forEach(lang => {
+          const wrap = document.querySelector(`.quill-wrap[data-quill-key="${key}"][data-quill-lang="${lang}"]`);
+          if (!wrap) return;
+          const editorEl = wrap.querySelector('[data-quill-editor]');
+          const quill = new Quill(editorEl, {
+            theme: 'snow',
+            modules: { toolbar: [['bold', 'italic', 'underline'], ['link'], [{ color: [] }], ['clean']] },
+            placeholder: 'Tulis konten...',
+          });
+          const initialHtml = norm(contentData[lang][key]);
+          if (initialHtml) quill.clipboard.dangerouslyPasteHTML(0, initialHtml, 'silent');
+          let initialized = false;
+          setTimeout(() => { initialized = true; }, 50);
+          quill.on('text-change', (_d, _o, source) => {
+            if (!initialized || source !== 'user') return;
+            const html = quill.root.innerHTML;
+            let clean = (html === '<p><br></p>' || html === '<p></p>') ? '' : html;
+            if (clean && clean.startsWith('<p>') && clean.endsWith('</p>')) {
+              const inner = clean.slice(3, -4);
+              if (!inner.includes('<p>') && !inner.includes('</p>')) clean = inner;
+            }
+            contentData[lang][key] = clean;
+            const hasModified = norm(contentData.id[key]) !== norm(originalData.id[key]) ||
+                                norm(contentData.en[key]) !== norm(originalData.en[key]);
+            wrap.classList.toggle('modified', hasModified);
+            updateFieldState(key);
+            updateDirtyState();
+          });
+          quillMap[key][lang] = quill;
+        });
+      });
+
+      // Lang toggle
+      document.querySelectorAll('.lang-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          currentLang = tab.dataset.lang;
+          document.querySelectorAll('.lang-tab').forEach(t => t.classList.toggle('active', t === tab));
+          document.querySelectorAll('.lang-id').forEach(el => el.style.display = currentLang === 'id' ? '' : 'none');
+          document.querySelectorAll('.lang-en').forEach(el => el.style.display = currentLang === 'en' ? '' : 'none');
+        });
+      });
+
+      // Plain inputs
+      document.querySelectorAll('.cms-input').forEach(input => {
+        input.addEventListener('input', () => {
+          const key = input.dataset.key, lang = input.dataset.lang;
+          contentData[lang][key] = input.value;
+          input.classList.toggle('modified', input.value !== norm(originalData[lang][key]));
+          updateFieldState(key);
+          updateDirtyState();
+        });
+      });
+
+      // Card collapse/expand
+      document.querySelectorAll('.card-header').forEach(header => {
+        header.addEventListener('click', () => {
+          const body = header.nextElementSibling;
+          const toggle = header.querySelector('.card-toggle');
+          body.classList.toggle('open');
+          toggle.classList.toggle('open');
+          header.classList.toggle('collapsed', !body.classList.contains('open'));
+        });
+      });
+
+      // Auto-open semua section pertama kali (lebih baik daripada collapsed semua)
+      document.querySelectorAll('#panel-text .card-body').forEach((body, i) => {
+        if (i < 3) { // Hanya 3 section pertama yang auto-open
+          body.classList.add('open');
+          body.previousElementSibling.querySelector('.card-toggle').classList.add('open');
+        } else {
+          body.previousElementSibling.classList.add('collapsed');
+        }
+      });
+
+      // ════════════════════════════════════════════════════════════════════
+      // SAVE / DISCARD
+      // ════════════════════════════════════════════════════════════════════
+      document.getElementById('save-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('save-btn');
+        btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+        btn.disabled = true;
+        try {
+          const res = await fetch('/api/cms-content', {
+            method: 'POST', credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: contentData.id, en: contentData.en }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showToast('✓ Perubahan tersimpan', 'success');
+            const modifiedKeys = [];
+            document.querySelectorAll('.field-badge.modified').forEach(b => modifiedKeys.push(b.dataset.badge));
+            for (const k in contentData.id) originalData.id[k] = contentData.id[k];
+            for (const k in contentData.en) originalData.en[k] = contentData.en[k];
+            document.querySelectorAll('.cms-input.modified').forEach(i => i.classList.remove('modified'));
+            document.querySelectorAll('.quill-wrap.modified').forEach(w => w.classList.remove('modified'));
+            modifiedKeys.forEach(key => {
+              const badge = document.querySelector(`[data-badge="${key}"]`);
+              if (badge) {
+                badge.textContent = 'tersimpan';
+                badge.className = 'field-badge show saved';
+                setTimeout(() => { badge.textContent = ''; badge.className = 'field-badge'; }, 2000);
+              }
+            });
+            isDirty = false;
+            document.getElementById('save-bar').classList.remove('show');
+          } else {
+            showToast(data.error || 'Gagal menyimpan', 'error');
+          }
+        } catch {
+          showToast('Error koneksi', 'error');
+        }
+        btn.innerHTML = 'Simpan Perubahan';
+        btn.disabled = false;
+      });
+
+      document.getElementById('discard-btn').addEventListener('click', () => {
+        if (!confirm('Batalkan semua perubahan yang belum disimpan?')) return;
+        for (const k in originalData.id) contentData.id[k] = originalData.id[k];
+        for (const k in originalData.en) contentData.en[k] = originalData.en[k];
+        // Reset inputs
+        document.querySelectorAll('.cms-input').forEach(input => {
+          input.value = originalData[input.dataset.lang][input.dataset.key] || '';
+          input.classList.remove('modified');
+        });
+        // Reset Quill
+        Object.entries(quillMap).forEach(([key, langs]) => {
+          ['id', 'en'].forEach(lang => {
+            const q = langs[lang];
+            if (q) {
+              q.setText('');
+              const html = norm(originalData[lang][key]);
+              if (html) q.clipboard.dangerouslyPasteHTML(0, html, 'silent');
+              const wrap = document.querySelector(`.quill-wrap[data-quill-key="${key}"][data-quill-lang="${lang}"]`);
+              if (wrap) wrap.classList.remove('modified');
+            }
+          });
+        });
+        document.querySelectorAll('.field-badge').forEach(b => { b.textContent = ''; b.className = 'field-badge'; });
+        isDirty = false;
+        document.getElementById('save-bar').classList.remove('show');
+        showToast('Perubahan dibatalkan', 'info');
+      });
+
+      // ════════════════════════════════════════════════════════════════════
+      // IMAGE UPLOAD
+      // ════════════════════════════════════════════════════════════════════
       document.querySelectorAll('.img-upload-input').forEach(input => {
+        if (!input.dataset.key) return; // skip testi modal photo input
         input.addEventListener('change', async (e) => {
           const file = e.target.files[0];
           if (!file) return;
           const key = input.dataset.key;
           const status = document.getElementById('img-status-' + key);
-          status.textContent = 'Mengupload...';
+          status.textContent = '⏳ Mengupload...';
           status.style.color = 'var(--warning)';
-
           const fd = new FormData();
           fd.append('key', key);
           fd.append('file', file);
-
           try {
             const res = await fetch('/api/cms-images', { method: 'POST', credentials: 'same-origin', body: fd });
             const data = await res.json();
             if (res.ok && data.success) {
-              document.getElementById('img-preview-' + key).src = data.url;
-              document.getElementById('img-url-' + key).textContent = data.url;
+              const img = document.getElementById('img-preview-' + key);
+              img.src = data.url + '?t=' + Date.now();
+              img.style.display = '';
               status.textContent = '✓ Tersimpan';
               status.style.color = 'var(--success)';
-              setTimeout(() => { status.textContent = ''; }, 3000);
+              setTimeout(() => { status.textContent = ''; }, 2500);
+              showToast('Gambar berhasil diupload', 'success');
             } else {
               status.textContent = '✗ ' + (data.error || 'Gagal');
               status.style.color = 'var(--error)';
+              showToast(data.error || 'Upload gagal', 'error');
             }
           } catch {
             status.textContent = '✗ Error';
             status.style.color = 'var(--error)';
+            showToast('Error koneksi', 'error');
           }
+          input.value = '';
         });
       });
 
-      // ─── TESTIMONI MANAGER ───────────────────────────────────────────────
+      // ════════════════════════════════════════════════════════════════════
+      // TESTIMONI MANAGER
+      // ════════════════════════════════════════════════════════════════════
       let testiData = [...initialTestimonials];
+      let testiSearchQuery = '';
+
+      function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
 
       function renderTestiList() {
-        const list = document.getElementById('testi-list');
-        list.innerHTML = testiData.map(t => `
-          <div class="testi-item" data-id="${t.id}">
-            <img src="${t.image || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + encodeURIComponent(t.name)}"
-              alt="${t.name}" class="testi-avatar"
-              onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(t.name)}'" />
-            <div class="testi-body">
-              <div class="testi-name">${t.name}</div>
-              <div class="testi-role">${t.role}</div>
-              <div class="testi-text">${t.text}</div>
-              <div class="testi-actions">
-                <button class="testi-btn" onclick="openTestiModal(${t.id})">Edit</button>
-                <button class="testi-btn danger" onclick="deleteTesti(${t.id}, '${t.name.replace(/'/g, "\\'")}')">Hapus</button>
+        const grid = document.getElementById('testi-grid');
+        const count = document.getElementById('testi-count');
+        const filtered = testiSearchQuery
+          ? testiData.filter(t =>
+              t.name.toLowerCase().includes(testiSearchQuery) ||
+              t.role.toLowerCase().includes(testiSearchQuery))
+          : testiData;
+        count.textContent = `${filtered.length}${testiSearchQuery ? ` dari ${testiData.length}` : ''} testimoni`;
+
+        if (filtered.length === 0 && !testiSearchQuery) {
+          grid.innerHTML = `
+            <div class="testi-empty" style="grid-column:1/-1">
+              <div class="testi-empty-icon">💬</div>
+              <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">Belum ada testimoni</div>
+              <div style="font-size:13px">Klik tombol "Tambah Testimoni" untuk mulai</div>
+            </div>`;
+          return;
+        }
+
+        grid.innerHTML = filtered.map(t => {
+          const fallback = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(t.name)}`;
+          const img = t.image || fallback;
+          return `
+            <div class="testi-card" data-id="${t.id}">
+              <span class="testi-position">#${t.position}</span>
+              <div class="testi-card-header">
+                <img src="${escapeHtml(img)}" alt="${escapeHtml(t.name)}" class="testi-avatar"
+                  onerror="this.src='${fallback}'" />
+                <div class="testi-meta">
+                  <div class="testi-name">${escapeHtml(t.name)}</div>
+                  <div class="testi-role">${escapeHtml(t.role)}</div>
+                </div>
               </div>
-            </div>
-          </div>
-        `).join('') + `<button class="testi-add-btn" style="margin-top:12px" onclick="openTestiModal(null)">+ Tambah Testimoni Baru</button>`;
+              <div class="testi-text">${escapeHtml(t.text)}</div>
+              <div class="testi-card-actions">
+                <button class="btn-secondary" style="flex:1;padding:7px 14px" onclick="openTestiModal(${t.id})">Edit</button>
+                <button class="btn-secondary" style="padding:7px 14px;color:var(--error)" onclick="deleteTesti(${t.id}, '${escapeHtml(t.name).replace(/'/g, "&#39;")}')">Hapus</button>
+              </div>
+            </div>`;
+        }).join('') + (testiSearchQuery ? '' : `
+          <button class="testi-add-card" onclick="openTestiModal(null)">
+            <span class="testi-add-card-plus">+</span>
+            <span>Tambah Testimoni Baru</span>
+          </button>
+        `);
       }
 
       window.openTestiModal = function(id) {
-        const modal = document.getElementById('testi-modal');
         const t = id ? testiData.find(x => x.id === id) : null;
-        document.getElementById('testi-modal-title').textContent = t ? 'Edit Testimoni' : 'Tambah Testimoni';
+        document.getElementById('testi-modal-title').textContent = t ? 'Edit Testimoni' : 'Tambah Testimoni Baru';
         document.getElementById('testi-id').value = t ? t.id : '';
         document.getElementById('testi-name').value = t ? t.name : '';
         document.getElementById('testi-role').value = t ? t.role : '';
         document.getElementById('testi-text').value = t ? t.text : '';
-        document.getElementById('testi-position').value = t ? t.position : testiData.length + 1;
-        document.getElementById('testi-photo-preview').src = t?.image || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default';
+        document.getElementById('testi-position').value = t ? t.position : (testiData.length + 1);
+        document.getElementById('testi-photo-preview').src = t?.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(t?.name || 'default')}`;
         document.getElementById('testi-photo-input').value = '';
-        modal.classList.add('show');
+        document.getElementById('testi-modal').classList.add('show');
       };
 
-      // Preview foto saat dipilih
+      document.getElementById('testi-add-btn').addEventListener('click', () => openTestiModal(null));
+
+      document.getElementById('testi-search-input').addEventListener('input', (e) => {
+        testiSearchQuery = e.target.value.trim().toLowerCase();
+        renderTestiList();
+      });
+
       document.getElementById('testi-photo-input').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -871,48 +830,30 @@ for (const key of allKeys) {
         const id = document.getElementById('testi-id').value;
         const file = document.getElementById('testi-photo-input').files[0];
         const previewSrc = document.getElementById('testi-photo-preview').src;
-
         if (!name || !role || !text) { showToast('Nama, role, dan teks wajib diisi.', 'error'); return; }
-
-        btn.innerHTML = '<span class="spinner"></span>Menyimpan...';
+        btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
         btn.disabled = true;
-
         try {
-          // Step 1: Upload foto dulu kalau ada file baru
           let imageUrl = previewSrc.includes('dicebear') || previewSrc.startsWith('data:') ? '' : previewSrc;
           if (file && file.size > 0) {
-            btn.innerHTML = '<span class="spinner"></span>Upload foto...';
-            const uploadFd = new FormData();
-            uploadFd.append('file', file);
-            uploadFd.append('prefix', 'testi');
-            const uploadRes = await fetch('/api/cms-upload', { method: 'POST', credentials: 'same-origin', body: uploadFd });
-            const uploadData = await uploadRes.json();
-            if (uploadRes.ok && uploadData.success) {
-              imageUrl = uploadData.url;
-            } else {
-              showToast('Upload foto gagal: ' + (uploadData.error || 'Unknown'), 'error');
-              btn.innerHTML = 'Simpan';
-              btn.disabled = false;
-              return;
-            }
+            btn.innerHTML = '<span class="spinner"></span> Upload foto...';
+            const fd = new FormData();
+            fd.append('file', file); fd.append('prefix', 'testi');
+            const r = await fetch('/api/cms-upload', { method: 'POST', credentials: 'same-origin', body: fd });
+            const d = await r.json();
+            if (r.ok && d.success) imageUrl = d.url;
+            else { showToast('Upload foto gagal: ' + (d.error || 'Unknown'), 'error'); btn.innerHTML = 'Simpan Testimoni'; btn.disabled = false; return; }
           }
-
-          // Step 2: Simpan data testimoni via JSON
-          btn.innerHTML = '<span class="spinner"></span>Menyimpan...';
-          const payload = {
-            name, role, text, image: imageUrl,
-            position: parseInt(position) || 99,
-            ...(id ? { id: parseInt(id) } : {}),
-          };
+          btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+          const payload = { name, role, text, image: imageUrl, position: parseInt(position) || 99, ...(id ? { id: parseInt(id) } : {}) };
           const res = await fetch('/api/cms-testimonials', {
-            method: 'POST',
-            credentials: 'same-origin',
+            method: 'POST', credentials: 'same-origin',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
           });
           const data = await res.json();
           if (res.ok && data.success) {
-            showToast('Testimoni berhasil disimpan', 'success');
+            showToast(id ? '✓ Testimoni diperbarui' : '✓ Testimoni baru ditambahkan', 'success');
             document.getElementById('testi-modal').classList.remove('show');
             const listRes = await fetch('/api/cms-testimonials', { credentials: 'same-origin' });
             testiData = await listRes.json();
@@ -923,16 +864,15 @@ for (const key of allKeys) {
         } catch (err) {
           showToast('Error: ' + (err.message || 'Koneksi gagal'), 'error');
         }
-        btn.innerHTML = 'Simpan';
+        btn.innerHTML = 'Simpan Testimoni';
         btn.disabled = false;
       });
 
       window.deleteTesti = async function(id, name) {
-        if (!confirm(`Hapus testimoni dari "${name}"?`)) return;
+        if (!confirm(`Hapus testimoni dari "${name}"?\n\nTindakan ini tidak bisa dibatalkan.`)) return;
         try {
           const res = await fetch('/api/cms-testimonials', {
-            method: 'DELETE',
-            credentials: 'same-origin',
+            method: 'DELETE', credentials: 'same-origin',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id }),
           });
@@ -941,36 +881,64 @@ for (const key of allKeys) {
             showToast('Testimoni dihapus', 'success');
             testiData = testiData.filter(t => t.id !== id);
             renderTestiList();
-          } else {
-            showToast(data.error || 'Gagal hapus', 'error');
-          }
-        } catch {
-          showToast('Error koneksi', 'error');
-        }
+          } else { showToast(data.error || 'Gagal hapus', 'error'); }
+        } catch { showToast('Error koneksi', 'error'); }
       };
 
-      // Sidebar links untuk images dan testimoni
-      document.querySelectorAll('.sidebar-link[data-target="images"]').forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          document.getElementById('section-images').scrollIntoView({ behavior: 'smooth', block: 'start' });
-          const body = document.querySelector('#section-images .section-body');
-          const toggle = document.querySelector('#section-images .section-toggle');
-          if (body && !body.classList.contains('open')) { body.classList.add('open'); toggle.classList.add('open'); }
-          document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-          link.classList.add('active');
-        });
+      renderTestiList();
+
+      // ════════════════════════════════════════════════════════════════════
+      // SETTINGS MODAL
+      // ════════════════════════════════════════════════════════════════════
+      document.getElementById('settings-btn').addEventListener('click', async () => {
+        try {
+          const res = await fetch('/api/cms-account', { credentials: 'same-origin' });
+          if (res.ok) {
+            const data = await res.json();
+            document.getElementById('set-username').value = data.username || '';
+          }
+        } catch {}
+        document.getElementById('settings-modal').classList.add('show');
       });
-      document.querySelectorAll('.sidebar-link[data-target="testimonials-mgr"]').forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          document.getElementById('section-testimonials-mgr').scrollIntoView({ behavior: 'smooth', block: 'start' });
-          const body = document.querySelector('#section-testimonials-mgr .section-body');
-          const toggle = document.querySelector('#section-testimonials-mgr .section-toggle');
-          if (body && !body.classList.contains('open')) { body.classList.add('open'); toggle.classList.add('open'); }
-          document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-          link.classList.add('active');
-        });
+      document.getElementById('settings-cancel').addEventListener('click', () => {
+        document.getElementById('settings-modal').classList.remove('show');
+        document.getElementById('set-current-pw').value = '';
+        document.getElementById('set-new-pw').value = '';
+      });
+      document.getElementById('settings-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'settings-modal') document.getElementById('settings-modal').classList.remove('show');
+      });
+      document.getElementById('settings-save').addEventListener('click', async () => {
+        const currentPassword = document.getElementById('set-current-pw').value;
+        const newUsername = document.getElementById('set-username').value;
+        const newPassword = document.getElementById('set-new-pw').value;
+        if (!currentPassword) { showToast('Password saat ini wajib diisi', 'error'); return; }
+        if (!newUsername || newUsername.length < 3) { showToast('Username minimal 3 karakter', 'error'); return; }
+        try {
+          const res = await fetch('/api/cms-account', {
+            method: 'POST', credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currentPassword, newUsername, newPassword }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showToast('Akun berhasil diperbarui. Memuat ulang...', 'success');
+            setTimeout(() => window.location.reload(), 1200);
+          } else { showToast(data.error || 'Gagal update akun', 'error'); }
+        } catch { showToast('Gagal update akun', 'error'); }
+      });
+
+      // ════════════════════════════════════════════════════════════════════
+      // LOGOUT & UNSAVED WARNING
+      // ════════════════════════════════════════════════════════════════════
+      document.getElementById('logout-btn').addEventListener('click', async () => {
+        if (isDirty && !confirm('Ada perubahan belum disimpan. Yakin keluar?')) return;
+        await fetch('/api/cms-logout', { method: 'POST', credentials: 'same-origin' });
+        window.location.href = '/admin';
+      });
+
+      window.addEventListener('beforeunload', (e) => {
+        if (isDirty) { e.preventDefault(); e.returnValue = ''; }
       });
     </script>
   </body>
