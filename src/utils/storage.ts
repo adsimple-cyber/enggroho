@@ -1,69 +1,88 @@
 /**
  * Storage abstraction untuk CMS.
+ * Semua data disimpan di Supabase — permanen, tidak hilang saat cold start.
  *
- * Di Vercel (serverless), filesystem bersifat read-only kecuali /tmp.
- * Strategi:
- * - READ: coba /tmp dulu (data terbaru), fallback ke src/data (bundled saat build)
- * - WRITE: selalu tulis ke /tmp
- *
- * Catatan: /tmp di Vercel bersifat ephemeral per-instance. Artinya setelah
- * cold start baru, data kembali ke versi bundled. Untuk persistensi penuh
- * di production, perlu Vercel KV / Blob. Tapi untuk penggunaan CMS ringan
- * (edit lalu redeploy), ini sudah cukup.
+ * Tabel:
+ * - cms_content : konten landing page (jsonb)
+ * - cms_admin   : credentials login CMS
  */
 
-import { readFileSync, writeFileSync, existsSync, renameSync } from "fs";
+import { supabase } from "./supabase";
+import { readFileSync } from "fs";
 import { join } from "path";
 
-const IS_VERCEL = process.env.VERCEL === "1";
-
-// Path sumber (bundled saat build, read-only di Vercel)
+// Fallback: baca dari file lokal kalau Supabase belum ada datanya
 const SRC_CONTENT = join(process.cwd(), "src/data/content.json");
-const SRC_ADMIN   = join(process.cwd(), "src/data/admin.json");
 
-// Path tmp (writable di semua environment)
-const TMP_CONTENT = "/tmp/enggroho-content.json";
-const TMP_ADMIN   = "/tmp/enggroho-admin.json";
+// ─── CONTENT ────────────────────────────────────────────────────────────────
 
-function getReadPath(tmpPath: string, srcPath: string): string {
-  // Prioritaskan /tmp (data terbaru yang ditulis via CMS)
-  if (existsSync(tmpPath)) return tmpPath;
-  return srcPath;
+export async function readContent(): Promise<string> {
+  const { data, error } = await supabase
+    .from("cms_content")
+    .select("data")
+    .eq("id", 1)
+    .single();
+
+  if (error || !data) {
+    // Fallback ke file lokal (bundled saat build)
+    return readFileSync(SRC_CONTENT, "utf-8");
+  }
+
+  return JSON.stringify(data.data);
 }
 
-function getWritePath(tmpPath: string, srcPath: string): string {
-  // Di Vercel, hanya /tmp yang writable
-  if (IS_VERCEL) return tmpPath;
-  // Di local/standalone, tulis ke src/data langsung
-  return srcPath;
+export async function writeContent(json: string): Promise<void> {
+  const parsed = JSON.parse(json);
+
+  const { error } = await supabase
+    .from("cms_content")
+    .upsert({ id: 1, data: parsed, updated_at: new Date().toISOString() });
+
+  if (error) throw new Error("Gagal menyimpan konten ke Supabase: " + error.message);
 }
 
-export function readContent(): string {
-  const path = getReadPath(TMP_CONTENT, SRC_CONTENT);
-  return readFileSync(path, "utf-8");
+export async function contentExists(): Promise<boolean> {
+  const { data } = await supabase
+    .from("cms_content")
+    .select("id")
+    .eq("id", 1)
+    .single();
+  return !!data;
 }
 
-export function writeContent(data: string): void {
-  const path = getWritePath(TMP_CONTENT, SRC_CONTENT);
-  const tmp = path + ".tmp";
-  writeFileSync(tmp, data, "utf-8");
-  renameSync(tmp, path);
+// ─── ADMIN ───────────────────────────────────────────────────────────────────
+
+export interface AdminRow {
+  username: string;
+  password_hash: string;
+  salt: string;
+  token_salt: string;
 }
 
-export function contentExists(): boolean {
-  return existsSync(getReadPath(TMP_CONTENT, SRC_CONTENT));
+export async function readAdmin(): Promise<AdminRow | null> {
+  const { data, error } = await supabase
+    .from("cms_admin")
+    .select("username, password_hash, salt, token_salt")
+    .eq("id", 1)
+    .single();
+
+  if (error || !data) return null;
+  return data as AdminRow;
 }
 
-export function readAdmin(): string {
-  const path = getReadPath(TMP_ADMIN, SRC_ADMIN);
-  return readFileSync(path, "utf-8");
+export async function writeAdmin(row: AdminRow): Promise<void> {
+  const { error } = await supabase
+    .from("cms_admin")
+    .upsert({ id: 1, ...row });
+
+  if (error) throw new Error("Gagal menyimpan admin ke Supabase: " + error.message);
 }
 
-export function writeAdmin(data: string): void {
-  const path = getWritePath(TMP_ADMIN, SRC_ADMIN);
-  writeFileSync(path, data, "utf-8");
-}
-
-export function adminExists(): boolean {
-  return existsSync(getReadPath(TMP_ADMIN, SRC_ADMIN));
+export async function adminExists(): Promise<boolean> {
+  const { data } = await supabase
+    .from("cms_admin")
+    .select("id")
+    .eq("id", 1)
+    .single();
+  return !!data;
 }

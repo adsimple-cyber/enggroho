@@ -1,19 +1,17 @@
 ---
-import { readFileSync } from "fs";
-import { join } from "path";
 import { isValidToken, getTokenFromCookies } from "../../utils/auth";
 import { sections, richTextKeys } from "../../utils/cms-labels";
 import { readContent } from "../../utils/storage";
 
 const cookieHeader = Astro.request.headers.get("cookie") || "";
 const token = getTokenFromCookies(cookieHeader);
-if (!isValidToken(token)) {
+if (!await isValidToken(token)) {
   return Astro.redirect("/admin");
 }
 
 let content: { id: Record<string, any>; en: Record<string, any> };
 try {
-  content = JSON.parse(readContent());
+  content = JSON.parse(await readContent());
 } catch {
   content = { id: {}, en: {} };
 }

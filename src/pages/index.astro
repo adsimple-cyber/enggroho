@@ -1,6 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { translations, testimonials } from "../utils/translations";
+import { loadTranslationsAsync, testimonials } from "../utils/translations";
+
+const translations = await loadTranslationsAsync();
 ---
 
 <Layout>

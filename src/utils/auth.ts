@@ -1,12 +1,5 @@
 import { createHash, createHmac, randomBytes } from "crypto";
-import { readAdmin, writeAdmin, adminExists } from "./storage";
-
-interface AdminData {
-  username: string;
-  passwordHash: string;
-  salt: string;
-  tokenSalt: string;
-}
+import { readAdmin, writeAdmin, adminExists, type AdminRow } from "./storage";
 
 const TOKEN_TTL_MS = 24 * 60 * 60 * 1000; // 24 jam
 
@@ -18,55 +11,49 @@ function signToken(payload: string, secret: string): string {
   return createHmac("sha256", secret).update(payload).digest("hex");
 }
 
-// In-memory cache — di-invalidate setiap kali saveAdmin dipanggil
-let _adminCache: AdminData | null = null;
+export async function loadAdmin(): Promise<AdminRow> {
+  const existing = await readAdmin();
 
-export function loadAdmin(): AdminData {
-  if (_adminCache) return _adminCache;
-
-  if (!adminExists()) {
+  if (!existing) {
+    // Buat default admin pertama kali
     const salt = randomBytes(16).toString("hex");
     const passwordHash = hashPassword("enggroho2025", salt);
     const tokenSalt = randomBytes(32).toString("hex");
-    const defaultAdmin: AdminData = { username: "admin", passwordHash, salt, tokenSalt };
-    writeAdmin(JSON.stringify(defaultAdmin, null, 2));
-    _adminCache = defaultAdmin;
+    const defaultAdmin: AdminRow = {
+      username: "admin",
+      password_hash: passwordHash,
+      salt,
+      token_salt: tokenSalt,
+    };
+    await writeAdmin(defaultAdmin);
     return defaultAdmin;
   }
 
-  const raw = JSON.parse(readAdmin());
-  if (!raw.tokenSalt) {
-    raw.tokenSalt = randomBytes(32).toString("hex");
-    writeAdmin(JSON.stringify(raw, null, 2));
-  }
-  _adminCache = raw;
-  return raw;
+  return existing;
 }
 
-export function saveAdmin(username: string, password: string): void {
+export async function saveAdmin(username: string, password: string): Promise<void> {
   const salt = randomBytes(16).toString("hex");
-  const passwordHash = hashPassword(password, salt);
-  const tokenSalt = randomBytes(32).toString("hex");
-  const data: AdminData = { username, passwordHash, salt, tokenSalt };
-  writeAdmin(JSON.stringify(data, null, 2));
-  _adminCache = data;
+  const password_hash = hashPassword(password, salt);
+  const token_salt = randomBytes(32).toString("hex");
+  await writeAdmin({ username, password_hash, salt, token_salt });
 }
 
-export function verifyCredentials(username: string, password: string): boolean {
-  const admin = loadAdmin();
+export async function verifyCredentials(username: string, password: string): Promise<boolean> {
+  const admin = await loadAdmin();
   if (username !== admin.username) return false;
-  return hashPassword(password, admin.salt) === admin.passwordHash;
+  return hashPassword(password, admin.salt) === admin.password_hash;
 }
 
-export function createToken(): string {
-  const admin = loadAdmin();
+export async function createToken(): Promise<string> {
+  const admin = await loadAdmin();
   const issuedAt = Date.now();
   const payload = `${issuedAt}:${admin.username}`;
-  const sig = signToken(payload, admin.tokenSalt);
+  const sig = signToken(payload, admin.token_salt);
   return Buffer.from(`${payload}:${sig}`).toString("base64url");
 }
 
-export function isValidToken(token: string | undefined): boolean {
+export async function isValidToken(token: string | undefined): Promise<boolean> {
   if (!token) return false;
   try {
     const decoded = Buffer.from(token, "base64url").toString("utf-8");
@@ -83,10 +70,10 @@ export function isValidToken(token: string | undefined): boolean {
     if (Date.now() - issuedAt > TOKEN_TTL_MS) return false;
     if (!/^[0-9a-f]{64}$/.test(sig)) return false;
 
-    const admin = loadAdmin();
+    const admin = await loadAdmin();
     if (username !== admin.username) return false;
 
-    const expected = signToken(`${issuedAt}:${username}`, admin.tokenSalt);
+    const expected = signToken(`${issuedAt}:${username}`, admin.token_salt);
     return sig === expected;
   } catch {
     return false;
@@ -103,7 +90,7 @@ export function getTokenFromCookies(cookieHeader: string): string | undefined {
   return cookies["cms_token"];
 }
 
-export function isAuthenticated(request: Request): boolean {
+export async function isAuthenticated(request: Request): Promise<boolean> {
   const cookieHeader = request.headers.get("cookie") || "";
   const token = getTokenFromCookies(cookieHeader);
   return isValidToken(token);

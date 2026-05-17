@@ -1,6 +1,8 @@
 ---
 import "../styles/global.css";
-import { translations } from "../utils/translations";
+import { loadTranslationsAsync } from "../utils/translations";
+
+const translations = await loadTranslationsAsync();
 
 interface Props {
 	title?: string;

@@ -1,35 +1,50 @@
-import { readFileSync, existsSync } from "fs";
+import { readFileSync } from "fs";
 import { join } from "path";
 
-const IS_VERCEL = process.env.VERCEL === "1";
+// Fallback: baca dari file lokal (bundled saat build)
 const SRC_PATH = join(process.cwd(), "src/data/content.json");
-const TMP_PATH = "/tmp/enggroho-content.json";
 
-/**
- * Load translations dari disk SETIAP PEMANGGILAN.
- * Di Vercel: prioritaskan /tmp (data terbaru dari CMS), fallback ke bundled.
- * Di local: baca langsung dari src/data/content.json.
- */
-function loadTranslations() {
+function loadFromFile() {
   try {
-    const path = (IS_VERCEL && existsSync(TMP_PATH)) ? TMP_PATH : SRC_PATH;
-    return JSON.parse(readFileSync(path, "utf-8"));
+    return JSON.parse(readFileSync(SRC_PATH, "utf-8"));
   } catch {
     return { id: {}, en: {} };
   }
 }
 
-// Getter yang selalu fresh — di-destructure di Astro/JS biasa tetap jalan.
-// Object terbaru akan di-return tiap kali property `translations` diakses.
+/**
+ * Load translations dari Supabase (async).
+ * Dipakai di Astro frontmatter: const t = await loadTranslationsAsync()
+ */
+export async function loadTranslationsAsync() {
+  try {
+    const { supabase } = await import("./supabase.ts");
+    const { data, error } = await supabase
+      .from("cms_content")
+      .select("data")
+      .eq("id", 1)
+      .single();
+
+    if (error || !data) return loadFromFile();
+    return data.data;
+  } catch {
+    return loadFromFile();
+  }
+}
+
+/**
+ * Sync proxy untuk backward compatibility.
+ * Hanya baca dari file lokal — dipakai di client-side script (define:vars).
+ * Untuk SSR rendering, gunakan loadTranslationsAsync() di frontmatter.
+ */
 export const translations = new Proxy(
   {},
   {
     get(_target, prop) {
-      const data = loadTranslations();
-      return data[prop];
+      return loadFromFile()[prop];
     },
     ownKeys() {
-      return Object.keys(loadTranslations());
+      return Object.keys(loadFromFile());
     },
     getOwnPropertyDescriptor() {
       return { enumerable: true, configurable: true };
@@ -42,7 +57,7 @@ export const testimonials = [
         name: "Permadi Wisnu Aji Wardhani",
         role: "Head of Water Engineering, Multinational Company",
         text: "Bekerja sebagai staf senior pengolahan air, saya merasa karir saya telah stagnan. Setelah menyelesaikan program Enggroho, keterampilan komunikasi saya meningkat secara dramatis. Ini membawa saya ke lompatan karir ke posisi pemasaran di perusahaan multinasional yang lebih besar, di mana saya telah berhasil mendapatkan lebih banyak klien. Pengembalian investasi pada kursus ini luar biasa!",
-        image: "/testimoni/wisnu.jpeg"
+        image: "https://api.dicebear.com/7.x/avataaars/svg?seed=permadi"
     },
     {
         name: "Belva Amalia Destaty",

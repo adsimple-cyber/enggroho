@@ -3,32 +3,29 @@ import { isAuthenticated } from "../../utils/auth";
 import { readContent, writeContent, contentExists } from "../../utils/storage";
 
 export const GET: APIRoute = async ({ request }) => {
-  if (!isAuthenticated(request)) {
+  if (!await isAuthenticated(request)) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
+      status: 401, headers: { "Content-Type": "application/json" },
     });
   }
 
   try {
-    const content = readContent();
+    const content = await readContent();
     return new Response(content, {
       status: 200,
       headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
     });
   } catch {
     return new Response(JSON.stringify({ error: "Gagal membaca konten." }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
+      status: 500, headers: { "Content-Type": "application/json" },
     });
   }
 };
 
 export const POST: APIRoute = async ({ request }) => {
-  if (!isAuthenticated(request)) {
+  if (!await isAuthenticated(request)) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
+      status: 401, headers: { "Content-Type": "application/json" },
     });
   }
 
@@ -39,30 +36,24 @@ export const POST: APIRoute = async ({ request }) => {
         typeof body.id !== "object" || Array.isArray(body.id) ||
         typeof body.en !== "object" || Array.isArray(body.en)) {
       return new Response(JSON.stringify({ error: "Format data tidak valid." }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
+        status: 400, headers: { "Content-Type": "application/json" },
       });
     }
 
     // Baca existing → merge
     let existing: Record<string, any> = { id: {}, en: {} };
-    if (contentExists()) {
+    if (await contentExists()) {
       try {
-        const parsed = JSON.parse(readContent());
+        const raw = await readContent();
+        const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === "object") {
           existing = parsed;
           if (!existing.id || typeof existing.id !== "object") existing.id = {};
           if (!existing.en || typeof existing.en !== "object") existing.en = {};
         }
-      } catch {
-        return new Response(JSON.stringify({ error: "File konten rusak." }), {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
+      } catch { /* pakai existing kosong */ }
     }
 
-    // Sanitize: hanya terima string values
     const sanitize = (obj: Record<string, any>) => {
       const out: Record<string, string> = {};
       for (const key in obj) {
@@ -77,16 +68,14 @@ export const POST: APIRoute = async ({ request }) => {
       en: { ...existing.en, ...sanitize(body.en) },
     };
 
-    writeContent(JSON.stringify(merged, null, 2));
+    await writeContent(JSON.stringify(merged, null, 2));
 
     return new Response(JSON.stringify({ success: true, message: "Konten berhasil disimpan." }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
+      status: 200, headers: { "Content-Type": "application/json" },
     });
-  } catch {
-    return new Response(JSON.stringify({ error: "Gagal menyimpan konten." }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
+  } catch (err: any) {
+    return new Response(JSON.stringify({ error: err?.message || "Gagal menyimpan konten." }), {
+      status: 500, headers: { "Content-Type": "application/json" },
     });
   }
 };

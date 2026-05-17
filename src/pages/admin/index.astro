@@ -3,7 +3,7 @@ import { isValidToken, getTokenFromCookies } from "../../utils/auth";
 
 const cookieHeader = Astro.request.headers.get("cookie") || "";
 const token = getTokenFromCookies(cookieHeader);
-if (isValidToken(token)) {
+if (await isValidToken(token)) {
   return Astro.redirect("/admin/dashboard");
 }
 ---
