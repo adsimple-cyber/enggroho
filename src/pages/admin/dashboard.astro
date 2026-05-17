@@ -869,37 +869,58 @@ for (const key of allKeys) {
         const position = document.getElementById('testi-position').value;
         const id = document.getElementById('testi-id').value;
         const file = document.getElementById('testi-photo-input').files[0];
-        const currentImg = document.getElementById('testi-photo-preview').src;
+        const previewSrc = document.getElementById('testi-photo-preview').src;
 
         if (!name || !role || !text) { showToast('Nama, role, dan teks wajib diisi.', 'error'); return; }
 
         btn.innerHTML = '<span class="spinner"></span>Menyimpan...';
         btn.disabled = true;
 
-        const fd = new FormData();
-        if (id) fd.append('id', id);
-        fd.append('name', name);
-        fd.append('role', role);
-        fd.append('text', text);
-        fd.append('position', position);
-        fd.append('image', currentImg.includes('dicebear') ? '' : currentImg);
-        if (file) fd.append('file', file);
-
         try {
-          const res = await fetch('/api/cms-testimonials', { method: 'POST', credentials: 'same-origin', body: fd });
+          // Step 1: Upload foto dulu kalau ada file baru
+          let imageUrl = previewSrc.includes('dicebear') || previewSrc.startsWith('data:') ? '' : previewSrc;
+          if (file && file.size > 0) {
+            btn.innerHTML = '<span class="spinner"></span>Upload foto...';
+            const uploadFd = new FormData();
+            uploadFd.append('file', file);
+            uploadFd.append('prefix', 'testi');
+            const uploadRes = await fetch('/api/cms-upload', { method: 'POST', credentials: 'same-origin', body: uploadFd });
+            const uploadData = await uploadRes.json();
+            if (uploadRes.ok && uploadData.success) {
+              imageUrl = uploadData.url;
+            } else {
+              showToast('Upload foto gagal: ' + (uploadData.error || 'Unknown'), 'error');
+              btn.innerHTML = 'Simpan';
+              btn.disabled = false;
+              return;
+            }
+          }
+
+          // Step 2: Simpan data testimoni via JSON
+          btn.innerHTML = '<span class="spinner"></span>Menyimpan...';
+          const payload = {
+            name, role, text, image: imageUrl,
+            position: parseInt(position) || 99,
+            ...(id ? { id: parseInt(id) } : {}),
+          };
+          const res = await fetch('/api/cms-testimonials', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
           const data = await res.json();
           if (res.ok && data.success) {
             showToast('Testimoni berhasil disimpan', 'success');
             document.getElementById('testi-modal').classList.remove('show');
-            // Refresh list dari server
             const listRes = await fetch('/api/cms-testimonials', { credentials: 'same-origin' });
             testiData = await listRes.json();
             renderTestiList();
           } else {
             showToast(data.error || 'Gagal menyimpan', 'error');
           }
-        } catch {
-          showToast('Error koneksi', 'error');
+        } catch (err) {
+          showToast('Error: ' + (err.message || 'Koneksi gagal'), 'error');
         }
         btn.innerHTML = 'Simpan';
         btn.disabled = false;
