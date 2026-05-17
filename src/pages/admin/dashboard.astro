@@ -393,6 +393,7 @@ const imageInfo = [
                   <input type="file" class="img-upload-input" id={`img-input-${key}`} data-key={key} accept="image/*" />
                   <span class="img-status" id={`img-status-${key}`}></span>
                 </div>
+                <p style="font-size:11px;color:var(--muted);margin-top:8px">Format: JPG, PNG, WebP. Maks. 1MB.</p>
               </div>
             </div>
           ))}
@@ -468,7 +469,7 @@ const imageInfo = [
           <div>
             <label class="file-btn" for="testi-photo-input">Pilih Foto</label>
             <input type="file" id="testi-photo-input" class="img-upload-input" accept="image/*" />
-            <p style="font-size:11px;color:var(--muted);margin-top:6px">Kosongkan jika tidak ingin ganti foto</p>
+            <p style="font-size:11px;color:var(--muted);margin-top:6px">Kosongkan jika tidak ingin ganti foto. Maks. 1MB.</p>
           </div>
         </div>
         <div class="modal-actions">
@@ -699,6 +700,14 @@ const imageInfo = [
           if (!file) return;
           const key = input.dataset.key;
           const status = document.getElementById('img-status-' + key);
+          // Validasi ukuran di client
+          if (file.size > 1 * 1024 * 1024) {
+            status.textContent = '✗ Maks. 1MB';
+            status.style.color = 'var(--error)';
+            showToast('Ukuran gambar maksimal 1MB. Kompres dulu sebelum upload.', 'error');
+            input.value = '';
+            return;
+          }
           status.textContent = '⏳ Mengupload...';
           status.style.color = 'var(--warning)';
           const fd = new FormData();
@@ -777,7 +786,12 @@ const imageInfo = [
                 <button class="btn-secondary" style="padding:7px 14px;color:var(--error)" onclick="deleteTesti(${t.id}, '${escapeHtml(t.name).replace(/'/g, "&#39;")}')">Hapus</button>
               </div>
             </div>`;
-        }).join('') + (testiSearchQuery ? '' : `
+        }).join('') + (testiSearchQuery ? '' : testiData.length >= 40 ? `
+          <div class="testi-add-card" style="cursor:default;opacity:0.5">
+            <span class="testi-add-card-plus">🚫</span>
+            <span>Batas maksimal (${testiData.length}/40)</span>
+          </div>
+        ` : `
           <button class="testi-add-card" onclick="openTestiModal(null)">
             <span class="testi-add-card-plus">+</span>
             <span>Tambah Testimoni Baru</span>
@@ -798,7 +812,13 @@ const imageInfo = [
         document.getElementById('testi-modal').classList.add('show');
       };
 
-      document.getElementById('testi-add-btn').addEventListener('click', () => openTestiModal(null));
+      document.getElementById('testi-add-btn').addEventListener('click', () => {
+        if (testiData.length >= 40) {
+          showToast('Maksimal 40 testimoni. Hapus beberapa sebelum menambah yang baru.', 'error');
+          return;
+        }
+        openTestiModal(null);
+      });
 
       document.getElementById('testi-search-input').addEventListener('input', (e) => {
         testiSearchQuery = e.target.value.trim().toLowerCase();
@@ -836,6 +856,13 @@ const imageInfo = [
         try {
           let imageUrl = previewSrc.includes('dicebear') || previewSrc.startsWith('data:') ? '' : previewSrc;
           if (file && file.size > 0) {
+            // Validasi ukuran di client sebelum upload
+            if (file.size > 1 * 1024 * 1024) {
+              showToast('Ukuran foto maksimal 1MB. Kompres dulu sebelum upload.', 'error');
+              btn.innerHTML = 'Simpan Testimoni';
+              btn.disabled = false;
+              return;
+            }
             btn.innerHTML = '<span class="spinner"></span> Upload foto...';
             const fd = new FormData();
             fd.append('file', file); fd.append('prefix', 'testi');

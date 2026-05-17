@@ -53,8 +53,8 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  if (file.size > 5 * 1024 * 1024) {
-    return new Response(JSON.stringify({ error: "Ukuran file maksimal 5MB." }), {
+  if (file.size > 1 * 1024 * 1024) {
+    return new Response(JSON.stringify({ error: "Ukuran file maksimal 1MB." }), {
       status: 400, headers: { "Content-Type": "application/json" },
     });
   }

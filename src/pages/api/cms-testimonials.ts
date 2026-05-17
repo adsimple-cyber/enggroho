@@ -63,6 +63,15 @@ export const POST: APIRoute = async ({ request }) => {
       status: 500, headers: { "Content-Type": "application/json" },
     });
   } else {
+    // Cek limit 40 testimoni sebelum insert baru
+    const { count, error: countErr } = await supabase
+      .from("cms_testimonials")
+      .select("*", { count: "exact", head: true });
+    if (!countErr && count !== null && count >= 40) {
+      return new Response(JSON.stringify({ error: "Maksimal 40 testimoni. Hapus beberapa sebelum menambah yang baru." }), {
+        status: 400, headers: { "Content-Type": "application/json" },
+      });
+    }
     const { error } = await supabase.from("cms_testimonials").insert(row);
     if (error) return new Response(JSON.stringify({ error: error.message }), {
       status: 500, headers: { "Content-Type": "application/json" },
