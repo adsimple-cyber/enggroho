@@ -433,6 +433,7 @@ for (const key of allKeys) {
         t.className = 'toast ' + type + ' show';
         setTimeout(() => t.classList.remove('show'), 3500);
       }
+      window.showToast = showToast;
 
       function norm(v) { return (v == null ? '' : String(v)); }
 
