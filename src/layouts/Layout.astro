@@ -21,10 +21,10 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 
 		<!-- Security Headers -->
 		<meta http-equiv="X-Content-Type-Options" content="nosniff" />
-		<meta http-equiv="X-Frame-Options" content="DENY" />
+
 		<meta
 			http-equiv="Content-Security-Policy"
-			content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https://i.pravatar.cc https://images.unsplash.com https://api.dicebear.com https://ui-avatars.com;"
+			content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https://*.supabase.co https://i.pravatar.cc https://images.unsplash.com https://api.dicebear.com https://ui-avatars.com;"
 		/>
 
 		<!-- Favicon -->
@@ -50,12 +50,14 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 		<link
 			rel="stylesheet"
 			href="https://unpkg.com/aos@next/dist/aos.css"
-			integrity="sha384-R//NStDhsEea1wA9I0rGj8g6k98E2k9WFXi8q5aW6R+dF30wRIfOOMF2S6V/kK9I"
-			crossorigin="anonymous"
 		/>
 	</head>
 	<body>
 		<slot />
+		
+		<script define:vars={{ idProofs: translations?.id?.social_proofs || [], enProofs: translations?.en?.social_proofs || [] }}>
+			window.socialProofs = { id: idProofs, en: enProofs };
+		</script>
 
 		<script is:inline src="https://unpkg.com/aos@next/dist/aos.js"></script>
 		<script is:inline>
@@ -150,7 +152,7 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 					function showRandomProof() {
 						const currentLang =
 							localStorage.getItem("language") || "id";
-						const proofs = translations[currentLang].social_proofs;
+						const proofs = window.socialProofs[currentLang] || window.socialProofs["id"];
 						const randomIdx = Math.floor(
 							Math.random() * proofs.length,
 						);
@@ -190,7 +192,8 @@ const { title = "Enggroho - Creative English for Professionals" } = Astro.props;
 		<!-- Social Proof Toast -->
 		<div
 			id="social-proof-toast"
-			class="fixed bottom-32 left-6 right-6 md:left-8 md:right-auto md:w-80 bg-cream/95 backdrop-blur-xl border border-secondary/10 p-4 rounded-2xl shadow-xl z-[98] transition-all duration-700 translate-x-[-150%] opacity-0 flex items-center gap-4"
+			data-testid="social-proof-toast"
+			class="toast fixed bottom-32 left-6 right-6 md:left-8 md:right-auto md:w-80 bg-cream/95 backdrop-blur-xl border border-secondary/10 p-4 rounded-2xl shadow-xl z-[98] transition-all duration-700 translate-x-[-150%] opacity-0 flex items-center gap-4"
 		>
 			<div
 				class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white shrink-0 shadow-lg shadow-primary/20"
