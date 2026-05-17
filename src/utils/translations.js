@@ -32,6 +32,31 @@ export async function loadTranslationsAsync() {
   }
 }
 
+export async function loadTestimonialsAsync() {
+  try {
+    const { supabase } = await import("./supabase.ts");
+    const { data, error } = await supabase
+      .from("cms_testimonials")
+      .select("id,name,role,text,image,position")
+      .order("position");
+    if (error || !data || data.length === 0) return testimonials;
+    return data;
+  } catch {
+    return testimonials;
+  }
+}
+
+export async function loadImagesAsync() {
+  try {
+    const { supabase } = await import("./supabase.ts");
+    const { data, error } = await supabase.from("cms_images").select("key,url");
+    if (error || !data) return { hero: "/hero.png", mentor: "/Agung.png", og: "/og-image.png" };
+    return Object.fromEntries(data.map((r) => [r.key, r.url]));
+  } catch {
+    return { hero: "/hero.png", mentor: "/Agung.png", og: "/og-image.png" };
+  }
+}
+
 /**
  * Sync proxy untuk backward compatibility.
  * Hanya baca dari file lokal — dipakai di client-side script (define:vars).

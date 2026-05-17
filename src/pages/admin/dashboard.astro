@@ -1,7 +1,7 @@
 ---
 import { isValidToken, getTokenFromCookies } from "../../utils/auth";
 import { sections, richTextKeys } from "../../utils/cms-labels";
-import { readContent } from "../../utils/storage";
+import { readContent, readTestimonials, readImages } from "../../utils/storage";
 
 const cookieHeader = Astro.request.headers.get("cookie") || "";
 const token = getTokenFromCookies(cookieHeader);
@@ -17,6 +17,9 @@ try {
 }
 if (!content.id) content.id = {};
 if (!content.en) content.en = {};
+
+const testimonialList = await readTestimonials();
+const imageMap = await readImages();
 
 const iconMap: Record<string, string> = {
   compass: "🧭", star: "🦸", target: "🎯", chart: "📊", refresh: "🔄",
@@ -155,6 +158,38 @@ for (const key of allKeys) {
       .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 6px; }
       @keyframes spin { to { transform: rotate(360deg); } }
       .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; display: inline-block; }
+      .img-card { border: 1.5px solid var(--border-strong); border-radius: 10px; overflow: hidden; background: white; }
+      .img-preview { width: 100%; height: 180px; object-fit: cover; display: block; background: var(--bg); }
+      .img-info { padding: 12px 14px; }
+      .img-label { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+      .img-url { font-size: 11px; color: var(--muted); word-break: break-all; margin-bottom: 10px; }
+      .img-upload-btn { display: inline-block; padding: 7px 14px; background: var(--primary); color: white; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+      .img-upload-btn:hover { background: #e55a0a; }
+      .img-upload-input { display: none; }
+      .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+      .testi-list { display: flex; flex-direction: column; gap: 12px; }
+      .testi-item { border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 16px; background: white; display: flex; gap: 14px; align-items: flex-start; }
+      .testi-item:hover { border-color: var(--border-strong); }
+      .testi-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--bg); }
+      .testi-body { flex: 1; min-width: 0; }
+      .testi-name { font-size: 14px; font-weight: 700; color: var(--text); }
+      .testi-role { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+      .testi-text { font-size: 13px; color: var(--text); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .testi-actions { display: flex; gap: 6px; margin-top: 8px; }
+      .testi-btn { padding: 5px 12px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border-strong); background: white; color: var(--text); transition: all 0.15s; }
+      .testi-btn:hover { border-color: var(--primary); color: var(--primary); }
+      .testi-btn.danger:hover { border-color: var(--error); color: var(--error); }
+      .testi-add-btn { width: 100%; padding: 12px; border: 2px dashed var(--border-strong); border-radius: 10px; background: transparent; color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+      .testi-add-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+      .testi-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 400; display: none; align-items: center; justify-content: center; padding: 20px; }
+      .testi-modal-overlay.show { display: flex; }
+      .testi-modal { background: white; border-radius: 14px; padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,0.2); }
+      .testi-modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 20px; }
+      .testi-modal label { display: block; font-size: 12px; font-weight: 600; color: #444; margin-bottom: 5px; margin-top: 12px; }
+      .testi-modal input, .testi-modal textarea { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border-strong); border-radius: 8px; font-size: 14px; outline: none; color: var(--text); font-family: inherit; }
+      .testi-modal input:focus, .testi-modal textarea:focus { border-color: var(--primary); }
+      .testi-modal textarea { min-height: 100px; resize: vertical; }
+      .testi-photo-preview { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-top: 8px; border: 2px solid var(--border); }
       @media (max-width: 900px) {
         .sidebar { display: none; }
         .main { padding: 20px 18px 140px; }
@@ -212,6 +247,15 @@ for (const key of allKeys) {
             <span>{s.label}</span>
           </a>
         ))}
+        <div style="height:1px;background:var(--border);margin:8px 20px;"></div>
+        <a class="sidebar-link" data-target="images">
+          <span class="sidebar-icon">🖼️</span>
+          <span>Gambar</span>
+        </a>
+        <a class="sidebar-link" data-target="testimonials-mgr">
+          <span class="sidebar-icon">⭐</span>
+          <span>Kelola Testimoni</span>
+        </a>
       </aside>
 
       <main class="main">
@@ -266,6 +310,88 @@ for (const key of allKeys) {
           </div>
         ))}
       </main>
+    </div>
+
+    <!-- ═══ SECTION: GAMBAR ═══ -->
+    <div id="section-images" class="section-card" style="margin: 0 36px 20px; max-width: 848px;">
+      <div class="section-header">
+        <div class="section-header-left">
+          <span class="section-icon">🖼️</span>
+          <h2>Gambar</h2>
+        </div>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <div class="group">
+          <div class="group-title">Upload & Ganti Gambar</div>
+          <div class="img-grid">
+            {[
+              { key: "hero", label: "Hero (Foto Utama)", hint: "Foto besar di section pembuka" },
+              { key: "mentor", label: "Mentor (Foto Agung)", hint: "Foto profil mentor" },
+              { key: "og", label: "OG Image (Share Preview)", hint: "Gambar saat link dibagikan di sosmed" },
+            ].map(({ key, label, hint }) => (
+              <div class="img-card" id={`img-card-${key}`}>
+                <img
+                  src={imageMap[key] || "/placeholder.png"}
+                  alt={label}
+                  class="img-preview"
+                  id={`img-preview-${key}`}
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                />
+                <div class="img-preview-placeholder" style="display:none">Belum ada gambar</div>
+                <div class="img-info">
+                  <div class="img-label">{label}</div>
+                  <div class="img-url" id={`img-url-${key}`}>{imageMap[key] || "-"}</div>
+                  <p style="font-size:11px;color:var(--muted);margin-bottom:8px;font-style:italic">{hint}</p>
+                  <label class="img-upload-btn" for={`img-input-${key}`}>Ganti Gambar</label>
+                  <input type="file" class="img-upload-input" id={`img-input-${key}`} data-key={key} accept="image/*" />
+                  <span class="img-status" id={`img-status-${key}`} style="font-size:11px;margin-left:8px;"></span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SECTION: KELOLA TESTIMONI ═══ -->
+    <div id="section-testimonials-mgr" class="section-card" style="margin: 0 36px 140px; max-width: 848px;">
+      <div class="section-header">
+        <div class="section-header-left">
+          <span class="section-icon">⭐</span>
+          <h2>Kelola Testimoni</h2>
+        </div>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <div class="group">
+          <div class="group-title">Daftar Testimoni</div>
+          <div class="testi-list" id="testi-list">
+            {testimonialList.map((t) => (
+              <div class="testi-item" data-id={t.id}>
+                <img
+                  src={t.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + t.name}
+                  alt={t.name}
+                  class="testi-avatar"
+                  onerror={`this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(t.name)}'`}
+                />
+                <div class="testi-body">
+                  <div class="testi-name">{t.name}</div>
+                  <div class="testi-role">{t.role}</div>
+                  <div class="testi-text">{t.text}</div>
+                  <div class="testi-actions">
+                    <button class="testi-btn" onclick={`openTestiModal(${t.id})`}>Edit</button>
+                    <button class="testi-btn danger" onclick={`deleteTesti(${t.id}, '${t.name.replace(/'/g, "\\'")}')`}>Hapus</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button class="testi-add-btn" style="margin-top:12px" onclick="openTestiModal(null)">
+            + Tambah Testimoni Baru
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="save-bar">
@@ -616,6 +742,214 @@ for (const key of allKeys) {
         });
       }, { threshold: 0.15, rootMargin: '-100px 0px -50% 0px' });
       document.querySelectorAll('.section-card').forEach(card => observer.observe(card));
+    </script>
+    <!-- Testimoni Modal -->
+    <div class="testi-modal-overlay" id="testi-modal">
+      <div class="testi-modal">
+        <h3 id="testi-modal-title">Tambah Testimoni</h3>
+        <input type="hidden" id="testi-id" />
+        <label>Nama *</label>
+        <input type="text" id="testi-name" placeholder="Nama lengkap" />
+        <label>Role / Jabatan *</label>
+        <input type="text" id="testi-role" placeholder="Contoh: Web Developer, Jakarta" />
+        <label>Teks Testimoni *</label>
+        <textarea id="testi-text" placeholder="Cerita testimoni..."></textarea>
+        <label>Urutan (angka)</label>
+        <input type="number" id="testi-position" placeholder="Contoh: 1, 2, 3..." min="1" />
+        <label>Foto Profil</label>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+          <img id="testi-photo-preview" class="testi-photo-preview" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="preview" />
+          <div>
+            <label class="img-upload-btn" for="testi-photo-input" style="display:inline-block">Pilih Foto</label>
+            <input type="file" id="testi-photo-input" class="img-upload-input" accept="image/*" />
+            <p style="font-size:11px;color:var(--muted);margin-top:4px">Kosongkan jika tidak ingin ganti foto</p>
+          </div>
+        </div>
+        <div class="modal-actions" style="margin-top:20px">
+          <button class="btn-cancel" id="testi-cancel">Batal</button>
+          <button class="btn-confirm" id="testi-save">Simpan</button>
+        </div>
+      </div>
+    </div>
+
+    <script define:vars={{ initialTestimonials: testimonialList }}>
+      // ─── IMAGE UPLOAD ────────────────────────────────────────────────────
+      document.querySelectorAll('.img-upload-input').forEach(input => {
+        input.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const key = input.dataset.key;
+          const status = document.getElementById('img-status-' + key);
+          status.textContent = 'Mengupload...';
+          status.style.color = 'var(--warning)';
+
+          const fd = new FormData();
+          fd.append('key', key);
+          fd.append('file', file);
+
+          try {
+            const res = await fetch('/api/cms-images', { method: 'POST', credentials: 'same-origin', body: fd });
+            const data = await res.json();
+            if (res.ok && data.success) {
+              document.getElementById('img-preview-' + key).src = data.url;
+              document.getElementById('img-url-' + key).textContent = data.url;
+              status.textContent = '✓ Tersimpan';
+              status.style.color = 'var(--success)';
+              setTimeout(() => { status.textContent = ''; }, 3000);
+            } else {
+              status.textContent = '✗ ' + (data.error || 'Gagal');
+              status.style.color = 'var(--error)';
+            }
+          } catch {
+            status.textContent = '✗ Error';
+            status.style.color = 'var(--error)';
+          }
+        });
+      });
+
+      // ─── TESTIMONI MANAGER ───────────────────────────────────────────────
+      let testiData = [...initialTestimonials];
+
+      function renderTestiList() {
+        const list = document.getElementById('testi-list');
+        list.innerHTML = testiData.map(t => `
+          <div class="testi-item" data-id="${t.id}">
+            <img src="${t.image || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + encodeURIComponent(t.name)}"
+              alt="${t.name}" class="testi-avatar"
+              onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(t.name)}'" />
+            <div class="testi-body">
+              <div class="testi-name">${t.name}</div>
+              <div class="testi-role">${t.role}</div>
+              <div class="testi-text">${t.text}</div>
+              <div class="testi-actions">
+                <button class="testi-btn" onclick="openTestiModal(${t.id})">Edit</button>
+                <button class="testi-btn danger" onclick="deleteTesti(${t.id}, '${t.name.replace(/'/g, "\\'")}')">Hapus</button>
+              </div>
+            </div>
+          </div>
+        `).join('') + `<button class="testi-add-btn" style="margin-top:12px" onclick="openTestiModal(null)">+ Tambah Testimoni Baru</button>`;
+      }
+
+      window.openTestiModal = function(id) {
+        const modal = document.getElementById('testi-modal');
+        const t = id ? testiData.find(x => x.id === id) : null;
+        document.getElementById('testi-modal-title').textContent = t ? 'Edit Testimoni' : 'Tambah Testimoni';
+        document.getElementById('testi-id').value = t ? t.id : '';
+        document.getElementById('testi-name').value = t ? t.name : '';
+        document.getElementById('testi-role').value = t ? t.role : '';
+        document.getElementById('testi-text').value = t ? t.text : '';
+        document.getElementById('testi-position').value = t ? t.position : testiData.length + 1;
+        document.getElementById('testi-photo-preview').src = t?.image || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default';
+        document.getElementById('testi-photo-input').value = '';
+        modal.classList.add('show');
+      };
+
+      // Preview foto saat dipilih
+      document.getElementById('testi-photo-input').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => { document.getElementById('testi-photo-preview').src = ev.target.result; };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      document.getElementById('testi-cancel').addEventListener('click', () => {
+        document.getElementById('testi-modal').classList.remove('show');
+      });
+      document.getElementById('testi-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'testi-modal') document.getElementById('testi-modal').classList.remove('show');
+      });
+
+      document.getElementById('testi-save').addEventListener('click', async () => {
+        const btn = document.getElementById('testi-save');
+        const name = document.getElementById('testi-name').value.trim();
+        const role = document.getElementById('testi-role').value.trim();
+        const text = document.getElementById('testi-text').value.trim();
+        const position = document.getElementById('testi-position').value;
+        const id = document.getElementById('testi-id').value;
+        const file = document.getElementById('testi-photo-input').files[0];
+        const currentImg = document.getElementById('testi-photo-preview').src;
+
+        if (!name || !role || !text) { showToast('Nama, role, dan teks wajib diisi.', 'error'); return; }
+
+        btn.innerHTML = '<span class="spinner"></span>Menyimpan...';
+        btn.disabled = true;
+
+        const fd = new FormData();
+        if (id) fd.append('id', id);
+        fd.append('name', name);
+        fd.append('role', role);
+        fd.append('text', text);
+        fd.append('position', position);
+        fd.append('image', currentImg.includes('dicebear') ? '' : currentImg);
+        if (file) fd.append('file', file);
+
+        try {
+          const res = await fetch('/api/cms-testimonials', { method: 'POST', credentials: 'same-origin', body: fd });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showToast('Testimoni berhasil disimpan', 'success');
+            document.getElementById('testi-modal').classList.remove('show');
+            // Refresh list dari server
+            const listRes = await fetch('/api/cms-testimonials', { credentials: 'same-origin' });
+            testiData = await listRes.json();
+            renderTestiList();
+          } else {
+            showToast(data.error || 'Gagal menyimpan', 'error');
+          }
+        } catch {
+          showToast('Error koneksi', 'error');
+        }
+        btn.innerHTML = 'Simpan';
+        btn.disabled = false;
+      });
+
+      window.deleteTesti = async function(id, name) {
+        if (!confirm(`Hapus testimoni dari "${name}"?`)) return;
+        try {
+          const res = await fetch('/api/cms-testimonials', {
+            method: 'DELETE',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showToast('Testimoni dihapus', 'success');
+            testiData = testiData.filter(t => t.id !== id);
+            renderTestiList();
+          } else {
+            showToast(data.error || 'Gagal hapus', 'error');
+          }
+        } catch {
+          showToast('Error koneksi', 'error');
+        }
+      };
+
+      // Sidebar links untuk images dan testimoni
+      document.querySelectorAll('.sidebar-link[data-target="images"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.getElementById('section-images').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const body = document.querySelector('#section-images .section-body');
+          const toggle = document.querySelector('#section-images .section-toggle');
+          if (body && !body.classList.contains('open')) { body.classList.add('open'); toggle.classList.add('open'); }
+          document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+        });
+      });
+      document.querySelectorAll('.sidebar-link[data-target="testimonials-mgr"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.getElementById('section-testimonials-mgr').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const body = document.querySelector('#section-testimonials-mgr .section-body');
+          const toggle = document.querySelector('#section-testimonials-mgr .section-toggle');
+          if (body && !body.classList.contains('open')) { body.classList.add('open'); toggle.classList.add('open'); }
+          document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+        });
+      });
     </script>
   </body>
 </html>

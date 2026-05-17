@@ -1,8 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { loadTranslationsAsync, testimonials } from "../utils/translations";
+import { loadTranslationsAsync, loadTestimonialsAsync, loadImagesAsync } from "../utils/translations";
 
 const translations = await loadTranslationsAsync();
+const testimonials = await loadTestimonialsAsync();
+const images = await loadImagesAsync();
 ---
 
 <Layout>
@@ -229,7 +231,7 @@ const translations = await loadTranslationsAsync();
 
                 <div class="creative-frame relative group">
                     <img
-                        src="/hero.png"
+                        src={images.hero || "/hero.png"}
                         alt="Professional Leadership"
                         class="w-full h-[600px] object-cover transition-transform duration-1000 group-hover:scale-105"
                     />
@@ -1041,7 +1043,7 @@ const translations = await loadTranslationsAsync();
 
                     <div class="relative group">
                         <img
-                            src="/Agung.png"
+                            src={images.mentor || "/Agung.png"}
                             alt="Agung Setyo Nugroho"
                             class="w-full h-[500px] md:h-[700px] object-cover object-top rounded-[2.5rem] shadow-2xl drop-shadow-2xl transition-transform duration-700 group-hover:-translate-y-2"
                         />
