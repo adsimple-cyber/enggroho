@@ -1075,7 +1075,7 @@ const imageInfo = [
         if (e.target.id === 'proof-modal') document.getElementById('proof-modal').classList.remove('show');
       });
 
-      document.getElementById('proof-save').addEventListener('click', () => {
+      document.getElementById('proof-save').addEventListener('click', async () => {
         const textId = document.getElementById('proof-text-id').value.trim();
         const textEn = document.getElementById('proof-text-en').value.trim();
         const idxVal = document.getElementById('proof-index').value;
@@ -1085,31 +1085,94 @@ const imageInfo = [
           return;
         }
 
+        const btn = document.getElementById('proof-save');
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+        btn.disabled = true;
+
+        const prevId = [...socialProofs.id];
+        const prevEn = [...socialProofs.en];
+
         if (idxVal !== '') {
           // Edit
           const idx = parseInt(idxVal);
           socialProofs.id[idx] = textId;
           socialProofs.en[idx] = textEn;
-          showToast('Notifikasi diperbarui', 'success');
         } else {
           // Add
           socialProofs.id.push(textId);
           socialProofs.en.push(textEn);
-          showToast('Notifikasi ditambahkan', 'success');
         }
 
-        document.getElementById('proof-modal').classList.remove('show');
-        renderSocialProofsList();
-        updateDirtyState();
+        try {
+          const res = await fetch('/api/cms-content', {
+            method: 'POST', credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: { ...contentData.id, social_proofs: socialProofs.id },
+              en: { ...contentData.en, social_proofs: socialProofs.en }
+            }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showToast(idxVal !== '' ? '✓ Notifikasi diperbarui' : '✓ Notifikasi ditambahkan', 'success');
+            for (let lang of ['id', 'en']) {
+              originalSocialProofs[lang] = [...socialProofs[lang]];
+            }
+            renderSocialProofsList();
+            updateDirtyState();
+            document.getElementById('proof-modal').classList.remove('show');
+          } else {
+            socialProofs.id = prevId;
+            socialProofs.en = prevEn;
+            showToast(data.error || 'Gagal menyimpan', 'error');
+          }
+        } catch {
+          socialProofs.id = prevId;
+          socialProofs.en = prevEn;
+          showToast('Error koneksi', 'error');
+        } finally {
+          btn.innerHTML = oldHtml;
+          btn.disabled = false;
+        }
       });
 
-      window.deleteProof = function(idx) {
+      window.deleteProof = async function(idx) {
         if (!confirm('Hapus notifikasi ini?')) return;
+
+        const prevId = [...socialProofs.id];
+        const prevEn = [...socialProofs.en];
+
         socialProofs.id.splice(idx, 1);
         socialProofs.en.splice(idx, 1);
-        showToast('Notifikasi dihapus', 'success');
-        renderSocialProofsList();
-        updateDirtyState();
+
+        try {
+          const res = await fetch('/api/cms-content', {
+            method: 'POST', credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: { ...contentData.id, social_proofs: socialProofs.id },
+              en: { ...contentData.en, social_proofs: socialProofs.en }
+            }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showToast('✓ Notifikasi dihapus', 'success');
+            for (let lang of ['id', 'en']) {
+              originalSocialProofs[lang] = [...socialProofs[lang]];
+            }
+            renderSocialProofsList();
+            updateDirtyState();
+          } else {
+            socialProofs.id = prevId;
+            socialProofs.en = prevEn;
+            showToast(data.error || 'Gagal menghapus', 'error');
+          }
+        } catch {
+          socialProofs.id = prevId;
+          socialProofs.en = prevEn;
+          showToast('Error koneksi', 'error');
+        }
       };
 
       renderSocialProofsList();
