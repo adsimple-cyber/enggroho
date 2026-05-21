@@ -55,9 +55,13 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const sanitize = (obj: Record<string, any>) => {
-      const out: Record<string, string> = {};
+      const out: Record<string, any> = {};
       for (const key in obj) {
-        if (typeof obj[key] === "string") out[key] = obj[key];
+        if (typeof obj[key] === "string") {
+          out[key] = obj[key];
+        } else if (Array.isArray(obj[key]) && obj[key].every((item: any) => typeof item === "string")) {
+          out[key] = obj[key];
+        }
       }
       return out;
     };
