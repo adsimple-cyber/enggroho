@@ -183,7 +183,7 @@ Dengan latar belakang akademis yang kuat dan jam terbang tinggi sebagai interpre
 **Founder & Mentor**  
 adapun link untuk testimony [https://drive.google.com/drive/folders/13cFbkxed-BDyzyy\_i2lWJS-1hwyNlgRz?usp=drive\_link](https://drive.google.com/drive/folders/13cFbkxed-BDyzyy_i2lWJS-1hwyNlgRz?usp=drive_link) 
 
-[https://calendly.com/enggroho/linkdln-session-career-talk](https://calendly.com/enggroho/linkdln-session-career-talk)
+[https://calendly.com/enggroho/sessions](https://calendly.com/enggroho/sessions)
 
 ini link untuk jadwalkan pertemuan, selain link ke WA 
 
