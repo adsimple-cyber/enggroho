@@ -187,7 +187,6 @@ adapun link untuk testimony [https://drive.google.com/drive/folders/13cFbkxed-BD
 
 ini link untuk jadwalkan pertemuan, selain link ke WA 
 
-([wa.me/6287736696629?text=Halo%20saya%20ingin%20bertanya%20terkait%20Enggroho](http://wa.me/6287736696629?text=Halo%20saya%20ingin%20bertanya%20terkait%20Enggroho)) tolong link ke sini juga, yang button “Kelas Gratis” tolong diganti jadi “Konsultasi Gratis”’
 
 Elevating Professional Communication since 2020\. Berbasis di Indonesia untuk dunia. 
 
